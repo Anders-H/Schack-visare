@@ -1,299 +1,355 @@
 ﻿<!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schackvisare</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f4f4f9;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schackvisare</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
 
-        #info-container {
-            background: #fff;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
+    #info-container {
+      background: #fff;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+    }
 
-            #info-container h2 {
-                margin: 0 0 10px 0;
-                font-size: 1.2rem;
-            }
+    #info-container h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.2rem;
+    }
 
-            #info-container p {
-                margin: 4px 0;
-                color: #555;
-            }
+    #info-container p {
+      margin: 4px 0;
+      color: #555;
+    }
 
-        #board {
-            display: grid;
-            grid-template-columns: repeat(8, 50px);
-            grid-template-rows: repeat(8, 50px);
-            border: 3px solid #333;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
+    #board {
+      display: grid;
+      grid-template-columns: 25px repeat(8, 50px) 25px;
+      grid-template-rows: 25px repeat(8, 50px) 25px;
+      border: 3px solid #333;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      background-color: #e0e0e0;
+    }
 
-        .square {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            user-select: none;
-        }
+    .square {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      user-select: none;
+    }
 
-        .white-square {
-            background-color: #f0d9b5;
-        }
+    .white-square {
+      background-color: #f0d9b5;
+    }
 
-        .black-square {
-            background-color: #b58863;
-        }
+    .black-square {
+      background-color: #b58863;
+    }
 
-        #controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+    .label-square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+      user-select: none;
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
+    #controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
 
-            button:disabled {
-                background-color: #ccc;
-                cursor: not-allowed;
-            }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
 
-            button:hover:not(:disabled) {
-                background-color: #45a049;
-            }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
 
-        #move-counter {
-            font-weight: bold;
-            min-width: 100px;
-            text-align: center;
-        }
+    button:hover:not(:disabled) {
+      background-color: #45a049;
+    }
 
-        #error-message {
-            color: red;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
+    #move-counter {
+      font-weight: bold;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    #error-message {
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="info-container">
-        <h2 id="game-title">Laddar parti...</h2>
-        <p id="game-date"></p>
-        <p id="game-players"></p>
-    </div>
+  <div id="info-container">
+    <h2 id="game-title">Laddar parti...</h2>
+    <p id="game-date"></p>
+    <p id="game-players"></p>
+  </div>
 
-    <div id="board"></div>
+  <div id="board"></div>
 
-    <div id="controls">
-        <button id="prev-btn" onclick="prevMove()" disabled>Föregående</button>
-        <span id="move-counter">Drag: 0</span>
-        <button id="next-btn" onclick="nextMove()" disabled>Nästa</button>
-    </div>
+  <div id="controls">
+    <button id="prev-btn" onclick="prevMove()" disabled>Föregående</button>
+    <span id="move-counter">Drag: 0</span>
+    <button id="next-btn" onclick="nextMove()" disabled>Nästa</button>
+    <button id="last-btn" onclick="goToLastMove()" disabled>Gå till sista</button>
+  </div>
 
-    <div id="error-message"></div>
+  <div id="error-message"></div>
 
-    <script>
-        // Unicode-symboler för schackpjäser
-        const PIECES = {
-            'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙', // Vita
-            'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'  // Svarta
-        };
+  <script>
+    const PIECES = {
+      'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙',
+      'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'
+    };
 
-        // Ursprunglig uppställning
-        const INITIAL_BOARD = [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-        ];
+    const INITIAL_BOARD = [
+      ['r','n','b','q','k','b','n','r'],
+      ['p','p','p','p','p','p','p','p'],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['P','P','P','P','P','P','P','P'],
+      ['R','N','B','Q','K','B','N','R']
+    ];
 
-        let moveHistory = []; // Innehåller brädets tillstånd efter varje drag
-        let movesList = [];
-        let currentMoveIndex = 0;
+    let moveHistory = [];
+    let movesList = [];
+    let currentMoveIndex = 0;
+    let autoplayTimer = null; // Håller koll på timer-intervallet
 
-        // Hämta querystring parameter (t.ex. ?file=game.txt)
-        const urlParams = new URLSearchParams(window.location.search);
-        const fileName = urlParams.get('file');
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
 
-        if (!fileName) {
-            showError("Ingen fil angiven i url:en. Använd t.ex. ?file=game.txt");
+    if (!fileName) {
+      showError("Ingen fil angiven i url:en. Använd t.ex. ?file=game.txt");
+    } else {
+      loadGameFile(fileName);
+    }
+
+    async function loadGameFile(file) {
+      try {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error(`Kunde inte ladda filen: ${response.statusText}`);
+        
+        const text = await response.text();
+        parseAndInitGame(text.trim());
+      } catch (err) {
+        showError("Fel vid inläsning av filen: " + err.message);
+      }
+    }
+
+    function parseAndInitGame(data) {
+      const parts = data.split(';');
+      if (parts.length < 4) {
+        showError("Filformatet är ogiltigt.");
+        return;
+      }
+
+      const title = parts[0];
+      const date = parts[1];
+      const whitePlayer = parts[2];
+      const blackPlayer = parts[3];
+      movesList = parts.slice(4).filter(m => m.trim() !== "");
+
+      document.getElementById('game-title').innerText = title;
+      document.getElementById('game-date').innerText = `Datum: ${date}`;
+      document.getElementById('game-players').innerText = `Vit: ${whitePlayer} | Svart: ${blackPlayer}`;
+
+      buildMoveHistory();
+      renderBoard();
+      updateControls();
+    }
+
+    function parseCoordinate(coordStr) {
+      const colLetter = coordStr.charAt(0).toUpperCase();
+      const rowNum = parseInt(coordStr.charAt(1), 10);
+
+      const col = colLetter.charCodeAt(0) - 'A'.charCodeAt(0);
+      const row = 8 - rowNum;
+      return { row, col };
+    }
+
+    function buildMoveHistory() {
+      let currentBoard = INITIAL_BOARD.map(row => [...row]);
+      moveHistory.push(currentBoard.map(row => [...row]));
+
+      for (let move of movesList) {
+        const [fromStr, toStr] = move.split('-');
+        if (!fromStr || !toStr) continue;
+
+        const from = parseCoordinate(fromStr);
+        const to = parseCoordinate(toStr);
+
+        let piece = currentBoard[from.row][from.col];
+        
+        currentBoard[from.row][from.col] = '';
+        currentBoard[to.row][to.col] = piece;
+
+        // Rockad
+        if ((piece === 'K' || piece === 'k') && Math.abs(from.col - to.col) === 2) {
+          if (to.col > from.col) {
+            const rook = currentBoard[from.row][7];
+            currentBoard[from.row][7] = '';
+            currentBoard[from.row][5] = rook;
+          } else if (to.col < from.col) {
+            const rook = currentBoard[from.row][0];
+            currentBoard[from.row][0] = '';
+            currentBoard[from.row][3] = rook;
+          }
+        }
+
+        // Bondepromovorering
+        if (piece === 'P' && to.row === 0) currentBoard[to.row][to.col] = 'Q';
+        if (piece === 'p' && to.row === 7) currentBoard[to.row][to.col] = 'q';
+
+        moveHistory.push(currentBoard.map(row => [...row]));
+      }
+    }
+
+    function renderBoard() {
+      const boardElement = document.getElementById('board');
+      boardElement.innerHTML = '';
+
+      const boardState = moveHistory[currentMoveIndex];
+      const files = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          const square = document.createElement('div');
+
+          if ((r === 0 || r === 9) && (c === 0 || c === 9)) {
+            square.className = 'label-square';
+          }
+          else if (r === 0 || r === 9) {
+            square.className = 'label-square';
+            square.innerText = files[c - 1];
+          }
+          else if (c === 0 || c === 9) {
+            square.className = 'label-square';
+            square.innerText = 8 - (r - 1);
+          }
+          else {
+            const boardRow = r - 1;
+            const boardCol = c - 1;
+            const isWhiteSquare = (boardRow + boardCol) % 2 === 0;
+
+            square.className = `square ${isWhiteSquare ? 'white-square' : 'black-square'}`;
+
+            const pieceKey = boardState[boardRow][boardCol];
+            if (pieceKey) {
+              square.innerText = PIECES[pieceKey] || pieceKey;
+            }
+          }
+
+          boardElement.appendChild(square);
+        }
+      }
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    function updateControls() {
+      const isAtStart = currentMoveIndex === 0;
+      const isAtEnd = currentMoveIndex === moveHistory.length - 1;
+
+      document.getElementById('move-counter').innerText = `Drag: ${currentMoveIndex} / ${moveHistory.length - 1}`;
+      document.getElementById('prev-btn').disabled = isAtStart;
+      document.getElementById('next-btn').disabled = isAtEnd;
+      document.getElementById('last-btn').disabled = isAtEnd;
+    }
+
+    function nextMove() {
+      if (currentMoveIndex < moveHistory.length - 1) {
+        currentMoveIndex++;
+        renderBoard();
+        updateControls();
+      } else {
+        stopAutoplay();
+      }
+    }
+
+    function prevMove() {
+      stopAutoplay(); // Stoppa snabbspolning om man klickar manuellt
+      if (currentMoveIndex > 0) {
+        currentMoveIndex--;
+        renderBoard();
+        updateControls();
+      }
+    }
+
+    function goToLastMove() {
+      stopAutoplay(); // Rensa eventuella tidigare timers
+      
+      // Spela upp partiet med 50ms per drag
+      autoplayTimer = setInterval(() => {
+        if (currentMoveIndex < moveHistory.length - 1) {
+          nextMove();
         } else {
-            loadGameFile(fileName);
+          stopAutoplay();
         }
+      }, 50);
+    }
 
-        async function loadGameFile(file) {
-            try {
-                const response = await fetch(file);
-                if (!response.ok) throw new Error(`Kunde inte ladda filen: ${response.statusText}`);
-
-                const text = await response.text();
-                parseAndInitGame(text.trim());
-            } catch (err) {
-                showError("Fel vid inläsning av filen: " + err.message);
-            }
+    // Tangentbordsnavigering: Vänster- och högerpil
+    window.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        const prevBtn = document.getElementById('prev-btn');
+        if (!prevBtn.disabled) {
+        prevBtn.click();
         }
-
-        function parseAndInitGame(data) {
-            const parts = data.split(';');
-            if (parts.length < 4) {
-                showError("Filformatet är ogiltigt.");
-                return;
-            }
-
-            const title = parts[0];
-            const date = parts[1];
-            const whitePlayer = parts[2];
-            const blackPlayer = parts[3];
-            movesList = parts.slice(4).filter(m => m.trim() !== "");
-
-            // Uppdatera info-gränssnittet
-            document.getElementById('game-title').innerText = title;
-            document.getElementById('game-date').innerText = `Startdatum: ${date}`;
-            document.getElementById('game-players').innerText = `Vit: ${whitePlayer} - Svart:${blackPlayer}`;
-
-            // Generera historiken över alla brädtillstånd
-            buildMoveHistory();
-
-            // Rendera startpositionen
-            renderBoard();
-            updateControls();
+    } else if (event.key === 'ArrowRight') {
+        const nextBtn = document.getElementById('next-btn');
+        if (!nextBtn.disabled) {
+        nextBtn.click();
         }
+    }
+    });
 
-        function parseCoordinate(coordStr) {
-            // Omvandlar t.ex. "H2" till matrisindex [row, col]
-            const colLetter = coordStr.charAt(0).toUpperCase();
-            const rowNum = parseInt(coordStr.charAt(1), 10);
-
-            const col = colLetter.charCodeAt(0) - 'A'.charCodeAt(0);
-            const row = 8 - rowNum;
-            return { row, col };
-        }
-
-        function buildMoveHistory() {
-            // Djupkopiera startbrädet
-            let currentBoard = INITIAL_BOARD.map(row => [...row]);
-            moveHistory.push(currentBoard.map(row => [...row]));
-
-            for (let move of movesList) {
-                const [fromStr, toStr] = move.split('-');
-                if (!fromStr || !toStr) continue;
-
-                const from = parseCoordinate(fromStr);
-                const to = parseCoordinate(toStr);
-
-                let piece = currentBoard[from.row][from.col];
-
-                // Töm ursprungsrutan och placera pjäsen på målrutan
-                currentBoard[from.row][from.col] = '';
-                currentBoard[to.row][to.col] = piece;
-
-                // --- Speciallogik 1: Rockad ---
-                if ((piece === 'K' || piece === 'k') && Math.abs(from.col - to.col) === 2) {
-                    if (to.col > from.col) { // Kort rockad
-                        const rook = currentBoard[from.row][7];
-                        currentBoard[from.row][7] = '';
-                        currentBoard[from.row][5] = rook;
-                    } else if (to.col < from.col) { // Lång rockad
-                        const rook = currentBoard[from.row][0];
-                        currentBoard[from.row][0] = '';
-                        currentBoard[from.row][3] = rook;
-                    }
-                }
-
-                // --- Speciallogik 2: Bondepromovorering (blir Drottning) ---
-                // Vit bonde 'P' som når rad 0 (rad 8 på brädet)
-                if (piece === 'P' && to.row === 0) {
-                    currentBoard[to.row][to.col] = 'Q';
-                }
-                // Svart bonde 'p' som når rad 7 (rad 1 på brädet)
-                if (piece === 'p' && to.row === 7) {
-                    currentBoard[to.row][to.col] = 'q';
-                }
-
-                // Spara det nya tillståndet i historiken
-                moveHistory.push(currentBoard.map(row => [...row]));
-            }
-        }
-
-        function renderBoard() {
-            const boardElement = document.getElementById('board');
-            boardElement.innerHTML = '';
-
-            const boardState = moveHistory[currentMoveIndex];
-
-            for (let r = 0; r < 8; r++) {
-                for (let c = 0; c < 8; c++) {
-                    const square = document.createElement('div');
-                    const isWhiteSquare = (r + c) % 2 === 0;
-                    square.className = `square ${isWhiteSquare ? 'white-square' : 'black-square'}`;
-
-                    const pieceKey = boardState[r][c];
-                    if (pieceKey) {
-                        square.innerText = PIECES[pieceKey] || pieceKey;
-                    }
-
-                    boardElement.appendChild(square);
-                }
-            }
-        }
-
-        function updateControls() {
-            document.getElementById('move-counter').innerText = `Drag: ${currentMoveIndex}/${moveHistory.length - 1}`;
-            document.getElementById('prev-btn').disabled = currentMoveIndex === 0;
-            document.getElementById('next-btn').disabled = currentMoveIndex === moveHistory.length - 1;
-        }
-
-        function nextMove() {
-            if (currentMoveIndex < moveHistory.length - 1) {
-                currentMoveIndex++;
-                renderBoard();
-                updateControls();
-            }
-        }
-
-        function prevMove() {
-            if (currentMoveIndex > 0) {
-                currentMoveIndex--;
-                renderBoard();
-                updateControls();
-            }
-        }
-
-        function showError(msg) {
-            document.getElementById('game-title').innerText = "Ett fel uppstod";
-            document.getElementById('error-message').innerText = msg;
-        }
-    </script>
+    function showError(msg) {
+      document.getElementById('game-title').innerText = "Ett fel uppstod";
+      document.getElementById('error-message').innerText = msg;
+    }
+  </script>
 </body>
 </html>
