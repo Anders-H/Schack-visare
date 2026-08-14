@@ -105,6 +105,78 @@
       text-align: center;
     }
 
+    #moves-container {
+      margin-top: 20px;
+      max-width: 450px;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    #moves-container h3 {
+      margin: 0;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #moves-header,
+    .move-row {
+      display: grid;
+      grid-template-columns: 45px 1fr 1fr;
+      align-items: center;
+    }
+
+    #moves-header {
+      padding: 8px 10px;
+      color: #666;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+    }
+
+    #moves-list {
+      position: relative;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .move-row {
+      padding: 4px 10px;
+    }
+
+    .move-row:nth-child(even) {
+      background-color: #f7f7f9;
+    }
+
+    .move-number {
+      color: #666;
+      font-weight: bold;
+    }
+
+    button.move-button {
+      padding: 7px 9px;
+      color: #222;
+      background: transparent;
+      border-radius: 4px;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    button.move-button:hover {
+      background-color: #e7eee7;
+    }
+
+    button.move-button.current-move {
+      color: #fff;
+      background-color: #2e7d32;
+      font-weight: bold;
+      outline: 2px solid #1b5e20;
+      outline-offset: -2px;
+    }
+
     #error-message {
       color: red;
       font-weight: bold;
@@ -127,6 +199,16 @@
     <span id="move-counter">Drag: 0</span>
     <button id="next-btn" onclick="nextMove()" disabled>Nästa</button>
     <button id="last-btn" onclick="goToLastMove()" disabled>Gå till sista</button>
+  </div>
+
+  <div id="moves-container">
+    <h3>Draglista</h3>
+    <div id="moves-header" aria-hidden="true">
+      <span>Nr</span>
+      <span>Vit</span>
+      <span>Svart</span>
+    </div>
+    <div id="moves-list" aria-label="Partiets drag"></div>
   </div>
 
   <div id="error-message"></div>
@@ -192,6 +274,7 @@
       document.getElementById('game-players').innerText = `Vit: ${whitePlayer} | Svart: ${blackPlayer}`;
 
       buildMoveHistory();
+      renderMoveList();
       renderBoard();
       updateControls();
     }
@@ -240,6 +323,49 @@
 
         moveHistory.push(currentBoard.map(row => [...row]));
       }
+    }
+
+    function renderMoveList() {
+      const movesElement = document.getElementById('moves-list');
+      movesElement.innerHTML = '';
+
+      for (let i = 0; i < movesList.length; i += 2) {
+        const row = document.createElement('div');
+        row.className = 'move-row';
+
+        const moveNumber = document.createElement('span');
+        moveNumber.className = 'move-number';
+        moveNumber.innerText = `${Math.floor(i / 2) + 1}.`;
+        row.appendChild(moveNumber);
+
+        row.appendChild(createMoveButton(movesList[i], i + 1, 'Vit'));
+
+        if (movesList[i + 1]) {
+          row.appendChild(createMoveButton(movesList[i + 1], i + 2, 'Svart'));
+        } else {
+          row.appendChild(document.createElement('span'));
+        }
+
+        movesElement.appendChild(row);
+      }
+    }
+
+    function createMoveButton(move, moveIndex, color) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'move-button';
+      button.innerText = move;
+      button.dataset.moveIndex = moveIndex;
+      button.setAttribute('aria-label', `${color}, drag ${move}: visa ställningen`);
+      button.addEventListener('click', () => goToMove(moveIndex));
+      return button;
+    }
+
+    function goToMove(moveIndex) {
+      stopAutoplay();
+      currentMoveIndex = moveIndex;
+      renderBoard();
+      updateControls();
     }
 
     function renderBoard() {
@@ -297,6 +423,41 @@
       document.getElementById('prev-btn').disabled = isAtStart;
       document.getElementById('next-btn').disabled = isAtEnd;
       document.getElementById('last-btn').disabled = isAtEnd;
+
+      updateMoveListSelection();
+    }
+
+    function updateMoveListSelection() {
+      const movesElement = document.getElementById('moves-list');
+      const previousSelection = movesElement.querySelector('.current-move');
+
+      if (previousSelection) {
+        previousSelection.classList.remove('current-move');
+        previousSelection.removeAttribute('aria-current');
+      }
+
+      if (currentMoveIndex === 0) return;
+
+      const currentSelection = movesElement.querySelector(
+        `[data-move-index="${currentMoveIndex}"]`
+      );
+
+      if (!currentSelection) return;
+
+      currentSelection.classList.add('current-move');
+      currentSelection.setAttribute('aria-current', 'step');
+
+      const currentRow = currentSelection.closest('.move-row');
+      const rowTop = currentRow.offsetTop;
+      const rowBottom = rowTop + currentRow.offsetHeight;
+      const visibleTop = movesElement.scrollTop;
+      const visibleBottom = visibleTop + movesElement.clientHeight;
+
+      if (rowTop < visibleTop) {
+        movesElement.scrollTop = rowTop;
+      } else if (rowBottom > visibleBottom) {
+        movesElement.scrollTop = rowBottom - movesElement.clientHeight;
+      }
     }
 
     function nextMove() {
