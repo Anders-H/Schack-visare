@@ -29,4 +29,9 @@ public partial class MainWindow : Form
         boardControl1.Bounds = new Rectangle(x, boardY, boardSize, boardSize);
         boardControl1.Invalidate();
     }
+
+    private void boardControl1_Paint(object sender, PaintEventArgs e)
+    {
+
+    }
 }

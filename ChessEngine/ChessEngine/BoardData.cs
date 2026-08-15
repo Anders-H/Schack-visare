@@ -4,7 +4,7 @@ namespace ChessEngine;
 public class BoardData
 {
     private static readonly PieceType[] BackRank =
-    {
+    [
         PieceType.Rook,
         PieceType.Knight,
         PieceType.Bishop,
@@ -13,7 +13,7 @@ public class BoardData
         PieceType.Bishop,
         PieceType.Knight,
         PieceType.Rook
-    };
+    ];
 
     private readonly Piece?[,] _board;
 

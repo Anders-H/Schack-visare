@@ -58,7 +58,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -76,6 +76,7 @@
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.Size = new System.Drawing.Size(623, 437);
             this.boardControl1.TabIndex = 2;
+            this.boardControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.boardControl1_Paint);
             // 
             // MainWindow
             // 
