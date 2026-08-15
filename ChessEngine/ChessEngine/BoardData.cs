@@ -17,6 +17,8 @@ public class BoardData
 
     private readonly Piece?[,] _board;
 
+    public Piece? this[int row, int column] => _board[row, column];
+
     public BoardData()
     {
         _board = new Piece?[8, 8];

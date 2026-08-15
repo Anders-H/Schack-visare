@@ -7,9 +7,17 @@ namespace ChessEngine;
 
 public partial class MainWindow : Form
 {
+    private bool _registerMoveMode;
+    private MoveList Moves { get; set; }
+    private int CurrentMove { get; set; }
+
     public MainWindow()
     {
         InitializeComponent();
+        boardControl1.MoveSelected += boardControl1_MoveSelected;
+        _registerMoveMode = false;
+        Moves = [];
+        CurrentMove = -1;
         ResizeBoard();
     }
 
@@ -27,11 +35,29 @@ public partial class MainWindow : Form
         var x = ClientRectangle.X + (ClientRectangle.Width - boardSize) / 2;
         var boardY = y + (height - boardSize) / 2;
         boardControl1.Bounds = new Rectangle(x, boardY, boardSize, boardSize);
-        boardControl1.Invalidate();
     }
 
-    private void boardControl1_Paint(object sender, PaintEventArgs e)
+    private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        _registerMoveMode = true;
+        boardControl1.BeginMoveRegistration();
+        registerMoveToolStripMenuItem.Enabled = false;
+        cancelRegisterMoveToolStripMenuItem.Enabled = true;
+    }
 
+    private void cancelRegisterMoveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        _registerMoveMode = false;
+        boardControl1.CancelMoveRegistration();
+        registerMoveToolStripMenuItem.Enabled = true;
+        cancelRegisterMoveToolStripMenuItem.Enabled = false;
+    }
+
+    private void boardControl1_MoveSelected(object sender, MoveSelectedEventArgs e)
+    {
+        if (!_registerMoveMode)
+            return;
+
+        // Registrera draget i Moves här.
     }
 }

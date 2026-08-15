@@ -34,12 +34,16 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.boardControl1 = new ChessEngine.BoardControl();
+            this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -58,7 +62,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -76,7 +80,30 @@
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.Size = new System.Drawing.Size(623, 437);
             this.boardControl1.TabIndex = 2;
-            this.boardControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.boardControl1_Paint);
+            // 
+            // moveToolStripMenuItem
+            // 
+            this.moveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.registerMoveToolStripMenuItem,
+            this.cancelRegisterMoveToolStripMenuItem});
+            this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.moveToolStripMenuItem.Text = "&Move";
+            // 
+            // registerMoveToolStripMenuItem
+            // 
+            this.registerMoveToolStripMenuItem.Name = "registerMoveToolStripMenuItem";
+            this.registerMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.registerMoveToolStripMenuItem.Text = "Register move";
+            this.registerMoveToolStripMenuItem.Click += new System.EventHandler(this.registerMoveToolStripMenuItem_Click);
+            // 
+            // cancelRegisterMoveToolStripMenuItem
+            // 
+            this.cancelRegisterMoveToolStripMenuItem.Enabled = false;
+            this.cancelRegisterMoveToolStripMenuItem.Name = "cancelRegisterMoveToolStripMenuItem";
+            this.cancelRegisterMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.cancelRegisterMoveToolStripMenuItem.Text = "Cancel register move";
+            this.cancelRegisterMoveToolStripMenuItem.Click += new System.EventHandler(this.cancelRegisterMoveToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -88,7 +115,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(400, 300);
+            this.MinimumSize = new System.Drawing.Size(500, 400);
             this.Name = "MainWindow";
             this.Text = "Chess Engine";
             this.Resize += new System.EventHandler(this.MainWindow_Resize);
@@ -106,6 +133,9 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private BoardControl boardControl1;
+        private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem registerMoveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cancelRegisterMoveToolStripMenuItem;
     }
 }
 

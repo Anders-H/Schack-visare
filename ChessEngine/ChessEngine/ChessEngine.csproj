@@ -64,6 +64,9 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Move.cs" />
+    <Compile Include="MoveList.cs" />
+    <Compile Include="MoveSelectedEventArgs.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceType.cs" />
     <Compile Include="PlayerColor.cs" />
