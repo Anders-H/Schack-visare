@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 
 namespace ChessEngine;
@@ -53,12 +54,36 @@ public class BoardData
         }
     }
 
-    public void ClearSquare(int x, int y) =>
-        _board[y, x] = null;
+    public void ApplyMove(Move move)
+    {
+        var start = move.StartPoint;
+        var end = move.EndPoint;
+        var piece = _board[start.Y, start.X];
 
-    public void SetPieceAt(Piece piece, int x, int y) =>
-        _board[y, x] = piece;
+        if (!piece.HasValue)
+            throw new InvalidOperationException($@"No piece at {start}.");
 
-    public void AddToListOfBeatenPieces(Piece piece) =>
-        _deadPieces.Add(piece);
+        if (piece.Value.PieceId != move.PieceId ||
+            piece.Value.Type != move.Piece ||
+            piece.Value.Color != move.Color)
+        {
+            throw new InvalidOperationException(
+                $@"The piece at {start} does not match move {move.MoveNumber}.");
+        }
+
+        var capturedPiece = _board[end.Y, end.X];
+
+        if (capturedPiece.HasValue)
+        {
+            var updatedCapturedPiece = capturedPiece.Value;
+            updatedCapturedPiece.SetDiedAtMove(move.MoveNumber);
+            _deadPieces.Add(updatedCapturedPiece);
+        }
+
+        var updatedPiece = piece.Value;
+        updatedPiece.IncreaseMoveCount();
+
+        _board[start.Y, start.X] = null;
+        _board[end.Y, end.X] = updatedPiece;
+    }
 }

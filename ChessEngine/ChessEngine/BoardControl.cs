@@ -16,7 +16,7 @@ public partial class BoardControl : UserControl
     private static readonly Color LightSquareColor = Color.FromArgb(240, 217, 181);
     private static readonly Color DarkSquareColor = Color.FromArgb(181, 136, 99);
 
-    private readonly BoardData _boardData = new();
+    private BoardData _boardData = new();
     private bool _registerMoveMode;
     private Point? _selectedSquare;
 
@@ -37,6 +37,13 @@ public partial class BoardControl : UserControl
     public Piece? GetPieceAt(int x, int y) =>
         _boardData[y, x];
 
+    public void SetPosition(BoardData boardData)
+    {
+        _boardData = boardData ?? throw new ArgumentNullException(nameof(boardData));
+        _selectedSquare = null;
+        Invalidate();
+    }
+
     public void BeginMoveRegistration()
     {
         _registerMoveMode = true;
@@ -51,18 +58,6 @@ public partial class BoardControl : UserControl
         _selectedSquare = null;
         Cursor = Cursors.Default;
         Invalidate();
-    }
-
-    public void ClearSquare(int x, int y) =>
-        _boardData.ClearSquare(x, y);
-
-    public void SetPieceAt(Piece piece, int x, int y) =>
-        _boardData.SetPieceAt(piece, x, y);
-
-    public void AddToListOfBeatenPieces(Piece piece, int x, int y)
-    {
-        _boardData.ClearSquare(x, y);
-        _boardData.AddToListOfBeatenPieces(piece);
     }
 
     private void BoardControl_Paint(object sender, PaintEventArgs e)

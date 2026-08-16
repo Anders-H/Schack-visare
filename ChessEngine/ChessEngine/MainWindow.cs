@@ -18,12 +18,13 @@ public partial class MainWindow : Form
         Moves = [];
         CurrentMove = -1;
         ResizeBoard();
+        UpdateControls();
     }
 
     public int CurrentMove
     {
         get;
-        set
+        private set
         {
             field = value;
             UpdateStatus();
@@ -52,12 +53,12 @@ public partial class MainWindow : Form
 
     private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (CurrentMove != Moves.Count - 1)
+            GoToMove(Moves.Count - 1);
+
         _registerMoveMode = true;
         boardControl1.BeginMoveRegistration();
-        registerMoveToolStripMenuItem.Enabled = false;
-        btnRegistrera.Enabled = false;
-        cancelRegisterMoveToolStripMenuItem.Enabled = true;
-        btnAvbrytRegistrering.Enabled = true;
+        UpdateControls();
         UpdateStatus();
     }
 
@@ -65,10 +66,7 @@ public partial class MainWindow : Form
     {
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();
-        registerMoveToolStripMenuItem.Enabled = true;
-        btnRegistrera.Enabled = true;
-        cancelRegisterMoveToolStripMenuItem.Enabled = false;
-        btnAvbrytRegistrering.Enabled = false;
+        UpdateControls();
         UpdateStatus();
     }
 
@@ -82,40 +80,19 @@ public partial class MainWindow : Form
         if (!movedPiece.HasValue)
             throw new InvalidOperationException($@"No piece at {e.StartPoint}.");
 
-        var updatedMovedPiece = movedPiece.Value;
-        updatedMovedPiece.IncreaseMoveCount();
         var moveIndex = Moves.Count;
-        var capturedPiece = boardControl1.GetPieceAt(e.EndPoint.X, e.EndPoint.Y);
-
-        if (capturedPiece.HasValue)
-        {
-            var updatedCapturedPiece = capturedPiece.Value;
-            updatedCapturedPiece.SetDiedAtMove(moveIndex);
-
-            boardControl1.AddToListOfBeatenPieces(
-                updatedCapturedPiece,
-                e.EndPoint.X,
-                e.EndPoint.Y);
-        }
-
-        boardControl1.ClearSquare(e.StartPoint.X, e.StartPoint.Y);
-        boardControl1.SetPieceAt(updatedMovedPiece, e.EndPoint.X, e.EndPoint.Y);
 
         Moves.Add(new Move(
             e.StartPoint,
             e.EndPoint,
-            updatedMovedPiece.Type,
-            updatedMovedPiece.Color,
-            updatedMovedPiece.PieceId,
+            movedPiece.Value.Type,
+            movedPiece.Value.Color,
+            movedPiece.Value.PieceId,
             moveIndex));
 
         _registerMoveMode = false;
-        CurrentMove = moveIndex;
         boardControl1.CancelMoveRegistration();
-        registerMoveToolStripMenuItem.Enabled = true;
-        btnRegistrera.Enabled = true;
-        cancelRegisterMoveToolStripMenuItem.Enabled = false;
-        btnAvbrytRegistrering.Enabled = false;
+        GoToMove(moveIndex);
     }
 
     private void btnRegistrera_Click(object sender, EventArgs e) =>
@@ -144,12 +121,12 @@ public partial class MainWindow : Form
 
     private void firstToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        GoToMove(-1);
     }
 
     private void previousToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        GoToMove(CurrentMove - 1);
     }
 
     private void playToolStripMenuItem_Click(object sender, EventArgs e)
@@ -164,11 +141,52 @@ public partial class MainWindow : Form
 
     private void nextToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        GoToMove(CurrentMove + 1);
     }
 
     private void lastToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        GoToMove(Moves.Count - 1);
+    }
 
+    private void GoToMove(int moveIndex)
+    {
+        var lastMoveIndex = Moves.Count - 1;
+        var targetMoveIndex = Math.Max(-1, Math.Min(moveIndex, lastMoveIndex));
+        var position = new BoardData();
+
+        for (var index = 0; index <= targetMoveIndex; index++)
+            position.ApplyMove(Moves[index]);
+
+        boardControl1.SetPosition(position);
+        CurrentMove = targetMoveIndex;
+        UpdateControls();
+    }
+
+    private void UpdateControls()
+    {
+        var navigationEnabled = !_registerMoveMode;
+        var canMoveBackward = navigationEnabled && CurrentMove >= 0;
+        var canMoveForward = navigationEnabled && CurrentMove < Moves.Count - 1;
+
+        firstToolStripMenuItem.Enabled = canMoveBackward;
+        btnFirst.Enabled = canMoveBackward;
+        previousToolStripMenuItem.Enabled = canMoveBackward;
+        btnPrevious.Enabled = canMoveBackward;
+        nextToolStripMenuItem.Enabled = canMoveForward;
+        btnNext.Enabled = canMoveForward;
+        lastToolStripMenuItem.Enabled = canMoveForward;
+        btnLast.Enabled = canMoveForward;
+
+        registerMoveToolStripMenuItem.Enabled = !_registerMoveMode;
+        btnRegistrera.Enabled = !_registerMoveMode;
+        cancelRegisterMoveToolStripMenuItem.Enabled = _registerMoveMode;
+        btnAvbrytRegistrering.Enabled = _registerMoveMode;
+
+        // Play och Pause kopplas in när timer-uppspelningen implementeras.
+        playToolStripMenuItem.Enabled = false;
+        btnPlay.Enabled = false;
+        pauseToolStripMenuItem.Enabled = false;
+        btnPause.Enabled = false;
     }
 }
