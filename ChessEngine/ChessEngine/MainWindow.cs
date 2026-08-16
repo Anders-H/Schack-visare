@@ -7,12 +7,17 @@ namespace ChessEngine;
 
 public partial class MainWindow : Form
 {
+    private const int PlaybackIntervalMilliseconds = 700;
+
+    private readonly Timer _playbackTimer = new();
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
 
     public MainWindow()
     {
         InitializeComponent();
+        _playbackTimer.Interval = PlaybackIntervalMilliseconds;
+        _playbackTimer.Tick += PlaybackTimer_Tick;
         boardControl1.MoveSelected += boardControl1_MoveSelected;
         _registerMoveMode = false;
         Moves = [];
@@ -31,8 +36,15 @@ public partial class MainWindow : Form
         }
     }
 
-    private void UpdateStatus() =>
-        lblStatus.Text = _registerMoveMode ? $@"Storing move {Moves.Count + 1}." : $@"Move {CurrentMove + 1} of {Moves.Count}.";
+    private void UpdateStatus()
+    {
+        if (_registerMoveMode)
+            lblStatus.Text = $@"Storing move {Moves.Count + 1}.";
+        else if (_playbackTimer.Enabled)
+            lblStatus.Text = $@"Playing move {CurrentMove + 1} of {Moves.Count}.";
+        else
+            lblStatus.Text = $@"Move {CurrentMove + 1} of {Moves.Count}.";
+    }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
         MessageBox.Show(this, @"Chess Engine written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -53,6 +65,8 @@ public partial class MainWindow : Form
 
     private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        StopPlayback();
+
         if (CurrentMove != Moves.Count - 1)
             GoToMove(Moves.Count - 1);
 
@@ -121,32 +135,61 @@ public partial class MainWindow : Form
 
     private void firstToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        StopPlayback();
         GoToMove(-1);
     }
 
     private void previousToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        StopPlayback();
         GoToMove(CurrentMove - 1);
     }
 
     private void playToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (_registerMoveMode || Moves.Count == 0 || _playbackTimer.Enabled)
+            return;
+
+        if (CurrentMove >= Moves.Count - 1)
+            GoToMove(-1);
+
+        _playbackTimer.Start();
+        UpdateControls();
+        UpdateStatus();
 
     }
 
     private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        StopPlayback();
     }
 
     private void nextToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        StopPlayback();
         GoToMove(CurrentMove + 1);
     }
 
     private void lastToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        StopPlayback();
         GoToMove(Moves.Count - 1);
+    }
+
+    private void PlaybackTimer_Tick(object sender, EventArgs e)
+    {
+        if (CurrentMove < Moves.Count - 1)
+            GoToMove(CurrentMove + 1);
+
+        if (CurrentMove >= Moves.Count - 1)
+            StopPlayback();
+    }
+
+    private void StopPlayback()
+    {
+        _playbackTimer.Stop();
+        UpdateControls();
+        UpdateStatus();
     }
 
     private void GoToMove(int moveIndex)
@@ -165,7 +208,8 @@ public partial class MainWindow : Form
 
     private void UpdateControls()
     {
-        var navigationEnabled = !_registerMoveMode;
+        var isPlaying = _playbackTimer.Enabled;
+        var navigationEnabled = !_registerMoveMode && !isPlaying;
         var canMoveBackward = navigationEnabled && CurrentMove >= 0;
         var canMoveForward = navigationEnabled && CurrentMove < Moves.Count - 1;
 
@@ -178,15 +222,22 @@ public partial class MainWindow : Form
         lastToolStripMenuItem.Enabled = canMoveForward;
         btnLast.Enabled = canMoveForward;
 
-        registerMoveToolStripMenuItem.Enabled = !_registerMoveMode;
-        btnRegistrera.Enabled = !_registerMoveMode;
+        registerMoveToolStripMenuItem.Enabled = !_registerMoveMode && !isPlaying;
+        btnRegistrera.Enabled = !_registerMoveMode && !isPlaying;
         cancelRegisterMoveToolStripMenuItem.Enabled = _registerMoveMode;
         btnAvbrytRegistrering.Enabled = _registerMoveMode;
 
-        // Play och Pause kopplas in när timer-uppspelningen implementeras.
-        playToolStripMenuItem.Enabled = false;
-        btnPlay.Enabled = false;
-        pauseToolStripMenuItem.Enabled = false;
-        btnPause.Enabled = false;
+        var canPlay = !_registerMoveMode && !isPlaying && Moves.Count > 0;
+        playToolStripMenuItem.Enabled = canPlay;
+        btnPlay.Enabled = canPlay;
+        pauseToolStripMenuItem.Enabled = isPlaying;
+        btnPause.Enabled = isPlaying;
+    }
+
+    protected override void OnFormClosed(FormClosedEventArgs e)
+    {
+        _playbackTimer.Stop();
+        _playbackTimer.Dispose();
+        base.OnFormClosed(e);
     }
 }
