@@ -1,4 +1,7 @@
 ﻿#nullable enable
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 namespace ChessEngine;
 
 public class BoardData
@@ -16,13 +19,13 @@ public class BoardData
     ];
 
     private readonly Piece?[,] _board;
-
+    private readonly List<Piece> _deadPieces;
     public Piece? this[int row, int column] => _board[row, column];
 
     public BoardData()
     {
         _board = new Piece?[8, 8];
-
+        _deadPieces = [];
         InitializeBackRank(0, PlayerColor.White, 0);
         InitializePawnRank(1, PlayerColor.White, 8);
         InitializeBackRank(7, PlayerColor.Black, 16);
@@ -50,4 +53,13 @@ public class BoardData
                 color);
         }
     }
+
+    public void ClearSquare(int x, int y) =>
+        _board[y, x] = null;
+
+    public void SetPieceAt(Piece piece, int x, int y) =>
+        _board[y, x] = piece;
+
+    public void AddToListOfBeatenPieces(Piece piece) =>
+        _deadPieces.Add(piece);
 }

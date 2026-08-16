@@ -36,11 +36,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "BoardControl";
             this.Size = new System.Drawing.Size(623, 437);
-            this.Load += new System.EventHandler(this.BoardControl_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.BoardControl_Paint);
             this.Resize += new System.EventHandler(this.BoardControl_Resize);
             this.ResumeLayout(false);
-
         }
 
         #endregion

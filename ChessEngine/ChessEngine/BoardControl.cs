@@ -34,6 +34,9 @@ public partial class BoardControl : UserControl
             true);
     }
 
+    public Piece? GetPieceAt(int x, int y) =>
+        _boardData[y, x];
+
     public void BeginMoveRegistration()
     {
         _registerMoveMode = true;
@@ -50,9 +53,16 @@ public partial class BoardControl : UserControl
         Invalidate();
     }
 
-    private void BoardControl_Load(object sender, EventArgs e)
-    {
+    public void ClearSquare(int x, int y) =>
+        _boardData.ClearSquare(x, y);
 
+    public void SetPieceAt(Piece piece, int x, int y) =>
+        _boardData.SetPieceAt(piece, x, y);
+
+    public void AddToListOfBeatenPieces(Piece piece, int x, int y)
+    {
+        _boardData.ClearSquare(x, y);
+        _boardData.AddToListOfBeatenPieces(piece);
     }
 
     private void BoardControl_Paint(object sender, PaintEventArgs e)
@@ -92,6 +102,7 @@ public partial class BoardControl : UserControl
                 if (_selectedSquare == new Point(column, boardRow))
                 {
                     e.Graphics.FillRectangle(selectionBrush, square);
+
                     e.Graphics.DrawRectangle(
                         selectionPen,
                         square.Left + 1.5f,
@@ -170,8 +181,7 @@ public partial class BoardControl : UserControl
     {
         base.OnMouseClick(e);
 
-        if (!_registerMoveMode || e.Button != MouseButtons.Left ||
-            !TryGetBoardSquare(e.Location, out var clickedSquare))
+        if (!_registerMoveMode || e.Button != MouseButtons.Left || !TryGetBoardSquare(e.Location, out var clickedSquare))
         {
             return;
         }
@@ -189,6 +199,7 @@ public partial class BoardControl : UserControl
         }
 
         var startSquare = _selectedSquare.Value;
+
         if (clickedSquare == startSquare)
         {
             _selectedSquare = null;
@@ -197,6 +208,7 @@ public partial class BoardControl : UserControl
         }
 
         var selectedPiece = _boardData[startSquare.Y, startSquare.X];
+        
         if (!selectedPiece.HasValue)
         {
             _selectedSquare = null;
@@ -205,6 +217,7 @@ public partial class BoardControl : UserControl
         }
 
         var targetPiece = _boardData[clickedSquare.Y, clickedSquare.X];
+
         if (targetPiece.HasValue && targetPiece.Value.Color == selectedPiece.Value.Color)
         {
             _selectedSquare = clickedSquare;
@@ -215,12 +228,7 @@ public partial class BoardControl : UserControl
         _selectedSquare = null;
         Invalidate();
 
-        MoveSelected?.Invoke(
-            this,
-            new MoveSelectedEventArgs(
-                startSquare,
-                clickedSquare,
-                selectedPiece.Value));
+        MoveSelected?.Invoke(this, new MoveSelectedEventArgs(startSquare, clickedSquare, selectedPiece.Value));
     }
 
     private bool TryGetBoardSquare(Point location, out Point boardSquare)
