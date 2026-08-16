@@ -31,17 +31,34 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.boardControl1 = new ChessEngine.BoardControl();
+            this.btnRegistrera = new System.Windows.Forms.ToolStripButton();
+            this.btnAvbrytRegistrering = new System.Windows.Forms.ToolStripButton();
+            this.btnFirst = new System.Windows.Forms.ToolStripButton();
+            this.btnPrevious = new System.Windows.Forms.ToolStripButton();
+            this.btnPlay = new System.Windows.Forms.ToolStripButton();
+            this.btnPause = new System.Windows.Forms.ToolStripButton();
+            this.btnNext = new System.Windows.Forms.ToolStripButton();
+            this.btnLast = new System.Windows.Forms.ToolStripButton();
+            this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.firstToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -59,25 +76,17 @@
             // 
             this.moveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.registerMoveToolStripMenuItem,
-            this.cancelRegisterMoveToolStripMenuItem});
+            this.cancelRegisterMoveToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.firstToolStripMenuItem,
+            this.previousToolStripMenuItem,
+            this.playToolStripMenuItem,
+            this.pauseToolStripMenuItem,
+            this.nextToolStripMenuItem,
+            this.lastToolStripMenuItem});
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
             this.moveToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.moveToolStripMenuItem.Text = "&Move";
-            // 
-            // registerMoveToolStripMenuItem
-            // 
-            this.registerMoveToolStripMenuItem.Name = "registerMoveToolStripMenuItem";
-            this.registerMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.registerMoveToolStripMenuItem.Text = "Register move";
-            this.registerMoveToolStripMenuItem.Click += new System.EventHandler(this.registerMoveToolStripMenuItem_Click);
-            // 
-            // cancelRegisterMoveToolStripMenuItem
-            // 
-            this.cancelRegisterMoveToolStripMenuItem.Enabled = false;
-            this.cancelRegisterMoveToolStripMenuItem.Name = "cancelRegisterMoveToolStripMenuItem";
-            this.cancelRegisterMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.cancelRegisterMoveToolStripMenuItem.Text = "Cancel register move";
-            this.cancelRegisterMoveToolStripMenuItem.Click += new System.EventHandler(this.cancelRegisterMoveToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -113,6 +122,16 @@
             // toolStrip1
             // 
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnRegistrera,
+            this.btnAvbrytRegistrering,
+            this.toolStripSeparator1,
+            this.btnFirst,
+            this.btnPrevious,
+            this.btnPlay,
+            this.btnPause,
+            this.btnNext,
+            this.btnLast});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(984, 25);
@@ -130,12 +149,168 @@
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
+            // 
+            // pauseToolStripMenuItem
+            // 
+            this.pauseToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.PauseHS;
+            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.pauseToolStripMenuItem.Text = "Pause";
+            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            // 
             // boardControl1
             // 
             this.boardControl1.Location = new System.Drawing.Point(160, 72);
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.Size = new System.Drawing.Size(623, 437);
             this.boardControl1.TabIndex = 2;
+            // 
+            // btnRegistrera
+            // 
+            this.btnRegistrera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnRegistrera.Image = global::ChessEngine.Properties.Resources._112_Plus_Green_16x16_72;
+            this.btnRegistrera.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnRegistrera.Name = "btnRegistrera";
+            this.btnRegistrera.Size = new System.Drawing.Size(23, 22);
+            this.btnRegistrera.Text = "toolStripButton1";
+            this.btnRegistrera.Click += new System.EventHandler(this.btnRegistrera_Click);
+            // 
+            // btnAvbrytRegistrering
+            // 
+            this.btnAvbrytRegistrering.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAvbrytRegistrering.Enabled = false;
+            this.btnAvbrytRegistrering.Image = global::ChessEngine.Properties.Resources.Cancel__Red;
+            this.btnAvbrytRegistrering.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAvbrytRegistrering.Name = "btnAvbrytRegistrering";
+            this.btnAvbrytRegistrering.Size = new System.Drawing.Size(23, 22);
+            this.btnAvbrytRegistrering.Text = "toolStripButton1";
+            this.btnAvbrytRegistrering.Click += new System.EventHandler(this.btnAvbrytRegistrering_Click);
+            // 
+            // btnFirst
+            // 
+            this.btnFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnFirst.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveFirstHS;
+            this.btnFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnFirst.Name = "btnFirst";
+            this.btnFirst.Size = new System.Drawing.Size(23, 22);
+            this.btnFirst.Text = "toolStripButton1";
+            this.btnFirst.Click += new System.EventHandler(this.btnFirst_Click);
+            // 
+            // btnPrevious
+            // 
+            this.btnPrevious.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPrevious.Image = global::ChessEngine.Properties.Resources.DataContainer_MovePreviousHS;
+            this.btnPrevious.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPrevious.Name = "btnPrevious";
+            this.btnPrevious.Size = new System.Drawing.Size(23, 22);
+            this.btnPrevious.Text = "toolStripButton1";
+            this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPlay.Image = global::ChessEngine.Properties.Resources.FormRunHS;
+            this.btnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(23, 22);
+            this.btnPlay.Text = "toolStripButton1";
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            // 
+            // btnPause
+            // 
+            this.btnPause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPause.Image = global::ChessEngine.Properties.Resources.PauseHS;
+            this.btnPause.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(23, 22);
+            this.btnPause.Text = "toolStripButton1";
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            // 
+            // btnNext
+            // 
+            this.btnNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnNext.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveNextHS;
+            this.btnNext.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(23, 22);
+            this.btnNext.Text = "toolStripButton1";
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // btnLast
+            // 
+            this.btnLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnLast.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveLastHS;
+            this.btnLast.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnLast.Name = "btnLast";
+            this.btnLast.Size = new System.Drawing.Size(23, 22);
+            this.btnLast.Text = "toolStripButton1";
+            this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
+            // 
+            // registerMoveToolStripMenuItem
+            // 
+            this.registerMoveToolStripMenuItem.Image = global::ChessEngine.Properties.Resources._112_Plus_Green_16x16_72;
+            this.registerMoveToolStripMenuItem.Name = "registerMoveToolStripMenuItem";
+            this.registerMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.registerMoveToolStripMenuItem.Text = "Register move";
+            this.registerMoveToolStripMenuItem.Click += new System.EventHandler(this.registerMoveToolStripMenuItem_Click);
+            // 
+            // cancelRegisterMoveToolStripMenuItem
+            // 
+            this.cancelRegisterMoveToolStripMenuItem.Enabled = false;
+            this.cancelRegisterMoveToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.Cancel__Red;
+            this.cancelRegisterMoveToolStripMenuItem.Name = "cancelRegisterMoveToolStripMenuItem";
+            this.cancelRegisterMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.cancelRegisterMoveToolStripMenuItem.Text = "Cancel register move";
+            this.cancelRegisterMoveToolStripMenuItem.Click += new System.EventHandler(this.cancelRegisterMoveToolStripMenuItem_Click);
+            // 
+            // firstToolStripMenuItem
+            // 
+            this.firstToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveFirstHS;
+            this.firstToolStripMenuItem.Name = "firstToolStripMenuItem";
+            this.firstToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.firstToolStripMenuItem.Text = "First";
+            this.firstToolStripMenuItem.Click += new System.EventHandler(this.firstToolStripMenuItem_Click);
+            // 
+            // previousToolStripMenuItem
+            // 
+            this.previousToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.DataContainer_MovePreviousHS;
+            this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
+            this.previousToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.previousToolStripMenuItem.Text = "Previous";
+            this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
+            // 
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.FormRunHS;
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.playToolStripMenuItem.Text = "Play";
+            this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
+            // 
+            // nextToolStripMenuItem
+            // 
+            this.nextToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveNextHS;
+            this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
+            this.nextToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.nextToolStripMenuItem.Text = "Next";
+            this.nextToolStripMenuItem.Click += new System.EventHandler(this.nextToolStripMenuItem_Click);
+            // 
+            // lastToolStripMenuItem
+            // 
+            this.lastToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.DataContainer_MoveLastHS;
+            this.lastToolStripMenuItem.Name = "lastToolStripMenuItem";
+            this.lastToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.lastToolStripMenuItem.Text = "Last";
+            this.lastToolStripMenuItem.Click += new System.EventHandler(this.lastToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -157,6 +332,8 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -175,6 +352,22 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem firstToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previousToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nextToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lastToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton btnRegistrera;
+        private System.Windows.Forms.ToolStripButton btnAvbrytRegistrering;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton btnFirst;
+        private System.Windows.Forms.ToolStripButton btnPrevious;
+        private System.Windows.Forms.ToolStripButton btnPlay;
+        private System.Windows.Forms.ToolStripButton btnPause;
+        private System.Windows.Forms.ToolStripButton btnNext;
+        private System.Windows.Forms.ToolStripButton btnLast;
     }
 }
 

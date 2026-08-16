@@ -55,7 +55,9 @@ public partial class MainWindow : Form
         _registerMoveMode = true;
         boardControl1.BeginMoveRegistration();
         registerMoveToolStripMenuItem.Enabled = false;
+        btnRegistrera.Enabled = false;
         cancelRegisterMoveToolStripMenuItem.Enabled = true;
+        btnAvbrytRegistrering.Enabled = true;
         UpdateStatus();
     }
 
@@ -64,7 +66,9 @@ public partial class MainWindow : Form
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();
         registerMoveToolStripMenuItem.Enabled = true;
+        btnRegistrera.Enabled = true;
         cancelRegisterMoveToolStripMenuItem.Enabled = false;
+        btnAvbrytRegistrering.Enabled = false;
         UpdateStatus();
     }
 
@@ -109,6 +113,62 @@ public partial class MainWindow : Form
         CurrentMove = moveIndex;
         boardControl1.CancelMoveRegistration();
         registerMoveToolStripMenuItem.Enabled = true;
+        btnRegistrera.Enabled = true;
         cancelRegisterMoveToolStripMenuItem.Enabled = false;
+        btnAvbrytRegistrering.Enabled = false;
+    }
+
+    private void btnRegistrera_Click(object sender, EventArgs e) =>
+        registerMoveToolStripMenuItem_Click(sender, e);
+
+    private void btnAvbrytRegistrering_Click(object sender, EventArgs e) =>
+        cancelRegisterMoveToolStripMenuItem_Click(sender, e);
+
+    private void btnFirst_Click(object sender, EventArgs e) =>
+        firstToolStripMenuItem_Click(sender, e);
+
+    private void btnPrevious_Click(object sender, EventArgs e) =>
+        previousToolStripMenuItem_Click(sender, e);
+
+    private void btnPlay_Click(object sender, EventArgs e) =>
+        playToolStripMenuItem_Click(sender, e);
+
+    private void btnPause_Click(object sender, EventArgs e) =>
+        pauseToolStripMenuItem_Click(sender, e);
+
+    private void btnNext_Click(object sender, EventArgs e) =>
+        nextToolStripMenuItem_Click(sender, e);
+
+    private void btnLast_Click(object sender, EventArgs e) =>
+        lastToolStripMenuItem_Click(sender, e);
+
+    private void firstToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void previousToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void playToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void nextToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void lastToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
     }
 }
