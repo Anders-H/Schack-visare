@@ -37,6 +37,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.boardControl1 = new ChessEngine.BoardControl();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -108,6 +110,26 @@
             this.lblStatus.Size = new System.Drawing.Size(19, 17);
             this.lblStatus.Text = "    ";
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(984, 25);
+            this.toolStrip1.TabIndex = 3;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // listView1
+            // 
+            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(0, 49);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(96, 690);
+            this.listView1.TabIndex = 4;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
             // boardControl1
             // 
             this.boardControl1.Location = new System.Drawing.Point(160, 72);
@@ -120,6 +142,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 761);
+            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.boardControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -149,6 +173,8 @@
         private System.Windows.Forms.ToolStripMenuItem registerMoveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cancelRegisterMoveToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ListView listView1;
     }
 }
 

@@ -41,10 +41,11 @@ public partial class MainWindow : Form
 
     private void ResizeBoard()
     {
-        var y = ClientRectangle.Y + menuStrip1.Height;
-        var height = ClientRectangle.Height - (menuStrip1.Height + statusStrip1.Height);
-        var boardSize = Math.Max(0, Math.Min(ClientRectangle.Width, height));
+        var y = ClientRectangle.Y + menuStrip1.Height + toolStrip1.Height;
+        var height = ClientRectangle.Height - (menuStrip1.Height + statusStrip1.Height + toolStrip1.Height);
+        var boardSize = Math.Max(0, Math.Min(ClientRectangle.Width - listView1.Width, height));
         var x = ClientRectangle.X + (ClientRectangle.Width - boardSize) / 2;
+        x += listView1.Width / 2;
         var boardY = y + (height - boardSize) / 2;
         boardControl1.Bounds = new Rectangle(x, boardY, boardSize, boardSize);
     }
@@ -72,31 +73,42 @@ public partial class MainWindow : Form
         if (!_registerMoveMode)
             return;
 
-        _registerMoveMode = false;
-        e.Piece.IncreaseMoveCount();
-        var deadPiece = boardControl1.GetPieceAt(e.EndPoint.X, e.EndPoint.Y);
-        
-        if (deadPiece.HasValue)
-        {
-            deadPiece.Value.SetDiedAtMove(Moves.Count + 1);
-            boardControl1.AddToListOfBeatenPieces(deadPiece.Value, e.EndPoint.X, e.EndPoint.Y);
-        }
-
-        var move = new Move(e.StartPoint, e.EndPoint, e.Piece.Type, e.Piece.Color, e.Piece.PieceId, Moves.Count);
-        Moves.Add(move);
-        CurrentMove = Moves.Count - 1;
         var movedPiece = boardControl1.GetPieceAt(e.StartPoint.X, e.StartPoint.Y);
 
         if (!movedPiece.HasValue)
             throw new InvalidOperationException($@"No piece at {e.StartPoint}.");
 
+        var updatedMovedPiece = movedPiece.Value;
+        updatedMovedPiece.IncreaseMoveCount();
+        var moveIndex = Moves.Count;
+        var capturedPiece = boardControl1.GetPieceAt(e.EndPoint.X, e.EndPoint.Y);
+
+        if (capturedPiece.HasValue)
+        {
+            var updatedCapturedPiece = capturedPiece.Value;
+            updatedCapturedPiece.SetDiedAtMove(moveIndex);
+
+            boardControl1.AddToListOfBeatenPieces(
+                updatedCapturedPiece,
+                e.EndPoint.X,
+                e.EndPoint.Y);
+        }
+
         boardControl1.ClearSquare(e.StartPoint.X, e.StartPoint.Y);
-        boardControl1.SetPieceAt(movedPiece.Value, e.EndPoint.X, e.EndPoint.Y);
+        boardControl1.SetPieceAt(updatedMovedPiece, e.EndPoint.X, e.EndPoint.Y);
+
+        Moves.Add(new Move(
+            e.StartPoint,
+            e.EndPoint,
+            updatedMovedPiece.Type,
+            updatedMovedPiece.Color,
+            updatedMovedPiece.PieceId,
+            moveIndex));
+
         _registerMoveMode = false;
-        boardControl1.Cursor = Cursors.Default;
+        CurrentMove = moveIndex;
+        boardControl1.CancelMoveRegistration();
         registerMoveToolStripMenuItem.Enabled = true;
         cancelRegisterMoveToolStripMenuItem.Enabled = false;
-        boardControl1.Invalidate();
-        UpdateStatus();
     }
 }
