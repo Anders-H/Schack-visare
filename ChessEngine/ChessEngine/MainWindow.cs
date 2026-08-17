@@ -12,6 +12,10 @@ public partial class MainWindow : Form
     private readonly Timer _playbackTimer = new();
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
+    private string _gameName { get; set; }
+    private DateTime _gameDate { get; set; }
+    private string _whitePlayerName { get; set; }
+    private string _blackPlayerName { get; set; }
 
     public MainWindow()
     {
@@ -22,6 +26,11 @@ public partial class MainWindow : Form
         _registerMoveMode = false;
         Moves = [];
         CurrentMove = -1;
+        Filename = "";
+        _gameName = "";
+        _gameDate = DateTime.Now;
+        _whitePlayerName = "White";
+        _blackPlayerName = "Black";
         ResizeBoard();
         UpdateControls();
     }
@@ -33,6 +42,16 @@ public partial class MainWindow : Form
         {
             field = value;
             UpdateStatus();
+        }
+    }
+
+    public string Filename
+    {
+        get;
+        set
+        {
+            field = value;
+            Text = string.IsNullOrWhiteSpace(value) ? @"Chess Engine" : $@"Chess Engine - [{value}]";
         }
     }
 
@@ -239,5 +258,54 @@ public partial class MainWindow : Form
         _playbackTimer.Stop();
         _playbackTimer.Dispose();
         base.OnFormClosed(e);
+    }
+
+    private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (MessageBox.Show(this, @"Are you sure you want to create a new game? Any unsaved changes will be lost.", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
+        _playbackTimer.Enabled = false;
+        Moves = [];
+        CurrentMove = -1;
+        _registerMoveMode = false;
+        UpdateControls();
+        Filename = "";
+    }
+
+    private void btnNewGame_Click(object sender, EventArgs e) =>
+        newGameToolStripMenuItem_Click(sender, e);
+
+    private void openToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void btnOpen_Click(object sender, EventArgs e) =>
+        openToolStripMenuItem_Click(sender, e);
+
+    private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void btnSave_Click(object sender, EventArgs e) =>
+        saveToolStripMenuItem_Click(sender, e);
+
+    private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void exitToolStripMenuItem_Click(object sender, EventArgs e) =>
+        Close();
+
+    private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (e.CloseReason != CloseReason.UserClosing)
+            return;
+
+        if (MessageBox.Show(this, @"Are you sure you want to exit? Any unsaved changes will be lost.", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            e.Cancel = true;
     }
 }
