@@ -1,7 +1,10 @@
 ﻿#nullable enable
 using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
+using System.Security;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ChessEngine;
 
@@ -286,7 +289,13 @@ public partial class MainWindow : Form
 
     private void saveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (string.IsNullOrWhiteSpace(Filename))
+        {
+            saveAsToolStripMenuItem_Click(sender, e);
+            return;
+        }
 
+        SaveGame(Filename);
     }
 
     private void btnSave_Click(object sender, EventArgs e) =>
@@ -294,6 +303,46 @@ public partial class MainWindow : Form
 
     private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        using var dialog = new SaveFileDialog();
+        dialog.AddExtension = true;
+        dialog.DefaultExt = "txt";
+        dialog.FileName = string.IsNullOrWhiteSpace(Filename) ? "game.txt" : Path.GetFileName(Filename);
+        dialog.Filter = @"Chess game files (*.txt)|*.txt|All files (*.*)|*.*";
+        dialog.OverwritePrompt = true;
+        dialog.RestoreDirectory = true;
+        dialog.Title = @"Save chess game";
+
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+            SaveGame(dialog.FileName);
+    }
+
+    private bool SaveGame(string filename)
+    {
+        try
+        {
+            var contents = GameFileFormat.Serialize(
+                _gameName,
+                _gameDate,
+                _whitePlayerName,
+                _blackPlayerName,
+                Moves);
+
+            File.WriteAllText(filename, contents, new UTF8Encoding(false));
+            Filename = filename;
+            lblStatus.Text = $@"Saved {Path.GetFileName(filename)}.";
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException or FormatException)
+        {
+            MessageBox.Show(
+                this,
+                $@"The game could not be saved.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+
+            return false;
+        }
 
     }
 

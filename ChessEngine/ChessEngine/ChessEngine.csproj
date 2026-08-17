@@ -58,6 +58,7 @@
       <DependentUpon>BoardControl.cs</DependentUpon>
     </Compile>
     <Compile Include="BoardData.cs" />
+    <Compile Include="GameFileFormat.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
