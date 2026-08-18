@@ -122,7 +122,6 @@ public class GameParser
         }
 
         moves = completedMoves;
-
         return new GameParserResult(true, gameName, gameDate, whitePlayerName, blackPlayerName, moves, s.ToString().Trim());
     }
 }

@@ -127,6 +127,7 @@ public partial class MainWindow : Form
 
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();
+        RenderMoveList();
         GoToMove(moveIndex);
     }
 
@@ -225,6 +226,11 @@ public partial class MainWindow : Form
         boardControl1.SetPosition(position);
         CurrentMove = targetMoveIndex;
         UpdateControls();
+
+        if (targetMoveIndex < 0)
+            SelectNoneInMoveList();
+        else
+            SelectInMoveList(targetMoveIndex);
     }
 
     private void UpdateControls()
@@ -268,10 +274,10 @@ public partial class MainWindow : Form
             return;
 
         _playbackTimer.Enabled = false;
-        Moves = [];
-        CurrentMove = -1;
         _registerMoveMode = false;
-        UpdateControls();
+        Moves = [];
+        RenderMoveList();
+        GoToMove(-1);
         Filename = "";
     }
 
@@ -312,11 +318,10 @@ public partial class MainWindow : Form
                 _gameDate = result.GameDate;
                 _whitePlayerName = result.WhitePlayerName;
                 _blackPlayerName = result.BlackPlayerName;
-                CurrentMove = -1;
                 Moves = result.Moves;
                 Filename = dialog.FileName;
-                UpdateControls();
-
+                RenderMoveList();
+                GoToMove(-1);
                 var message = result.Message.Trim();
 
                 if (!string.IsNullOrWhiteSpace(message))
@@ -423,5 +428,37 @@ public partial class MainWindow : Form
 
         if (MessageBox.Show(this, @"Are you sure you want to exit? Any unsaved changes will be lost.", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             e.Cancel = true;
+    }
+
+    private void listView1_Enter(object sender, EventArgs e) =>
+        boardControl1.Focus();
+
+    private void RenderMoveList()
+    {
+        listView1.Items.Clear();
+
+        foreach (var move in Moves)
+        {
+            var text = move.Color == PlayerColor.White ? (string.IsNullOrWhiteSpace(_whitePlayerName) ? "White" : _whitePlayerName) : (string.IsNullOrWhiteSpace(_blackPlayerName) ? "Black" : _blackPlayerName);
+
+            var item = new ListViewItem(move.ToString())
+            {
+                ImageIndex = move.Color == PlayerColor.White ? 0 : 1
+            };
+
+            listView1.Items.Add(item);
+        }
+
+        SelectInMoveList(Moves.Count - 1);
+    }
+
+    private void SelectNoneInMoveList()
+    {
+
+    }
+
+    private void SelectInMoveList(int index)
+    {
+
     }
 }

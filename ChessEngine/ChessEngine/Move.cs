@@ -4,6 +4,8 @@ namespace ChessEngine;
 
 public class Move
 {
+    private const int BoardLength = 8;
+
     public Point StartPoint { get; }
     public Point EndPoint { get; }
     public PieceType? Piece { get; }
@@ -29,5 +31,21 @@ public class Move
         Color = color;
         PieceId = pieceId;
         MoveNumber = moveNumber;
-    }   
+    }
+
+    public static string FormatSquare(Point square)
+    {
+        if (square.X < 0 || square.X >= BoardLength ||
+            square.Y < 0 || square.Y >= BoardLength)
+        {
+            throw new System.FormatException($@"Invalid board coordinate: {square}.");
+        }
+
+        var file = (char)('A' + square.X);
+        var rank = square.Y + 1;
+        return $@"{file}{rank}";
+    }
+
+    public override string ToString() =>
+        $@"{FormatSquare(StartPoint)}-{FormatSquare(EndPoint)}";
 }
