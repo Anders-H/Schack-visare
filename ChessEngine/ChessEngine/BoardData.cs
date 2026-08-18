@@ -66,6 +66,14 @@ public class BoardData
         if (piece.Value.PieceId != move.PieceId || piece.Value.Type != move.Piece || piece.Value.Color != move.Color)
             throw new InvalidOperationException($@"The piece at {start} does not match move {move.MoveNumber}.");
 
+        if (piece.Value.Type == PieceType.King &&
+            start.Y == end.Y &&
+            Math.Abs(start.X - end.X) == 2)
+        {
+            ApplyCastlingMove(piece.Value, move);
+            return;
+        }
+
         var capturedPiece = _board[end.Y, end.X];
 
         if (capturedPiece.HasValue)
@@ -79,5 +87,41 @@ public class BoardData
         updatedPiece.IncreaseMoveCount();
         _board[start.Y, start.X] = null;
         _board[end.Y, end.X] = updatedPiece;
+    }
+
+    private void ApplyCastlingMove(Piece king, Move move)
+    {
+        var start = move.StartPoint;
+        var end = move.EndPoint;
+        var kingSide = end.X > start.X;
+        var rookStartColumn = kingSide ? 7 : 0;
+        var rookEndColumn = kingSide ? 5 : 3;
+        var rook = _board[start.Y, rookStartColumn];
+
+        if (!rook.HasValue ||
+            rook.Value.Type != PieceType.Rook ||
+            rook.Value.Color != king.Color)
+        {
+            throw new InvalidOperationException(
+                @"Castling cannot be applied because the expected rook is missing.");
+        }
+
+        if (_board[end.Y, end.X].HasValue ||
+            _board[start.Y, rookEndColumn].HasValue)
+        {
+            throw new InvalidOperationException(
+                @"Castling cannot be applied because a destination square is occupied.");
+        }
+
+        var updatedKing = king;
+        updatedKing.IncreaseMoveCount();
+
+        var updatedRook = rook.Value;
+        updatedRook.IncreaseMoveCount();
+
+        _board[start.Y, start.X] = null;
+        _board[end.Y, end.X] = updatedKing;
+        _board[start.Y, rookStartColumn] = null;
+        _board[start.Y, rookEndColumn] = updatedRook;
     }
 }

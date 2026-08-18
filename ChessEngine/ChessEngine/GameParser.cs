@@ -71,7 +71,57 @@ public class GameParser
             }
         }
 
-        // TODO: Playback moves and check.
+        var gameData = new BoardData();
+        var completedMoves = new MoveList();
+
+        foreach (var parsedMove in moves)
+        {
+            var start = parsedMove.StartPoint;
+            var end = parsedMove.EndPoint;
+            var piece = gameData[start.Y, start.X];
+
+            if (!piece.HasValue)
+            {
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: no piece at {start}.");
+                return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
+            }
+
+            if (piece.Value.Color != parsedMove.Color)
+            {
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: the piece at {start} has the wrong color.");
+                return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
+            }
+
+            var targetPiece = gameData[end.Y, end.X];
+
+            if (targetPiece.HasValue && targetPiece.Value.Color == piece.Value.Color)
+            {
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: a piece of the same color occupies {end}.");
+                return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
+            }
+
+            var completedMove = new Move(
+                start,
+                end,
+                piece.Value.Type,
+                piece.Value.Color,
+                piece.Value.PieceId,
+                parsedMove.MoveNumber);
+
+            try
+            {
+                gameData.ApplyMove(completedMove);
+            }
+            catch (InvalidOperationException ex)
+            {
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: {ex.Message}");
+                return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
+            }
+
+            completedMoves.Add(completedMove);
+        }
+
+        moves = completedMoves;
 
         return new GameParserResult(true, gameName, gameDate, whitePlayerName, blackPlayerName, moves, s.ToString().Trim());
     }
