@@ -11,7 +11,6 @@ namespace ChessEngine;
 public partial class MainWindow : Form
 {
     private const int PlaybackIntervalMilliseconds = 700;
-
     private readonly Timer _playbackTimer = new();
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
@@ -281,6 +280,74 @@ public partial class MainWindow : Form
 
     private void openToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        using var dialog = new OpenFileDialog();
+        dialog.CheckFileExists = true;
+        dialog.CheckPathExists = true;
+        dialog.DefaultExt = "txt";
+        dialog.Filter = @"Chess game files (*.txt)|*.txt|All files (*.*)|*.*";
+        dialog.Multiselect = false;
+        dialog.RestoreDirectory = true;
+        dialog.Title = @"Open chess game";
+
+        if (!string.IsNullOrWhiteSpace(Filename))
+            dialog.FileName = Filename;
+
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+            return;
+
+        try
+        {
+            var contents = File.ReadAllText(
+                dialog.FileName,
+                new UTF8Encoding(false, true));
+
+            var parser = new GameParser(contents);
+            var result = parser.Parse();
+
+            if (result.Success)
+            {
+                _playbackTimer.Enabled = false;
+                _registerMoveMode = false;
+                _gameName = result.GameName;
+                _gameDate = result.GameDate;
+                _whitePlayerName = result.WhitePlayerName;
+                _blackPlayerName = result.BlackPlayerName;
+                CurrentMove = -1;
+                Moves = result.Moves;
+                Filename = dialog.FileName;
+                UpdateControls();
+
+                var message = result.Message.Trim();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                    MessageBox.Show(
+                        this,
+                        message,
+                        Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    this,
+                    result.Message,
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
+            lblStatus.Text = $@"Read {Path.GetFileName(dialog.FileName)} ({contents.Length} characters).";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
+        {
+            MessageBox.Show(
+                this,
+                $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
 
     }
 

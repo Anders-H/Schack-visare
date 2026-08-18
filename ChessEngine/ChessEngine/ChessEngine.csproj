@@ -59,6 +59,8 @@
     </Compile>
     <Compile Include="BoardData.cs" />
     <Compile Include="GameFileFormat.cs" />
+    <Compile Include="GameParser.cs" />
+    <Compile Include="GameParserResult.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +69,8 @@
     </Compile>
     <Compile Include="Move.cs" />
     <Compile Include="MoveList.cs" />
+    <Compile Include="MoveParser.cs" />
+    <Compile Include="MoveParserResult.cs" />
     <Compile Include="MoveSelectedEventArgs.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceType.cs" />

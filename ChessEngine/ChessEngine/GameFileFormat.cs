@@ -34,10 +34,7 @@ public static class GameFileFormat
         return result.ToString();
     }
 
-    private static void AppendField(
-        StringBuilder result,
-        string value,
-        string fieldName)
+    private static void AppendField(StringBuilder result, string value, string fieldName)
     {
         if (value == null)
             throw new ArgumentNullException(fieldName);

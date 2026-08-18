@@ -63,13 +63,8 @@ public class BoardData
         if (!piece.HasValue)
             throw new InvalidOperationException($@"No piece at {start}.");
 
-        if (piece.Value.PieceId != move.PieceId ||
-            piece.Value.Type != move.Piece ||
-            piece.Value.Color != move.Color)
-        {
-            throw new InvalidOperationException(
-                $@"The piece at {start} does not match move {move.MoveNumber}.");
-        }
+        if (piece.Value.PieceId != move.PieceId || piece.Value.Type != move.Piece || piece.Value.Color != move.Color)
+            throw new InvalidOperationException($@"The piece at {start} does not match move {move.MoveNumber}.");
 
         var capturedPiece = _board[end.Y, end.X];
 
@@ -82,7 +77,6 @@ public class BoardData
 
         var updatedPiece = piece.Value;
         updatedPiece.IncreaseMoveCount();
-
         _board[start.Y, start.X] = null;
         _board[end.Y, end.X] = updatedPiece;
     }
