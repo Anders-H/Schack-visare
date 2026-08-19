@@ -12,6 +12,7 @@ public partial class MainWindow : Form
 {
     private const int PlaybackIntervalMilliseconds = 700;
     private readonly Timer _playbackTimer = new();
+    private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
     private string _gameName { get; set; }
@@ -22,9 +23,11 @@ public partial class MainWindow : Form
     public MainWindow()
     {
         InitializeComponent();
+        _boldMoveListFont = new Font(listView1.Font, listView1.Font.Style | FontStyle.Bold);
         _playbackTimer.Interval = PlaybackIntervalMilliseconds;
         _playbackTimer.Tick += PlaybackTimer_Tick;
         boardControl1.MoveSelected += boardControl1_MoveSelected;
+        boardControl1.Paint += boardControl1_Paint;
         _registerMoveMode = false;
         Moves = [];
         CurrentMove = -1;
@@ -75,6 +78,7 @@ public partial class MainWindow : Form
 
     private void ResizeBoard()
     {
+        System.Diagnostics.Debug.WriteLine(Width);
         var y = ClientRectangle.Y + menuStrip1.Height + toolStrip1.Height;
         var height = ClientRectangle.Height - (menuStrip1.Height + statusStrip1.Height + toolStrip1.Height);
         var boardSize = Math.Max(0, Math.Min(ClientRectangle.Width - listView1.Width, height));
@@ -265,6 +269,7 @@ public partial class MainWindow : Form
     {
         _playbackTimer.Stop();
         _playbackTimer.Dispose();
+        _boldMoveListFont.Dispose();
         base.OnFormClosed(e);
     }
 
@@ -390,6 +395,12 @@ public partial class MainWindow : Form
 
     private bool SaveGame(string filename)
     {
+        if (!CheckGame(out var errorMessage))
+        {
+            if (MessageBox.Show(this, $@"The game is not in a valid state, and will not be able to load again. {errorMessage} Do you want to save it anyway?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return false;
+        }
+
         try
         {
             var contents = GameFileFormat.Serialize(
@@ -418,6 +429,26 @@ public partial class MainWindow : Form
 
     }
 
+    private bool CheckGame(out string errorMessage)
+    {
+        for (var index = 0; index < Moves.Count; index++)
+        {
+            var expectedColor = index % 2 == 0
+                ? PlayerColor.White
+                : PlayerColor.Black;
+            var move = Moves[index];
+
+            if (move.Color == expectedColor)
+                continue;
+
+            errorMessage = $@"Move {index + 1} ({move}) is registered for {move.Color}, but {expectedColor} must make this move.";
+            return false;
+        }
+
+        errorMessage = "";
+        return true;
+    }
+
     private void exitToolStripMenuItem_Click(object sender, EventArgs e) =>
         Close();
 
@@ -432,6 +463,18 @@ public partial class MainWindow : Form
 
     private void listView1_Enter(object sender, EventArgs e) =>
         boardControl1.Focus();
+
+    private void boardControl1_Paint(object sender, PaintEventArgs e)
+    {
+        listView1.BeginUpdate();
+
+        if (CurrentMove < 0)
+            SelectNoneInMoveList();
+        else
+            SelectInMoveList(CurrentMove);
+
+        listView1.EndUpdate();
+    }
 
     private void RenderMoveList()
     {
@@ -454,11 +497,15 @@ public partial class MainWindow : Form
 
     private void SelectNoneInMoveList()
     {
-
+        foreach (ListViewItem item in listView1.Items)
+            item.Font = listView1.Font;
     }
 
     private void SelectInMoveList(int index)
     {
+        SelectNoneInMoveList();
 
+        if (index >= 0 && index < listView1.Items.Count)
+            listView1.Items[index].Font = _boldMoveListFont;
     }
 }

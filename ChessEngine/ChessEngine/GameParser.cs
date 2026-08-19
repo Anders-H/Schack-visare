@@ -82,13 +82,13 @@ public class GameParser
 
             if (!piece.HasValue)
             {
-                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: no piece at {start}.");
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: no piece at {Move.FormatSquare(start)}.");
                 return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
             }
 
             if (piece.Value.Color != parsedMove.Color)
             {
-                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: the piece at {start} has the wrong color.");
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: the piece at {Move.FormatSquare(start)} has the wrong color.");
                 return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
             }
 
@@ -96,7 +96,7 @@ public class GameParser
 
             if (targetPiece.HasValue && targetPiece.Value.Color == piece.Value.Color)
             {
-                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: a piece of the same color occupies {end}.");
+                s.AppendLine($"Move {parsedMove.MoveNumber + 1} could not be applied: a piece of the same color occupies {Move.FormatSquare(end)}.");
                 return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
             }
 
