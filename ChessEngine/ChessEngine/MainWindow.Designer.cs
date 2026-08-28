@@ -70,21 +70,29 @@
             this.btnLast = new System.Windows.Forms.ToolStripButton();
             this.listView1 = new System.Windows.Forms.ListView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.lvProperties = new System.Windows.Forms.ListView();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showWhiteCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showBlackCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showSelectedPieceCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem,
             this.moveToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(743, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(867, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -255,9 +263,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 717);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 728);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(743, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(867, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -287,7 +295,7 @@
             this.btnLast});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(743, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(867, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -426,7 +434,7 @@
             this.listView1.Location = new System.Drawing.Point(0, 49);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(72, 668);
+            this.listView1.Size = new System.Drawing.Size(88, 679);
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -440,21 +448,75 @@
             this.imageList1.Images.SetKeyName(0, "Circle_Grey.png");
             this.imageList1.Images.SetKeyName(1, "Circle_Blue.png");
             // 
+            // lvProperties
+            // 
+            this.lvProperties.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lvProperties.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lvProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvProperties.HideSelection = false;
+            this.lvProperties.Location = new System.Drawing.Point(779, 49);
+            this.lvProperties.MultiSelect = false;
+            this.lvProperties.Name = "lvProperties";
+            this.lvProperties.Size = new System.Drawing.Size(88, 679);
+            this.lvProperties.SmallImageList = this.imageList1;
+            this.lvProperties.TabIndex = 5;
+            this.lvProperties.UseCompatibleStateImageBehavior = false;
+            this.lvProperties.View = System.Windows.Forms.View.List;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.DarkGreen;
+            this.panel1.Controls.Add(this.boardControl1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(88, 49);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(691, 679);
+            this.panel1.TabIndex = 6;
+            // 
             // boardControl1
             // 
-            this.boardControl1.Location = new System.Drawing.Point(120, 72);
+            this.boardControl1.Location = new System.Drawing.Point(-136, 8);
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.Size = new System.Drawing.Size(591, 413);
             this.boardControl1.TabIndex = 2;
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showWhiteCoverageToolStripMenuItem,
+            this.showBlackCoverageToolStripMenuItem,
+            this.showSelectedPieceCoverageToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // showWhiteCoverageToolStripMenuItem
+            // 
+            this.showWhiteCoverageToolStripMenuItem.Name = "showWhiteCoverageToolStripMenuItem";
+            this.showWhiteCoverageToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.showWhiteCoverageToolStripMenuItem.Text = "Show white coverage";
+            // 
+            // showBlackCoverageToolStripMenuItem
+            // 
+            this.showBlackCoverageToolStripMenuItem.Name = "showBlackCoverageToolStripMenuItem";
+            this.showBlackCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.showBlackCoverageToolStripMenuItem.Text = "Show black coverage";
+            // 
+            // showSelectedPieceCoverageToolStripMenuItem
+            // 
+            this.showSelectedPieceCoverageToolStripMenuItem.Name = "showSelectedPieceCoverageToolStripMenuItem";
+            this.showSelectedPieceCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.showSelectedPieceCoverageToolStripMenuItem.Text = "Show selected piece coverage";
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 739);
+            this.ClientSize = new System.Drawing.Size(867, 750);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.lvProperties);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.boardControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -470,6 +532,7 @@
             this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -518,6 +581,12 @@
         private System.Windows.Forms.ToolStripButton btnSave;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ListView lvProperties;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showWhiteCoverageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showBlackCoverageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showSelectedPieceCoverageToolStripMenuItem;
     }
 }
 

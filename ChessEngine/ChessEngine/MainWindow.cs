@@ -15,10 +15,10 @@ public partial class MainWindow : Form
     private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
-    private string _gameName { get; set; }
-    private DateTime _gameDate { get; set; }
-    private string _whitePlayerName { get; set; }
-    private string _blackPlayerName { get; set; }
+    private string GameName { get; set; }
+    private DateTime GameDate { get; set; }
+    private string WhitePlayerName { get; set; }
+    private string BlackPlayerName { get; set; }
 
     public MainWindow()
     {
@@ -32,10 +32,10 @@ public partial class MainWindow : Form
         Moves = [];
         CurrentMove = -1;
         Filename = "";
-        _gameName = "";
-        _gameDate = DateTime.Now;
-        _whitePlayerName = "White";
-        _blackPlayerName = "Black";
+        GameName = "";
+        GameDate = DateTime.Now;
+        WhitePlayerName = "White";
+        BlackPlayerName = "Black";
         ResizeBoard();
         UpdateControls();
     }
@@ -78,14 +78,11 @@ public partial class MainWindow : Form
 
     private void ResizeBoard()
     {
-        System.Diagnostics.Debug.WriteLine(Width);
-        var y = ClientRectangle.Y + menuStrip1.Height + toolStrip1.Height;
-        var height = ClientRectangle.Height - (menuStrip1.Height + statusStrip1.Height + toolStrip1.Height);
-        var boardSize = Math.Max(0, Math.Min(ClientRectangle.Width - listView1.Width, height));
-        var x = ClientRectangle.X + (ClientRectangle.Width - boardSize) / 2;
-        x += listView1.Width / 2;
-        var boardY = y + (height - boardSize) / 2;
-        boardControl1.Bounds = new Rectangle(x, boardY, boardSize, boardSize);
+        var boardSize = panel1.Height > panel1.Width ? panel1.Width : panel1.Height;
+        boardSize -= 4;
+        var x = panel1.Width/2 - boardSize / 2;
+        var y = panel1.Height/2 - boardSize / 2;
+        boardControl1.Bounds = new Rectangle(x, y, boardSize, boardSize);
     }
 
     private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -319,10 +316,10 @@ public partial class MainWindow : Form
             {
                 _playbackTimer.Enabled = false;
                 _registerMoveMode = false;
-                _gameName = result.GameName;
-                _gameDate = result.GameDate;
-                _whitePlayerName = result.WhitePlayerName;
-                _blackPlayerName = result.BlackPlayerName;
+                GameName = result.GameName;
+                GameDate = result.GameDate;
+                WhitePlayerName = result.WhitePlayerName;
+                BlackPlayerName = result.BlackPlayerName;
                 Moves = result.Moves;
                 Filename = dialog.FileName;
                 RenderMoveList();
@@ -404,10 +401,10 @@ public partial class MainWindow : Form
         try
         {
             var contents = GameFileFormat.Serialize(
-                _gameName,
-                _gameDate,
-                _whitePlayerName,
-                _blackPlayerName,
+                GameName,
+                GameDate,
+                WhitePlayerName,
+                BlackPlayerName,
                 Moves);
 
             File.WriteAllText(filename, contents, new UTF8Encoding(false));
@@ -482,7 +479,7 @@ public partial class MainWindow : Form
 
         foreach (var move in Moves)
         {
-            var text = move.Color == PlayerColor.White ? (string.IsNullOrWhiteSpace(_whitePlayerName) ? "White" : _whitePlayerName) : (string.IsNullOrWhiteSpace(_blackPlayerName) ? "Black" : _blackPlayerName);
+            var text = move.Color == PlayerColor.White ? (string.IsNullOrWhiteSpace(WhitePlayerName) ? "White" : WhitePlayerName) : (string.IsNullOrWhiteSpace(BlackPlayerName) ? "Black" : BlackPlayerName);
 
             var item = new ListViewItem(move.ToString())
             {

@@ -20,10 +20,12 @@ public partial class BoardControl : UserControl
     private bool _registerMoveMode;
     private Point? _selectedSquare;
 
+    public Piece? SelectedPiece { get; set; }
     public event EventHandler<MoveSelectedEventArgs>? MoveSelected;
 
     public BoardControl()
     {
+        SelectedPiece = null;
         InitializeComponent();
 
         SetStyle(
@@ -47,6 +49,7 @@ public partial class BoardControl : UserControl
     public void BeginMoveRegistration()
     {
         _registerMoveMode = true;
+        SelectedPiece = null;
         _selectedSquare = null;
         Cursor = Cursors.Cross;
         Invalidate();
@@ -74,7 +77,6 @@ public partial class BoardControl : UserControl
         using var lightSquareBrush = new SolidBrush(LightSquareColor);
         using var darkSquareBrush = new SolidBrush(DarkSquareColor);
         using var selectionBrush = new SolidBrush(Color.FromArgb(110, 255, 215, 0));
-        using var selectionPen = new Pen(Color.Gold, 3f);
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
@@ -97,19 +99,22 @@ public partial class BoardControl : UserControl
                 if (_selectedSquare == new Point(column, boardRow))
                 {
                     e.Graphics.FillRectangle(selectionBrush, square);
-
-                    e.Graphics.DrawRectangle(
-                        selectionPen,
-                        square.Left + 1.5f,
-                        square.Top + 1.5f,
-                        square.Width - 3f,
-                        square.Height - 3f);
                 }
 
                 var piece = _boardData[boardRow, column];
 
                 if (piece.HasValue)
                     DrawPiece(e.Graphics, piece.Value.Type, piece.Value.Color, square);
+
+                if (!_registerMoveMode && SelectedPiece.HasValue && piece.HasValue && piece.Value.PieceId == SelectedPiece.Value.PieceId)
+                {
+                    e.Graphics.DrawRectangle(
+                        Pens.Red,
+                        square.Left + 1.5f,
+                        square.Top + 1.5f,
+                        square.Width - 3f,
+                        square.Height - 3f);
+                }
             }
         }
 
@@ -176,11 +181,39 @@ public partial class BoardControl : UserControl
     {
         base.OnMouseClick(e);
 
-        if (!_registerMoveMode || e.Button != MouseButtons.Left || !TryGetBoardSquare(e.Location, out var clickedSquare))
+        if (e.Button != MouseButtons.Left || !TryGetBoardSquare(e.Location, out var clickedSquare))
+            return;
+
+        if (!_registerMoveMode)
         {
+            SelectPiece(clickedSquare);
             return;
         }
 
+        SelectMoveSquare(clickedSquare);
+    }
+
+    private void SelectPiece(Point clickedSquare)
+    {
+        var clickedPiece = _boardData[clickedSquare.Y, clickedSquare.X];
+
+        if (SelectedPiece.HasValue &&
+            clickedPiece.HasValue &&
+            SelectedPiece.Value.PieceId == clickedPiece.Value.PieceId)
+        {
+            SelectedPiece = null;
+        }
+        else
+        {
+            SelectedPiece = clickedPiece;
+        }
+
+        _selectedSquare = null;
+        Invalidate();
+    }
+
+    private void SelectMoveSquare(Point clickedSquare)
+    {
         if (!_selectedSquare.HasValue)
         {
             if (!_boardData[clickedSquare.Y, clickedSquare.X].HasValue)
