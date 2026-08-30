@@ -508,11 +508,17 @@ namespace ChessEngine
             // 
             // boardControl1
             // 
+            this.boardControl1.BlackPlayerName = "Black";
+            this.boardControl1.GameDate = new System.DateTime(2026, 8, 30, 15, 21, 22, 123);
             this.boardControl1.Location = new System.Drawing.Point(-136, 8);
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.SelectedPiece = null;
+            this.boardControl1.ShowBlackCoverage = false;
+            this.boardControl1.ShowSelectedPieceCoverage = false;
+            this.boardControl1.ShowWhiteCoverage = false;
             this.boardControl1.Size = new System.Drawing.Size(591, 413);
             this.boardControl1.TabIndex = 2;
+            this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
             // 
             // MainWindow
@@ -527,11 +533,13 @@ namespace ChessEngine
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(500, 400);
             this.Name = "MainWindow";
             this.Text = "Chess Engine";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainWindow_KeyDown);
             this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

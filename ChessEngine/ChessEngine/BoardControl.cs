@@ -19,6 +19,10 @@ public partial class BoardControl : UserControl
     private const int SpriteColumns = 6;
     private const int SpriteRows = 2;
 
+    public DateTime GameDate { get; set; }
+    public string WhitePlayerName { get; set; }
+    public string BlackPlayerName { get; set; }
+
     private static readonly Bitmap PieceSprites = Properties.Resources.pieces;
     private static readonly Color LightSquareColor = Color.FromArgb(240, 217, 181);
     private static readonly Color DarkSquareColor = Color.FromArgb(181, 136, 99);
@@ -41,6 +45,9 @@ public partial class BoardControl : UserControl
     public BoardControl()
     {
         SelectedPiece = null;
+        GameDate = DateTime.Now;
+        WhitePlayerName = "White";
+        BlackPlayerName = "Black";
         InitializeComponent();
 
         SetStyle(
@@ -224,6 +231,10 @@ public partial class BoardControl : UserControl
                     e.Graphics.DrawString($"{boardRow + 1}", Font, squareBrush, squareSize * column + 1, squareSize * displayRow + squareSize - textHeight);
             }
         }
+
+        e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, textHeight + 2, textHeight + 2);
+        e.Graphics.DrawString(BlackPlayerName, Font, Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
+        e.Graphics.DrawString(WhitePlayerName, Font, Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
     }
 
     private static void DrawPiece(Graphics graphics, PieceType pieceType, PlayerColor color, RectangleF square)

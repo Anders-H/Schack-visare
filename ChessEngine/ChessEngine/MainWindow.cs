@@ -17,9 +17,6 @@ public partial class MainWindow : Form
     private bool _registerMoveMode;
     private MoveList Moves { get; set; }
     private string GameName { get; set; }
-    private DateTime GameDate { get; set; }
-    private string WhitePlayerName { get; set; }
-    private string BlackPlayerName { get; set; }
 
     public MainWindow()
     {
@@ -34,9 +31,6 @@ public partial class MainWindow : Form
         CurrentMove = -1;
         Filename = "";
         GameName = "";
-        GameDate = DateTime.Now;
-        WhitePlayerName = "White";
-        BlackPlayerName = "Black";
         ResizeBoard();
         UpdateControls();
     }
@@ -64,11 +58,22 @@ public partial class MainWindow : Form
     private void UpdateStatus()
     {
         if (_registerMoveMode)
-            lblStatus.Text = $@"Storing move {Moves.Count + 1}.";
+        {
+            var turn = "white";
+
+            if (listView1.Items.Count > 0)
+                turn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1 ? "white" : "black";
+
+            lblStatus.Text = $@"Storing move {Moves.Count + 1}, {turn}.";
+        }
         else if (_playbackTimer.Enabled)
+        {
             lblStatus.Text = $@"Playing move {CurrentMove + 1} of {Moves.Count}.";
+        }
         else
+        {
             lblStatus.Text = $@"Move {CurrentMove + 1} of {Moves.Count}.";
+        }
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
@@ -161,6 +166,9 @@ public partial class MainWindow : Form
     {
         StopPlayback();
         GoToMove(-1);
+
+        if (listView1.Items.Count > 0)
+            listView1.Items[0].EnsureVisible();
     }
 
     private void previousToolStripMenuItem_Click(object sender, EventArgs e)
@@ -320,9 +328,9 @@ public partial class MainWindow : Form
                 _playbackTimer.Enabled = false;
                 _registerMoveMode = false;
                 GameName = result.GameName;
-                GameDate = result.GameDate;
-                WhitePlayerName = result.WhitePlayerName;
-                BlackPlayerName = result.BlackPlayerName;
+                boardControl1.GameDate = result.GameDate;
+                boardControl1.WhitePlayerName = result.WhitePlayerName;
+                boardControl1.BlackPlayerName = result.BlackPlayerName;
                 Moves = result.Moves;
                 Filename = dialog.FileName;
                 RenderMoveList();
@@ -336,6 +344,9 @@ public partial class MainWindow : Form
                         Text,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
+
+                if (listView1.Items.Count > 0)
+                    listView1.Items[0].EnsureVisible();
             }
             else
             {
@@ -405,9 +416,9 @@ public partial class MainWindow : Form
         {
             var contents = GameFileFormat.Serialize(
                 GameName,
-                GameDate,
-                WhitePlayerName,
-                BlackPlayerName,
+                boardControl1.GameDate,
+                boardControl1.WhitePlayerName,
+                boardControl1.BlackPlayerName,
                 Moves);
 
             File.WriteAllText(filename, contents, new UTF8Encoding(false));
@@ -482,8 +493,6 @@ public partial class MainWindow : Form
 
         foreach (var move in Moves)
         {
-            var text = move.Color == PlayerColor.White ? (string.IsNullOrWhiteSpace(WhitePlayerName) ? "White" : WhitePlayerName) : (string.IsNullOrWhiteSpace(BlackPlayerName) ? "Black" : BlackPlayerName);
-
             var item = new ListViewItem(move.ToString())
             {
                 ImageIndex = move.Color == PlayerColor.White ? 0 : 1
@@ -506,7 +515,10 @@ public partial class MainWindow : Form
         SelectNoneInMoveList();
 
         if (index >= 0 && index < listView1.Items.Count)
+        {
             listView1.Items[index].Font = _boldMoveListFont;
+            listView1.Items[index].EnsureVisible();
+        }
     }
 
     private void boardControl1_PieceSelected(object sender, PieceSelectedEventArgs e)
@@ -537,5 +549,23 @@ public partial class MainWindow : Form
         boardControl1.ShowSelectedPieceCoverage = showSelectedPieceCoverageToolStripMenuItem.Checked;
         boardControl1.CalculateCoverage();
         boardControl1.Invalidate();
+    }
+
+    private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Home)
+            firstToolStripMenuItem_Click(sender, e);
+        else if (e.KeyCode == Keys.End)
+            lastToolStripMenuItem_Click(sender, e);
+    }
+
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == Keys.Left)
+            previousToolStripMenuItem_Click(this, EventArgs.Empty);
+        else if (keyData == Keys.Right)
+            nextToolStripMenuItem_Click(this, EventArgs.Empty);
+
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 }
