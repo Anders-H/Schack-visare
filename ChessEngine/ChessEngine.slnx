@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../README.md" />
+  </Folder>
   <Project Path="ChessEngine/ChessEngine.csproj" Id="ece002ca-0b58-4bfb-b44a-91e314a253f8" />
 </Solution>

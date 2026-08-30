@@ -77,7 +77,7 @@ public partial class MainWindow : Form
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
-        MessageBox.Show(this, @"Chess Engine written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show(this, @"Chess Engine version 1.0 written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
     private void MainWindow_Resize(object sender, EventArgs e) =>
         ResizeBoard();
