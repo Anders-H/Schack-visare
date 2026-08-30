@@ -5,6 +5,7 @@ using System.IO;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
+using ChessEngine.Events;
 
 namespace ChessEngine;
 
@@ -179,7 +180,6 @@ public partial class MainWindow : Form
         _playbackTimer.Start();
         UpdateControls();
         UpdateStatus();
-
     }
 
     private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -232,6 +232,9 @@ public partial class MainWindow : Form
             SelectNoneInMoveList();
         else
             SelectInMoveList(targetMoveIndex);
+
+        boardControl1.CalculateCoverage();
+        boardControl1.Invalidate();
     }
 
     private void UpdateControls()
@@ -504,5 +507,35 @@ public partial class MainWindow : Form
 
         if (index >= 0 && index < listView1.Items.Count)
             listView1.Items[index].Font = _boldMoveListFont;
+    }
+
+    private void boardControl1_PieceSelected(object sender, PieceSelectedEventArgs e)
+    {
+        boardControl1.CalculateCoverage();
+        boardControl1.Invalidate();
+    }
+
+    private void showWhiteCoverageToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        showWhiteCoverageToolStripMenuItem.Checked = !showWhiteCoverageToolStripMenuItem.Checked;
+        boardControl1.ShowWhiteCoverage = showWhiteCoverageToolStripMenuItem.Checked;
+        boardControl1.CalculateCoverage();
+        boardControl1.Invalidate();
+    }
+
+    private void showBlackCoverageToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        showBlackCoverageToolStripMenuItem.Checked = !showBlackCoverageToolStripMenuItem.Checked;
+        boardControl1.ShowBlackCoverage = showBlackCoverageToolStripMenuItem.Checked;
+        boardControl1.CalculateCoverage();
+        boardControl1.Invalidate();
+    }
+
+    private void showSelectedPieceCoverageToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        showSelectedPieceCoverageToolStripMenuItem.Checked = !showSelectedPieceCoverageToolStripMenuItem.Checked;
+        boardControl1.ShowSelectedPieceCoverage = showSelectedPieceCoverageToolStripMenuItem.Checked;
+        boardControl1.CalculateCoverage();
+        boardControl1.Invalidate();
     }
 }

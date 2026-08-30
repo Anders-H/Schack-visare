@@ -1,4 +1,6 @@
-﻿namespace ChessEngine
+﻿using ChessEngine.Events;
+
+namespace ChessEngine
 {
     partial class MainWindow
     {
@@ -39,6 +41,10 @@
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showWhiteCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showBlackCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showSelectedPieceCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +79,6 @@
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showWhiteCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showBlackCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showSelectedPieceCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -157,6 +159,37 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showWhiteCoverageToolStripMenuItem,
+            this.showBlackCoverageToolStripMenuItem,
+            this.showSelectedPieceCoverageToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // showWhiteCoverageToolStripMenuItem
+            // 
+            this.showWhiteCoverageToolStripMenuItem.Name = "showWhiteCoverageToolStripMenuItem";
+            this.showWhiteCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.showWhiteCoverageToolStripMenuItem.Text = "Show white coverage";
+            this.showWhiteCoverageToolStripMenuItem.Click += new System.EventHandler(this.showWhiteCoverageToolStripMenuItem_Click);
+            // 
+            // showBlackCoverageToolStripMenuItem
+            // 
+            this.showBlackCoverageToolStripMenuItem.Name = "showBlackCoverageToolStripMenuItem";
+            this.showBlackCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.showBlackCoverageToolStripMenuItem.Text = "Show black coverage";
+            this.showBlackCoverageToolStripMenuItem.Click += new System.EventHandler(this.showBlackCoverageToolStripMenuItem_Click);
+            // 
+            // showSelectedPieceCoverageToolStripMenuItem
+            // 
+            this.showSelectedPieceCoverageToolStripMenuItem.Name = "showSelectedPieceCoverageToolStripMenuItem";
+            this.showSelectedPieceCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.showSelectedPieceCoverageToolStripMenuItem.Text = "Show selected piece coverage";
+            this.showSelectedPieceCoverageToolStripMenuItem.Click += new System.EventHandler(this.showSelectedPieceCoverageToolStripMenuItem_Click);
             // 
             // moveToolStripMenuItem
             // 
@@ -477,36 +510,10 @@
             // 
             this.boardControl1.Location = new System.Drawing.Point(-136, 8);
             this.boardControl1.Name = "boardControl1";
+            this.boardControl1.SelectedPiece = null;
             this.boardControl1.Size = new System.Drawing.Size(591, 413);
             this.boardControl1.TabIndex = 2;
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showWhiteCoverageToolStripMenuItem,
-            this.showBlackCoverageToolStripMenuItem,
-            this.showSelectedPieceCoverageToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "&View";
-            // 
-            // showWhiteCoverageToolStripMenuItem
-            // 
-            this.showWhiteCoverageToolStripMenuItem.Name = "showWhiteCoverageToolStripMenuItem";
-            this.showWhiteCoverageToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.showWhiteCoverageToolStripMenuItem.Text = "Show white coverage";
-            // 
-            // showBlackCoverageToolStripMenuItem
-            // 
-            this.showBlackCoverageToolStripMenuItem.Name = "showBlackCoverageToolStripMenuItem";
-            this.showBlackCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.showBlackCoverageToolStripMenuItem.Text = "Show black coverage";
-            // 
-            // showSelectedPieceCoverageToolStripMenuItem
-            // 
-            this.showSelectedPieceCoverageToolStripMenuItem.Name = "showSelectedPieceCoverageToolStripMenuItem";
-            this.showSelectedPieceCoverageToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.showSelectedPieceCoverageToolStripMenuItem.Text = "Show selected piece coverage";
+            this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
             // 
             // MainWindow
             // 

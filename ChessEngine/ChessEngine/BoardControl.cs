@@ -1,13 +1,20 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using ChessEngine.Events;
 
 namespace ChessEngine;
 
 public partial class BoardControl : UserControl
 {
+    private readonly List<Point> _whiteCoverage = [];
+    private readonly List<Point> _blackCoverage = [];
+    private readonly List<Point> _selectedPieceCoverage = [];
+    private readonly List<Point> _validMoves = [];
+
     private const int BoardLength = 8;
     private const int SpriteColumns = 6;
     private const int SpriteRows = 2;
@@ -15,6 +22,9 @@ public partial class BoardControl : UserControl
     private static readonly Bitmap PieceSprites = Properties.Resources.pieces;
     private static readonly Color LightSquareColor = Color.FromArgb(240, 217, 181);
     private static readonly Color DarkSquareColor = Color.FromArgb(181, 136, 99);
+    private static readonly Point[] OrthogonalDirections = [new(0, 1), new(1, 0), new(0, -1), new(-1, 0)];
+    private static readonly Point[] DiagonalDirections = [new(1, 1), new(1, -1), new(-1, -1), new(-1, 1)];
+    private static readonly Point[] KnightOffsets = [new(1, 2), new(2, 1), new(2, -1), new(1, -2), new(-1, -2), new(-2, -1), new(-2, 1), new(-1, 2)];
 
     private BoardData _boardData = new();
     private bool _registerMoveMode;
@@ -22,6 +32,11 @@ public partial class BoardControl : UserControl
 
     public Piece? SelectedPiece { get; set; }
     public event EventHandler<MoveSelectedEventArgs>? MoveSelected;
+    public event EventHandler<PieceSelectedEventArgs>? PieceSelected;
+
+    public bool ShowWhiteCoverage { get; set; }
+    public bool ShowBlackCoverage { get; set; }
+    public bool ShowSelectedPieceCoverage { get; set; }
 
     public BoardControl()
     {
@@ -43,6 +58,7 @@ public partial class BoardControl : UserControl
     {
         _boardData = boardData ?? throw new ArgumentNullException(nameof(boardData));
         _selectedSquare = null;
+        _validMoves.Clear();
         Invalidate();
     }
 
@@ -51,6 +67,7 @@ public partial class BoardControl : UserControl
         _registerMoveMode = true;
         SelectedPiece = null;
         _selectedSquare = null;
+        _validMoves.Clear();
         Cursor = Cursors.Cross;
         Invalidate();
     }
@@ -59,6 +76,7 @@ public partial class BoardControl : UserControl
     {
         _registerMoveMode = false;
         _selectedSquare = null;
+        _validMoves.Clear();
         Cursor = Cursors.Default;
         Invalidate();
     }
@@ -74,9 +92,20 @@ public partial class BoardControl : UserControl
         var boardLeft = (ClientSize.Width - boardSize) / 2f;
         var boardTop = (ClientSize.Height - boardSize) / 2f;
         var squareSize = boardSize / (float)BoardLength;
+        var markerPadding = Math.Max(1f, Math.Min(4f, squareSize * 0.08f));
+        var markerDiameter = Math.Max(2f, Math.Min(16f, squareSize * 0.18f));
         using var lightSquareBrush = new SolidBrush(LightSquareColor);
         using var darkSquareBrush = new SolidBrush(DarkSquareColor);
         using var selectionBrush = new SolidBrush(Color.FromArgb(110, 255, 215, 0));
+        using var whiteCoverageBrush = new SolidBrush(Color.FromArgb(225, 255, 255, 255));
+        using var blackCoverageBrush = new SolidBrush(Color.FromArgb(225, 0, 0, 0));
+        using var selectedPieceCoverageBrush = new SolidBrush(Color.FromArgb(225, 230, 30, 30));
+        using var validMoveBrush = new SolidBrush(Color.FromArgb(225, 35, 180, 70));
+        using var darkMarkerPen = new Pen(Color.FromArgb(210, 35, 35, 35), 1f);
+        using var lightMarkerPen = new Pen(Color.FromArgb(220, 255, 255, 255), 1f);
+        using var redMarkerPen = new Pen(Color.FromArgb(220, 100, 0, 0), 1f);
+        using var greenMarkerPen = new Pen(Color.FromArgb(220, 10, 100, 35), 1f);
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
@@ -108,12 +137,68 @@ public partial class BoardControl : UserControl
 
                 if (!_registerMoveMode && SelectedPiece.HasValue && piece.HasValue && piece.Value.PieceId == SelectedPiece.Value.PieceId)
                 {
+                    var width = Width switch
+                    {
+                        < 400 => 2,
+                        > 800 => 5,
+                        _ => 3
+                    };
+
+                    using var pen = new Pen(Color.FromArgb(150, 255, 0, 0), width);
                     e.Graphics.DrawRectangle(
-                        Pens.Red,
+                        pen,
                         square.Left + 1.5f,
                         square.Top + 1.5f,
                         square.Width - 3f,
                         square.Height - 3f);
+                }
+
+                var boardPoint = new Point(column, boardRow);
+
+                if (ShowWhiteCoverage && _whiteCoverage.Contains(boardPoint))
+                {
+                    DrawCoverageMarker(
+                        e.Graphics,
+                        square.Left + markerPadding,
+                        square.Top + markerPadding,
+                        markerDiameter,
+                        whiteCoverageBrush,
+                        darkMarkerPen);
+                }
+
+                if (ShowBlackCoverage && _blackCoverage.Contains(boardPoint))
+                {
+                    DrawCoverageMarker(
+                        e.Graphics,
+                        square.Right - markerPadding - markerDiameter,
+                        square.Top + markerPadding,
+                        markerDiameter,
+                        blackCoverageBrush,
+                        lightMarkerPen);
+                }
+
+                if (ShowSelectedPieceCoverage &&
+                    SelectedPiece.HasValue &&
+                    _selectedPieceCoverage.Contains(boardPoint))
+                {
+                    DrawCoverageMarker(
+                        e.Graphics,
+                        square.Right - markerPadding - markerDiameter,
+                        square.Bottom - markerPadding - markerDiameter,
+                        markerDiameter,
+                        selectedPieceCoverageBrush,
+                        redMarkerPen);
+                }
+
+                if (_validMoves.Contains(boardPoint))
+                {
+                    DrawCoverageMarker(
+                        e.Graphics,
+                        square.Left + markerPadding,
+                        square.Bottom - markerPadding - markerDiameter,
+                        markerDiameter,
+                        validMoveBrush,
+                        greenMarkerPen);
                 }
             }
         }
@@ -177,6 +262,18 @@ public partial class BoardControl : UserControl
         graphics.DrawImage(PieceSprites, destination, source, GraphicsUnit.Pixel);
     }
 
+    private static void DrawCoverageMarker(
+        Graphics graphics,
+        float x,
+        float y,
+        float diameter,
+        Brush brush,
+        Pen outlinePen)
+    {
+        graphics.FillEllipse(brush, x, y, diameter, diameter);
+        graphics.DrawEllipse(outlinePen, x, y, diameter, diameter);
+    }
+
     protected override void OnMouseClick(MouseEventArgs e)
     {
         base.OnMouseClick(e);
@@ -197,15 +294,19 @@ public partial class BoardControl : UserControl
     {
         var clickedPiece = _boardData[clickedSquare.Y, clickedSquare.X];
 
+        if (!clickedPiece.HasValue)
+            return;
+
         if (SelectedPiece.HasValue &&
-            clickedPiece.HasValue &&
             SelectedPiece.Value.PieceId == clickedPiece.Value.PieceId)
         {
             SelectedPiece = null;
+            PieceSelected?.Invoke(this, new PieceSelectedEventArgs(clickedSquare, null));
         }
         else
         {
             SelectedPiece = clickedPiece;
+            PieceSelected?.Invoke(this, new PieceSelectedEventArgs(clickedSquare, clickedPiece.Value));
         }
 
         _selectedSquare = null;
@@ -216,12 +317,14 @@ public partial class BoardControl : UserControl
     {
         if (!_selectedSquare.HasValue)
         {
-            if (!_boardData[clickedSquare.Y, clickedSquare.X].HasValue)
+            var clickedPiece = _boardData[clickedSquare.Y, clickedSquare.X];
+
+            if (!clickedPiece.HasValue)
             {
                 return;
             }
 
-            _selectedSquare = clickedSquare;
+            SelectMoveStart(clickedSquare, clickedPiece.Value);
             Invalidate();
             return;
         }
@@ -231,6 +334,7 @@ public partial class BoardControl : UserControl
         if (clickedSquare == startSquare)
         {
             _selectedSquare = null;
+            _validMoves.Clear();
             Invalidate();
             return;
         }
@@ -240,6 +344,7 @@ public partial class BoardControl : UserControl
         if (!selectedPiece.HasValue)
         {
             _selectedSquare = null;
+            _validMoves.Clear();
             Invalidate();
             return;
         }
@@ -248,15 +353,23 @@ public partial class BoardControl : UserControl
 
         if (targetPiece.HasValue && targetPiece.Value.Color == selectedPiece.Value.Color)
         {
-            _selectedSquare = clickedSquare;
+            SelectMoveStart(clickedSquare, targetPiece.Value);
             Invalidate();
             return;
         }
 
         _selectedSquare = null;
+        _validMoves.Clear();
         Invalidate();
 
         MoveSelected?.Invoke(this, new MoveSelectedEventArgs(startSquare, clickedSquare, selectedPiece.Value));
+    }
+
+    private void SelectMoveStart(Point square, Piece piece)
+    {
+        _selectedSquare = square;
+        _validMoves.Clear();
+        CalculatePieceValidMoves(square, piece);
     }
 
     private bool TryGetBoardSquare(Point location, out Point boardSquare)
@@ -286,4 +399,334 @@ public partial class BoardControl : UserControl
 
     private void BoardControl_Resize(object sender, EventArgs e) =>
         Invalidate();
+
+    public void CalculateCoverage()
+    {
+        _whiteCoverage.Clear();
+        _blackCoverage.Clear();
+        _selectedPieceCoverage.Clear();
+        _validMoves.Clear();
+
+        if (ShowWhiteCoverage)
+            CalculateWhiteCoverage();
+
+        if (ShowBlackCoverage)
+            CalculateBlackCoverage();
+
+        if (ShowSelectedPieceCoverage && SelectedPiece.HasValue)
+            CalculateSelectedPieceCoverage();
+
+        if (SelectedPiece.HasValue)
+            CalculateValidMoves();
+    }
+
+    private void CalculateWhiteCoverage()
+    {
+        CalculatePlayerCoverage(PlayerColor.White, _whiteCoverage);
+    }
+
+    private void CalculateBlackCoverage()
+    {
+        CalculatePlayerCoverage(PlayerColor.Black, _blackCoverage);
+    }
+
+    private void CalculateSelectedPieceCoverage()
+    {
+        if (!SelectedPiece.HasValue)
+            return;
+
+        for (var row = 0; row < BoardLength; row++)
+        {
+            for (var column = 0; column < BoardLength; column++)
+            {
+                var piece = _boardData[row, column];
+
+                if (!piece.HasValue || piece.Value.PieceId != SelectedPiece.Value.PieceId)
+                    continue;
+
+                CalculatePieceCoverage(
+                    new Point(column, row),
+                    piece.Value,
+                    _selectedPieceCoverage);
+                return;
+            }
+        }
+    }
+
+    private void CalculateValidMoves()
+    {
+        if (!SelectedPiece.HasValue)
+            return;
+
+        for (var row = 0; row < BoardLength; row++)
+        {
+            for (var column = 0; column < BoardLength; column++)
+            {
+                var piece = _boardData[row, column];
+
+                if (!piece.HasValue || piece.Value.PieceId != SelectedPiece.Value.PieceId)
+                    continue;
+
+                CalculatePieceValidMoves(
+                    new Point(column, row),
+                    piece.Value);
+                return;
+            }
+        }
+    }
+
+    private void CalculatePieceValidMoves(Point origin, Piece piece)
+    {
+        switch (piece.Type)
+        {
+            case PieceType.Pawn:
+                AddPawnMoves(origin, piece);
+                break;
+
+            case PieceType.Knight:
+                foreach (var offset in KnightOffsets)
+                    AddValidMove(origin.X + offset.X, origin.Y + offset.Y, piece.Color);
+                break;
+
+            case PieceType.Bishop:
+                AddSlidingValidMoves(origin, DiagonalDirections, piece.Color);
+                break;
+
+            case PieceType.Rook:
+                AddSlidingValidMoves(origin, OrthogonalDirections, piece.Color);
+                break;
+
+            case PieceType.Queen:
+                AddSlidingValidMoves(origin, OrthogonalDirections, piece.Color);
+                AddSlidingValidMoves(origin, DiagonalDirections, piece.Color);
+                break;
+
+            case PieceType.King:
+                for (var deltaY = -1; deltaY <= 1; deltaY++)
+                {
+                    for (var deltaX = -1; deltaX <= 1; deltaX++)
+                    {
+                        if (deltaX != 0 || deltaY != 0)
+                            AddValidMove(origin.X + deltaX, origin.Y + deltaY, piece.Color);
+                    }
+                }
+
+                AddCastlingMoves(origin, piece);
+                break;
+        }
+    }
+
+    private void AddPawnMoves(Point origin, Piece piece)
+    {
+        var direction = piece.Color == PlayerColor.White ? 1 : -1;
+        var oneStepRow = origin.Y + direction;
+
+        if (IsBoardPoint(origin.X, oneStepRow) && !_boardData[oneStepRow, origin.X].HasValue)
+        {
+            AddMovePoint(origin.X, oneStepRow);
+
+            var twoStepRow = origin.Y + 2 * direction;
+
+            if (piece.MoveCount == 0 &&
+                IsBoardPoint(origin.X, twoStepRow) &&
+                !_boardData[twoStepRow, origin.X].HasValue)
+            {
+                AddMovePoint(origin.X, twoStepRow);
+            }
+        }
+
+        AddPawnCapture(origin.X - 1, oneStepRow, piece.Color);
+        AddPawnCapture(origin.X + 1, oneStepRow, piece.Color);
+    }
+
+    private void AddPawnCapture(int column, int row, PlayerColor color)
+    {
+        if (!IsBoardPoint(column, row))
+            return;
+
+        var target = _boardData[row, column];
+
+        if (target.HasValue && target.Value.Color != color)
+            AddMovePoint(column, row);
+    }
+
+    private void AddSlidingValidMoves(
+        Point origin,
+        IEnumerable<Point> directions,
+        PlayerColor color)
+    {
+        foreach (var direction in directions)
+        {
+            var column = origin.X + direction.X;
+            var row = origin.Y + direction.Y;
+
+            while (IsBoardPoint(column, row))
+            {
+                var target = _boardData[row, column];
+
+                if (!target.HasValue)
+                {
+                    AddMovePoint(column, row);
+                }
+                else
+                {
+                    if (target.Value.Color != color)
+                        AddMovePoint(column, row);
+
+                    break;
+                }
+
+                column += direction.X;
+                row += direction.Y;
+            }
+        }
+    }
+
+    private void AddCastlingMoves(Point origin, Piece king)
+    {
+        if (king.MoveCount != 0 || origin.X != 4)
+            return;
+
+        AddCastlingMove(origin, king, rookColumn: 0, kingDestinationColumn: 2);
+        AddCastlingMove(origin, king, rookColumn: 7, kingDestinationColumn: 6);
+    }
+
+    private void AddCastlingMove(
+        Point origin,
+        Piece king,
+        int rookColumn,
+        int kingDestinationColumn)
+    {
+        var rook = _boardData[origin.Y, rookColumn];
+
+        if (!rook.HasValue ||
+            rook.Value.Type != PieceType.Rook ||
+            rook.Value.Color != king.Color ||
+            rook.Value.MoveCount != 0)
+        {
+            return;
+        }
+
+        var direction = rookColumn < origin.X ? -1 : 1;
+
+        for (var column = origin.X + direction; column != rookColumn; column += direction)
+        {
+            if (_boardData[origin.Y, column].HasValue)
+                return;
+        }
+
+        AddMovePoint(kingDestinationColumn, origin.Y);
+    }
+
+    private void AddValidMove(int column, int row, PlayerColor color)
+    {
+        if (!IsBoardPoint(column, row))
+            return;
+
+        var target = _boardData[row, column];
+
+        if (!target.HasValue || target.Value.Color != color)
+            AddMovePoint(column, row);
+    }
+
+    private void AddMovePoint(int column, int row)
+    {
+        var point = new Point(column, row);
+
+        if (!_validMoves.Contains(point))
+            _validMoves.Add(point);
+    }
+
+    private void CalculatePlayerCoverage(PlayerColor color, List<Point> coverage)
+    {
+        for (var row = 0; row < BoardLength; row++)
+        {
+            for (var column = 0; column < BoardLength; column++)
+            {
+                var piece = _boardData[row, column];
+
+                if (piece.HasValue && piece.Value.Color == color)
+                    CalculatePieceCoverage(new Point(column, row), piece.Value, coverage);
+            }
+        }
+    }
+
+    private void CalculatePieceCoverage(Point origin, Piece piece, List<Point> coverage)
+    {
+        switch (piece.Type)
+        {
+            case PieceType.Pawn:
+                var direction = piece.Color == PlayerColor.White ? 1 : -1;
+                AddCoveragePoint(coverage, origin.X - 1, origin.Y + direction);
+                AddCoveragePoint(coverage, origin.X + 1, origin.Y + direction);
+                break;
+
+            case PieceType.Knight:
+                foreach (var offset in KnightOffsets)
+                    AddCoveragePoint(coverage, origin.X + offset.X, origin.Y + offset.Y);
+                break;
+
+            case PieceType.Bishop:
+                AddSlidingCoverage(origin, DiagonalDirections, coverage);
+                break;
+
+            case PieceType.Rook:
+                AddSlidingCoverage(origin, OrthogonalDirections, coverage);
+                break;
+
+            case PieceType.Queen:
+                AddSlidingCoverage(origin, OrthogonalDirections, coverage);
+                AddSlidingCoverage(origin, DiagonalDirections, coverage);
+                break;
+
+            case PieceType.King:
+                for (var deltaY = -1; deltaY <= 1; deltaY++)
+                {
+                    for (var deltaX = -1; deltaX <= 1; deltaX++)
+                    {
+                        if (deltaX != 0 || deltaY != 0)
+                            AddCoveragePoint(coverage, origin.X + deltaX, origin.Y + deltaY);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void AddSlidingCoverage(
+        Point origin,
+        IEnumerable<Point> directions,
+        List<Point> coverage)
+    {
+        foreach (var direction in directions)
+        {
+            var column = origin.X + direction.X;
+            var row = origin.Y + direction.Y;
+
+            while (IsBoardPoint(column, row))
+            {
+                AddCoveragePoint(coverage, column, row);
+
+                if (_boardData[row, column].HasValue)
+                    break;
+
+                column += direction.X;
+                row += direction.Y;
+            }
+        }
+    }
+
+    private static void AddCoveragePoint(List<Point> coverage, int column, int row)
+    {
+        if (!IsBoardPoint(column, row))
+            return;
+
+        var point = new Point(column, row);
+
+        if (!coverage.Contains(point))
+            coverage.Add(point);
+    }
+
+    private static bool IsBoardPoint(int column, int row) =>
+        column >= 0 && column < BoardLength && row >= 0 && row < BoardLength;
+
 }

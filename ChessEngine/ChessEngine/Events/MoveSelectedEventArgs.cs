@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace ChessEngine;
+namespace ChessEngine.Events;
 
 public sealed class MoveSelectedEventArgs : EventArgs
 {

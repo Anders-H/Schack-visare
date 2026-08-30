@@ -71,8 +71,9 @@
     <Compile Include="MoveList.cs" />
     <Compile Include="MoveParser.cs" />
     <Compile Include="MoveParserResult.cs" />
-    <Compile Include="MoveSelectedEventArgs.cs" />
+    <Compile Include="Events\MoveSelectedEventArgs.cs" />
     <Compile Include="Piece.cs" />
+    <Compile Include="Events\PieceSelectedEventArgs.cs" />
     <Compile Include="PieceType.cs" />
     <Compile Include="PlayerColor.cs" />
     <Compile Include="Program.cs" />
@@ -120,5 +121,6 @@
     <None Include="Resources\Cancel__Red.png" />
     <None Include="Resources\112_Plus_Green_16x16_72.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
