@@ -61,6 +61,31 @@ public partial class BoardControl : UserControl
     public Piece? GetPieceAt(int x, int y) =>
         _boardData[y, x];
 
+    public bool TryGetSelectedPiece(out Point point, out Piece piece)
+    {
+        if (SelectedPiece.HasValue)
+        {
+            for (var row = 0; row < BoardLength; row++)
+            {
+                for (var column = 0; column < BoardLength; column++)
+                {
+                    var candidate = _boardData[row, column];
+
+                    if (!candidate.HasValue || candidate.Value.PieceId != SelectedPiece.Value.PieceId)
+                        continue;
+
+                    point = new Point(column, row);
+                    piece = candidate.Value;
+                    return true;
+                }
+            }
+        }
+
+        point = Point.Empty;
+        piece = default;
+        return false;
+    }
+
     public void SetPosition(BoardData boardData)
     {
         _boardData = boardData ?? throw new ArgumentNullException(nameof(boardData));
@@ -308,8 +333,7 @@ public partial class BoardControl : UserControl
         if (!clickedPiece.HasValue)
             return;
 
-        if (SelectedPiece.HasValue &&
-            SelectedPiece.Value.PieceId == clickedPiece.Value.PieceId)
+        if (SelectedPiece.HasValue && SelectedPiece.Value.PieceId == clickedPiece.Value.PieceId)
         {
             SelectedPiece = null;
             PieceSelected?.Invoke(this, new PieceSelectedEventArgs(clickedSquare, null));
@@ -610,13 +634,8 @@ public partial class BoardControl : UserControl
     {
         var rook = _boardData[origin.Y, rookColumn];
 
-        if (!rook.HasValue ||
-            rook.Value.Type != PieceType.Rook ||
-            rook.Value.Color != king.Color ||
-            rook.Value.MoveCount != 0)
-        {
+        if (!rook.HasValue || rook.Value.Type != PieceType.Rook || rook.Value.Color != king.Color || rook.Value.MoveCount != 0)
             return;
-        }
 
         var direction = rookColumn < origin.X ? -1 : 1;
 

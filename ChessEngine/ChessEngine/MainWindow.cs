@@ -122,6 +122,20 @@ public partial class MainWindow : Form
         if (!movedPiece.HasValue)
             throw new InvalidOperationException($@"No piece at {e.StartPoint}.");
 
+        if (!CheckMove(e.Piece, e.StartPoint, e.EndPoint, out var errorMessage))
+        {
+            const string baseMessage = "The move does not seem to be valid";
+            var message = string.IsNullOrWhiteSpace(errorMessage) ? $"{baseMessage}." : $@"{baseMessage}: {errorMessage}";
+
+            if (MessageBox.Show(this, $@"{message}
+
+Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                cancelRegisterMoveToolStripMenuItem_Click(sender, EventArgs.Empty);
+                return;
+            }
+        }
+
         var moveIndex = Moves.Count;
 
         Moves.Add(new Move(
@@ -136,6 +150,46 @@ public partial class MainWindow : Form
         boardControl1.CancelMoveRegistration();
         RenderMoveList();
         GoToMove(moveIndex);
+    }
+
+    private bool CheckMove(Piece piece, Point startPoint, Point endPoint, out string errorMessage)
+    {
+        errorMessage = "";
+        var whiteTurn = true;
+
+        if (listView1.Items.Count > 0)
+            whiteTurn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1;
+
+        if (whiteTurn && piece.Color != PlayerColor.White)
+        {
+            errorMessage = "It is white's turn to move.";
+            return false;
+        }
+
+        if (!whiteTurn && piece.Color != PlayerColor.Black)
+        {
+            errorMessage = "It is black's turn to move.";
+            return false;
+        }
+
+        if (!MoveIsLegal(piece, startPoint, endPoint))
+        {
+            errorMessage = "The move is not legal according to the rules of Chess.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool MoveIsLegal(Piece piece, Point startPoint, Point endPoint)
+    {
+        var whiteTurn = true;
+
+        if (listView1.Items.Count > 0)
+            whiteTurn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1;
+
+        var chessRules = new ChessRules(whiteTurn, Moves);
+        return chessRules.IsMoveLegal(piece, startPoint, endPoint);
     }
 
     private void btnRegistrera_Click(object sender, EventArgs e) =>
@@ -235,6 +289,7 @@ public partial class MainWindow : Form
         boardControl1.SetPosition(position);
         CurrentMove = targetMoveIndex;
         UpdateControls();
+        UpdateSelectedPieceProperties();
 
         if (targetMoveIndex < 0)
             SelectNoneInMoveList();
@@ -525,6 +580,33 @@ public partial class MainWindow : Form
     {
         boardControl1.CalculateCoverage();
         boardControl1.Invalidate();
+        UpdateSelectedPieceProperties();
+    }
+
+    private void UpdateSelectedPieceProperties()
+    {
+        lvProperties.Items.Clear();
+
+        if (boardControl1.TryGetSelectedPiece(out var point, out var piece))
+            UpdatePieceProperties(point, piece);
+    }
+
+    private void UpdatePieceProperties(Point point, Piece piece)
+    {
+        var file = (char)('A' + point.X);
+        var rank = point.Y + 1;
+
+        lvProperties.Items.Add("Piece ID:");
+        lvProperties.Items.Add(piece.PieceId.ToString());
+        lvProperties.Items.Add("");
+        lvProperties.Items.Add("Piece type:");
+        lvProperties.Items.Add(piece.Type.ToString());
+        lvProperties.Items.Add("");
+        lvProperties.Items.Add("Position:");
+        lvProperties.Items.Add($"{file}{rank}");
+        lvProperties.Items.Add("");
+        lvProperties.Items.Add("Move count:");
+        lvProperties.Items.Add(piece.MoveCount.ToString());
     }
 
     private void showWhiteCoverageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -567,5 +649,36 @@ public partial class MainWindow : Form
             nextToolStripMenuItem_Click(this, EventArgs.Empty);
 
         return base.ProcessCmdKey(ref msg, keyData);
+    }
+
+    private void moveToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+    {
+        deleteLastMoveToolStripMenuItem.Enabled = Moves.Count > 0;
+    }
+
+    private void deleteLastMoveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (Moves.Count <= 0)
+            return;
+
+        var oldCurrentMove = CurrentMove;
+        lastToolStripMenuItem_Click(sender, e);
+
+        if (MessageBox.Show(this, @"Are you sure you want to delete the last move?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+        {
+            firstToolStripMenuItem_Click(sender, e);
+
+            if (oldCurrentMove >= 0)
+            {
+                for (var i = 0; i <= oldCurrentMove; i++)
+                    nextToolStripMenuItem_Click(sender, e);
+            }
+
+            return;
+        }
+
+        previousToolStripMenuItem_Click(sender, e);
+        Moves.RemoveAt(Moves.Count - 1);
+        listView1.Items.RemoveAt(listView1.Items.Count - 1);
     }
 }

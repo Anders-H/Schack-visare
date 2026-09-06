@@ -49,6 +49,8 @@ namespace ChessEngine
             this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteLastMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.firstToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -197,6 +199,8 @@ namespace ChessEngine
             this.registerMoveToolStripMenuItem,
             this.cancelRegisterMoveToolStripMenuItem,
             this.toolStripMenuItem1,
+            this.deleteLastMoveToolStripMenuItem,
+            this.toolStripMenuItem3,
             this.firstToolStripMenuItem,
             this.previousToolStripMenuItem,
             this.playToolStripMenuItem,
@@ -206,11 +210,13 @@ namespace ChessEngine
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
             this.moveToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.moveToolStripMenuItem.Text = "&Move";
+            this.moveToolStripMenuItem.DropDownOpening += new System.EventHandler(this.moveToolStripMenuItem_DropDownOpening);
             // 
             // registerMoveToolStripMenuItem
             // 
             this.registerMoveToolStripMenuItem.Image = global::ChessEngine.Properties.Resources._112_Plus_Green_16x16_72;
             this.registerMoveToolStripMenuItem.Name = "registerMoveToolStripMenuItem";
+            this.registerMoveToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
             this.registerMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.registerMoveToolStripMenuItem.Text = "Register move";
             this.registerMoveToolStripMenuItem.Click += new System.EventHandler(this.registerMoveToolStripMenuItem_Click);
@@ -228,6 +234,19 @@ namespace ChessEngine
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
+            // 
+            // deleteLastMoveToolStripMenuItem
+            // 
+            this.deleteLastMoveToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.DeleteRed;
+            this.deleteLastMoveToolStripMenuItem.Name = "deleteLastMoveToolStripMenuItem";
+            this.deleteLastMoveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.deleteLastMoveToolStripMenuItem.Text = "Delete last move";
+            this.deleteLastMoveToolStripMenuItem.Click += new System.EventHandler(this.deleteLastMoveToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(182, 6);
             // 
             // firstToolStripMenuItem
             // 
@@ -602,6 +621,8 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripMenuItem showWhiteCoverageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showBlackCoverageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showSelectedPieceCoverageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteLastMoveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
     }
 }
 
