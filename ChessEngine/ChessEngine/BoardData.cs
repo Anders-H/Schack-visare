@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using ChessEngine.Moves;
+using ChessEngine.Pieces;
 
 namespace ChessEngine;
 

@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace ChessEngine;
+namespace ChessEngine.Moves;
 
 public class MoveParserResult
 {

@@ -68,15 +68,15 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Move.cs" />
-    <Compile Include="MoveList.cs" />
-    <Compile Include="MoveParser.cs" />
-    <Compile Include="MoveParserResult.cs" />
+    <Compile Include="Moves\Move.cs" />
+    <Compile Include="Moves\MoveList.cs" />
+    <Compile Include="Moves\MoveParser.cs" />
+    <Compile Include="Moves\MoveParserResult.cs" />
     <Compile Include="Events\MoveSelectedEventArgs.cs" />
-    <Compile Include="Piece.cs" />
+    <Compile Include="Pieces\Piece.cs" />
     <Compile Include="Events\PieceSelectedEventArgs.cs" />
-    <Compile Include="PieceType.cs" />
-    <Compile Include="PlayerColor.cs" />
+    <Compile Include="Pieces\PieceType.cs" />
+    <Compile Include="Pieces\PlayerColor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardControl.resx">

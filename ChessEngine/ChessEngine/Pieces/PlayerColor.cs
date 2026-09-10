@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace ChessEngine;
+﻿namespace ChessEngine.Pieces;
 
 public enum PlayerColor
 {

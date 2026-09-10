@@ -6,6 +6,8 @@ using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using ChessEngine.Events;
+using ChessEngine.Moves;
+using ChessEngine.Pieces;
 
 namespace ChessEngine;
 

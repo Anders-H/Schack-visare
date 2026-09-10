@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Text;
+using ChessEngine.Moves;
 
 namespace ChessEngine;
 

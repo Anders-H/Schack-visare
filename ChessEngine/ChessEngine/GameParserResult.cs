@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using ChessEngine.Moves;
 
 namespace ChessEngine;
 

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using ChessEngine.Pieces;
 
-namespace ChessEngine;
+namespace ChessEngine.Moves;
 
 public class Move
 {

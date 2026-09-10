@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ChessEngine;
+namespace ChessEngine.Moves;
 
 public class MoveList : List<Move>
 {
