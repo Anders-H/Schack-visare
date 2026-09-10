@@ -760,4 +760,8 @@ public partial class BoardControl : UserControl
     private static bool IsBoardPoint(int column, int row) =>
         column >= 0 && column < BoardLength && row >= 0 && row < BoardLength;
 
+    public void SetPerspective(bool viewFromBlackPerspective)
+    {
+
+    }
 }

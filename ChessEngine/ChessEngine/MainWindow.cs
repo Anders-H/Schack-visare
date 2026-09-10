@@ -37,6 +37,9 @@ public partial class MainWindow : Form
         UpdateControls();
     }
 
+    public bool ViewFromBlacksPerspective =>
+        fromBlacksPerspectiveToolStripMenuItem.Checked;
+
     public int CurrentMove
     {
         get;
@@ -682,5 +685,25 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         previousToolStripMenuItem_Click(sender, e);
         Moves.RemoveAt(Moves.Count - 1);
         listView1.Items.RemoveAt(listView1.Items.Count - 1);
+    }
+
+    private void fromWhitesPerspectiveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var fromWhite = !ViewFromBlacksPerspective;
+        fromWhitesPerspectiveToolStripMenuItem.Checked = true;
+        fromBlacksPerspectiveToolStripMenuItem.Checked = false;
+
+        if (fromWhite != !ViewFromBlacksPerspective)
+            boardControl1.SetPerspective(ViewFromBlacksPerspective);
+    }
+
+    private void fromBlacksPerspectiveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var fromBlack = ViewFromBlacksPerspective;
+        fromWhitesPerspectiveToolStripMenuItem.Checked = false;
+        fromBlacksPerspectiveToolStripMenuItem.Checked = true;
+
+        if (fromBlack != ViewFromBlacksPerspective)
+            boardControl1.SetPerspective(ViewFromBlacksPerspective);
     }
 }

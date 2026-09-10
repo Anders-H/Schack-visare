@@ -81,6 +81,9 @@ namespace ChessEngine
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.fromWhitesPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromBlacksPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -165,6 +168,9 @@ namespace ChessEngine
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fromWhitesPerspectiveToolStripMenuItem,
+            this.fromBlacksPerspectiveToolStripMenuItem,
+            this.toolStripMenuItem4,
             this.showWhiteCoverageToolStripMenuItem,
             this.showBlackCoverageToolStripMenuItem,
             this.showSelectedPieceCoverageToolStripMenuItem});
@@ -540,6 +546,27 @@ namespace ChessEngine
             this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
             // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(228, 6);
+            // 
+            // fromWhitesPerspectiveToolStripMenuItem
+            // 
+            this.fromWhitesPerspectiveToolStripMenuItem.Checked = true;
+            this.fromWhitesPerspectiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fromWhitesPerspectiveToolStripMenuItem.Name = "fromWhitesPerspectiveToolStripMenuItem";
+            this.fromWhitesPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.fromWhitesPerspectiveToolStripMenuItem.Text = "From white\'s perspective";
+            this.fromWhitesPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromWhitesPerspectiveToolStripMenuItem_Click);
+            // 
+            // fromBlacksPerspectiveToolStripMenuItem
+            // 
+            this.fromBlacksPerspectiveToolStripMenuItem.Name = "fromBlacksPerspectiveToolStripMenuItem";
+            this.fromBlacksPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.fromBlacksPerspectiveToolStripMenuItem.Text = "From black\'s perspective";
+            this.fromBlacksPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromBlacksPerspectiveToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -623,6 +650,9 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripMenuItem showSelectedPieceCoverageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLastMoveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem fromWhitesPerspectiveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fromBlacksPerspectiveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
     }
 }
 
