@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -33,6 +33,7 @@ public partial class BoardControl : UserControl
 
     private BoardData _boardData = new();
     private bool _registerMoveMode;
+    private bool _viewFromBlackPerspective;
     private Point? _selectedSquare;
 
     public Piece? SelectedPiece { get; set; }
@@ -142,12 +143,13 @@ public partial class BoardControl : UserControl
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
-            var boardRow = BoardLength - 1 - displayRow;
-
-            for (var column = 0; column < BoardLength; column++)
+            for (var displayColumn = 0; displayColumn < BoardLength; displayColumn++)
             {
+                var boardPoint = DisplayToBoardSquare(displayColumn, displayRow);
+                var column = boardPoint.X;
+                var boardRow = boardPoint.Y;
                 var square = new RectangleF(
-                    boardLeft + column * squareSize,
+                    boardLeft + displayColumn * squareSize,
                     boardTop + displayRow * squareSize,
                     squareSize,
                     squareSize);
@@ -185,8 +187,6 @@ public partial class BoardControl : UserControl
                         square.Width - 3f,
                         square.Height - 3f);
                 }
-
-                var boardPoint = new Point(column, boardRow);
 
                 if (ShowWhiteCoverage && _whiteCoverage.Contains(boardPoint))
                 {
@@ -241,26 +241,31 @@ public partial class BoardControl : UserControl
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
-            var boardRow = BoardLength - 1 - displayRow;
-
-            for (var column = 0; column < BoardLength; column++)
+            for (var displayColumn = 0; displayColumn < BoardLength; displayColumn++)
             {
+                var boardPoint = DisplayToBoardSquare(displayColumn, displayRow);
+                var column = boardPoint.X;
+                var boardRow = boardPoint.Y;
                 var squareBrush = (boardRow + column) % 2 == 0
                     ? lightSquareBrush
                     : darkSquareBrush;
 
-                if (displayRow == 7 && column == 0)
-                    e.Graphics.DrawString($"{rowNames[column]}{boardRow + 1}", Font, squareBrush, squareSize * column + 1, squareSize * displayRow + squareSize - textHeight);
-                else if (displayRow == 7)
-                    e.Graphics.DrawString($"{rowNames[column]}", Font, squareBrush, squareSize * column + 1, squareSize * displayRow + squareSize - textHeight);
-                else if (column == 0)
-                    e.Graphics.DrawString($"{boardRow + 1}", Font, squareBrush, squareSize * column + 1, squareSize * displayRow + squareSize - textHeight);
+                var label = displayRow == BoardLength - 1
+                    ? $"{rowNames[column]}{(displayColumn == 0 ? (boardRow + 1).ToString() : "")}"
+                    : displayColumn == 0 ? $"{boardRow + 1}" : "";
+
+                if (label.Length > 0)
+                    e.Graphics.DrawString(label, Font, squareBrush,
+                        boardLeft + squareSize * displayColumn + 1,
+                        boardTop + squareSize * displayRow + squareSize - textHeight);
             }
         }
 
         e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, textHeight + 2, textHeight + 2);
-        e.Graphics.DrawString(BlackPlayerName, Font, Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
-        e.Graphics.DrawString(WhitePlayerName, Font, Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
+        e.Graphics.DrawString(_viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName, Font,
+            _viewFromBlackPerspective ? Brushes.White : Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
+        e.Graphics.DrawString(_viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName, Font,
+            _viewFromBlackPerspective ? Brushes.Black : Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
     }
 
     private static void DrawPiece(Graphics graphics, PieceType pieceType, PlayerColor color, RectangleF square)
@@ -376,7 +381,7 @@ public partial class BoardControl : UserControl
         }
 
         var selectedPiece = _boardData[startSquare.Y, startSquare.X];
-        
+
         if (!selectedPiece.HasValue)
         {
             _selectedSquare = null;
@@ -427,9 +432,7 @@ public partial class BoardControl : UserControl
         var squareSize = boardSize / (float)BoardLength;
         var column = (int)((location.X - boardLeft) / squareSize);
         var displayRow = (int)((location.Y - boardTop) / squareSize);
-        var row = BoardLength - 1 - displayRow;
-
-        boardSquare = new Point(column, row);
+        boardSquare = DisplayToBoardSquare(column, displayRow);
         return true;
     }
 
@@ -760,8 +763,19 @@ public partial class BoardControl : UserControl
     private static bool IsBoardPoint(int column, int row) =>
         column >= 0 && column < BoardLength && row >= 0 && row < BoardLength;
 
+    // State, selections and coverage use board coordinates (A1 = 0,0).
+    // Only rendering and hit testing translate from the displayed grid.
+    private Point DisplayToBoardSquare(int column, int row) =>
+        _viewFromBlackPerspective
+            ? new Point(BoardLength - 1 - column, row)
+            : new Point(column, BoardLength - 1 - row);
+
     public void SetPerspective(bool viewFromBlackPerspective)
     {
+        if (_viewFromBlackPerspective == viewFromBlackPerspective)
+            return;
 
+        _viewFromBlackPerspective = viewFromBlackPerspective;
+        Invalidate();
     }
 }
