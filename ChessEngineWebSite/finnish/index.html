@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Chess Engine Windowsille. Tallenna shakkipelisi, käy ne läpi siirto siirrolta ja tutki lautaa kummankin pelaajan näkökulmasta.">
+    <meta name="theme-color" content="#652b2c">
+    <title>Chess Engine — Opi pelaamaan, tutki mestarien pelejä!</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip" href="#innehall">Siirry sisältöön</a>
+    <div class="page">
+        <header>
+            <a class="brand" href="#" aria-label="Chess Engine, sivun alkuun"><span aria-hidden="true">♜</span> Chess Engine</a>
+            <nav class="main-nav" aria-label="Päävalikko">
+                <a href="#spelet">Tietoa shakista</a><a href="#funktioner">Toiminnot</a><a href="#hamta">Lataa</a>
+                <span class="language-switcher" role="group" aria-label="Kieli">
+                    <a class="language-option" href="../index.html" lang="en" hreflang="en" aria-label="English" title="English">
+                        <svg viewBox="0 0 60 30" aria-hidden="true" focusable="false">
+                            <clipPath id="uk-flag-clip"><path d="M0 0h60v30H0z"/></clipPath>
+                            <g clip-path="url(#uk-flag-clip)">
+                                <path fill="#012169" d="M0 0h60v30H0z"/>
+                                <path stroke="#fff" stroke-width="6" d="m0 0 60 30M60 0 0 30"/>
+                                <path fill="#c8102e" d="M0 0 20 10h-4L0 2zM60 0 40 10h-4L56 0zM60 30 40 20h4l16 8zM0 30 20 20h4L4 30z"/>
+                                <path stroke="#fff" stroke-width="10" d="M30 0v30M0 15h60"/>
+                                <path stroke="#c8102e" stroke-width="6" d="M30 0v30M0 15h60"/>
+                            </g>
+                        </svg>
+                    </a>
+                    <a class="language-option" href="../swedish/index.html" lang="sv" hreflang="sv" aria-label="Svenska" title="Svenska">
+                        <svg viewBox="0 0 32 20" aria-hidden="true" focusable="false"><path fill="#006aa7" d="M0 0h32v20H0z"/><path fill="#fecc00" d="M10 0h4v20h-4zM0 8h32v4H0z"/></svg>
+                    </a>
+                    <a class="language-option" href="./index.html" lang="fi" hreflang="fi" aria-label="Suomi" title="Suomi" aria-current="page">
+                        <svg viewBox="0 0 33 20" aria-hidden="true" focusable="false"><path fill="#fff" d="M0 0h33v20H0z"/><path fill="#002f6c" d="M9 0h6v20H9zM0 7h33v6H0z"/></svg>
+                    </a>
+                </span>
+            </nav>
+        </header>
+        <main id="innehall">
+            <section class="hero" aria-labelledby="titel">
+                <div>
+                    <p class="eyebrow">Shakin ystäville</p>
+                    <h1 id="titel">Chess Engine</h1>
+                    <p class="lead">Opi shakkia.<br>Tutki vanhojen mestarien pelejä.</p>
+                    <p class="intro">Käy klassikkopelejä läpi siirto siirrolta ja tutki, miten mestarit rakensivat asemansa. Pysähdy, palaa taaksepäin ja tarkastele nappuloiden yhteispeliä omaan tahtiisi.</p>
+                    <div class="hero-actions"><a class="button" href="#hamta">Lataa Chess Engine</a><span class="note">Windowsille · Tulossa pian</span></div>
+                </div>
+                <figure class="plate" aria-label="Koristeellinen shakkitunnus, jossa on kuningas ja ratsu">
+                    <div class="chess-emblem" aria-hidden="true">♚♞</div>
+                    <div class="checker" aria-hidden="true"></div>
+                    <figcaption>Strategia · Kärsivällisyys · Oivallus</figcaption>
+                    <blockquote>”Kuudellekymmenelleneljälle ruudulle<br>mahtuu mahdollisuuksien maailma.”</blockquote>
+                </figure>
+            </section>
+            <div class="ribbon" aria-label="Ohjelman käyttötarkoitus"><span>Tallenna pelisi</span><i aria-hidden="true">✦</i><span>Tutki jokaista siirtoa</span><i aria-hidden="true">✦</i><span>Katso kummaltakin puolelta</span></div>
+            <section class="chapter story" id="spelet" aria-labelledby="program-titel">
+                <div><p class="eyebrow">Apuna shakkilaudalla</p><h2 id="program-titel">Sinun pelisi,<br>siirto siirrolta.</h2><p>Chess Engine on Windows-ohjelma shakkipelien luomiseen, tallentamiseen ja tutkimiseen. Kirjaa omat siirtosi tai avaa tallennettu peli ja seuraa aseman kehittymistä.</p><p>Pysähdy kiinnostavaan kohtaan, tutki nappuloiden hallitsemia ruutuja ja käännä lauta nähdäksesi pelin vastustajan puolelta.</p></div>
+                <figure class="screenshot"><div class="screenshot-inner"><span class="symbol" aria-hidden="true">♜</span><strong>Vilkaisu pelilautaan</strong><p>Tässä näytetään myöhemmin kuvakaappaus Chess Engine -ohjelmasta.</p></div><figcaption>Kuva I · Paikka ohjelman kuvakaappaukselle</figcaption></figure>
+            </section>
+            <section class="chapter" id="funktioner" aria-labelledby="funktioner-titel">
+                <div class="features-heading"><p class="eyebrow">Työkalut käytössäsi</p><h2 id="funktioner-titel">Ohjelman toiminnot</h2><p>Ensimmäisestä sotilaan siirrosta pelin jälkitarkasteluun — nämä toiminnot ovat ohjelmassa jo nyt.</p></div>
+                <ol class="features">
+                    <li><h3>Luo &amp; tallenna</h3><p>Aloita uusi peli, avaa tallennettuja pelejä ja käytä tallennustoimintoja. Voit myös tallentaa pelin uudella nimellä. Pelit tallennetaan tekstitiedostoina ohjelman omassa muodossa. Mukana ovat pelin nimi, päivämäärä, pelaajien nimet ja siirrot.</p></li>
+                    <li><h3>Kirjaa &amp; muokkaa</h3><p>Lisää siirto valitsemalla laudalta nappula ja kohderuutu. Voit perua aloittamasi siirron kirjaamisen tai poistaa viimeksi kirjatun siirron.</p></li>
+                    <li><h3>Käy peli läpi</h3><p>Toista peli automaattisesti ja keskeytä milloin haluat. Etene tai palaa taaksepäin siirto kerrallaan tai siirry suoraan alkuasemaan tai viimeiseen siirtoon.</p></li>
+                    <li><h3>Valitse puolesi</h3><p>Katso lautaa niin, että valkeat tai mustat nappulat ovat alareunassa. Mustan näkökulmassa lauta kääntyy 180 astetta. Koordinaatit, nappulat ja merkinnät kääntyvät mukana.</p></li>
+                    <li><h3>Näe nappuloiden vaikutusalue</h3><p>Näytä valkean, mustan tai valitun nappulan hallitsemat ruudut. Värimerkinnät näyttävät hallitut ruudut ja mahdolliset siirrot aseman tarkastelun tueksi.</p></li>
+                    <li><h3>Tutustu jokaiseen nappulaan</h3><p>Valitse nappula nähdäksesi sen tyypin, tunnisteen, nykyisen ruudun ja tehtyjen siirtojen määrän. Korostuksen ansiosta nappulaa on helppo seurata laudalla.</p></li>
+                    <li><h3>Apua sääntöihin</h3><p>Siirtoa kirjattaessa ohjelma tarkistaa siirtovuoron ja siirron laillisuuden. Ohjelma varoittaa sääntöjen vastaisista siirroista ja antaa sinun päättää, tallennetaanko siirto silti.</p></li>
+                    <li><h3>Seuraa pelin kulkua</h3><p>Seuraa siirtolistaa, jossa nykyinen siirto on korostettu. Tilarivi näyttää, missä kohdassa peliä olet. Laudalla näkyvät koordinaatit, pelipäivä ja pelaajien nimet.</p></li>
+                    <li><h3>Etene omaan tahtiisi</h3><p>Käytä valikoita, työkalupainikkeita tai näppäimistöä: vasen ja oikea nuolinäppäin siirtyvät siirrosta toiseen, Home vie alkuun ja End loppuun. Lauta mukautuu ikkunan kokoon.</p></li>
+                    <li><h3>Tutki klassikkopelejä</h3><p>Katso ja tutki shakin suurten mestarien historiallisia pelejä. Ohjelma tukee sekä <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation" target="_blank">PGN</a>- että <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="_blank">FEN</a>-muotoa.</p></li>
+                </ol>
+            </section>
+            <section class="download" id="hamta" aria-labelledby="hamta-titel">
+                <div class="seal" aria-hidden="true">♜</div><p class="eyebrow">Pian tietokoneellasi</p><h2 id="hamta-titel">Seuraava siirto on sinun.</h2><p>Chess Engine on kehitteillä. Pian voit ladata ohjelman Windowsille ja koota shakkipelisi yhteen paikkaan.</p>
+                <!-- Korvaa href varsinaisella latausosoitteella, kun ohjelma julkaistaan. -->
+                <a class="button" href="#kommer-snart" aria-describedby="download-note">Lataa Windowsille · Tulossa pian</a>
+                <p class="note" id="download-note">Ohjelma ei ole vielä ladattavissa.</p>
+                <p class="download-status" id="kommer-snart" role="status">Vielä hetki, shakin ystävä! Tämä on väliaikainen linkki. Ohjelman voi ladata, kun se on valmis.</p>
+            </section>
+            <section class="chapter developer" id="utvecklaren" aria-labelledby="utvecklaren-titel">
+                <div>
+                    <p class="eyebrow">Ohjelman tekijä</p>
+                    <h2 id="utvecklaren-titel">Kehittäjä: Anders Hesselbom</h2>
+                    <p>
+                        Olen työskennellyt ohjelmoinnin ja ohjelmistokehityksen parissa yli kolme vuosikymmentä. Nautin shakin pelaamisesta kovasti, vaikka en ole siinä erityisen hyvä. Tämän kiinnostuksen pohjalta olen kehittänyt ohjelman, joka toimii sekä käytännöllisenä apuna kirjeshakkipeleissä että tietolähteenä niille, jotka haluavat tutkia suurten mestarien klassikkopelejä.
+                    </p>
+                </div>
+                <figure class="portrait">
+                    <img src="../img/anders_hesselbom.jpg" alt="Anders Hesselbomin muotokuva" loading="lazy">
+                    <figcaption>Anders Hesselbom<br>Kuva: Anders Nordquist</figcaption>
+                </figure>
+            </section>
+        </main>
+        <footer><p class="footer-brand">Chess Engine</p><p>Rakkaudesta shakkiin ja taitoon ajatella yhden siirron pidemmälle.</p><a href="#">Sivun alkuun</a></footer>
+    </div>
+</body>
+</html>

@@ -37,11 +37,15 @@ namespace ChessEngine
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromWhitesPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromBlacksPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.showWhiteCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showBlackCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showSelectedPieceCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,9 +85,8 @@ namespace ChessEngine
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.fromWhitesPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fromBlacksPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.portableGameNotationPGNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.forsythEdwardsNotationFENToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -109,6 +112,7 @@ namespace ChessEngine
             this.newGameToolStripMenuItem,
             this.toolStripSeparator2,
             this.openToolStripMenuItem,
+            this.openFromClipboardToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.toolStripMenuItem2,
@@ -121,47 +125,57 @@ namespace ChessEngine
             // 
             this.newGameToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.NewDocumentHS;
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.newGameToolStripMenuItem.Text = "&New game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(128, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.openHS;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // openFromClipboardToolStripMenuItem
+            // 
+            this.openFromClipboardToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.portableGameNotationPGNToolStripMenuItem,
+            this.forsythEdwardsNotationFENToolStripMenuItem});
+            this.openFromClipboardToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.PasteHS;
+            this.openFromClipboardToolStripMenuItem.Name = "openFromClipboardToolStripMenuItem";
+            this.openFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.openFromClipboardToolStripMenuItem.Text = "Open from clipboard";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.saveHS;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.saveAsToolStripMenuItem.Text = "Save as...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(128, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(182, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -177,6 +191,27 @@ namespace ChessEngine
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // fromWhitesPerspectiveToolStripMenuItem
+            // 
+            this.fromWhitesPerspectiveToolStripMenuItem.Checked = true;
+            this.fromWhitesPerspectiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fromWhitesPerspectiveToolStripMenuItem.Name = "fromWhitesPerspectiveToolStripMenuItem";
+            this.fromWhitesPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.fromWhitesPerspectiveToolStripMenuItem.Text = "From white\'s perspective";
+            this.fromWhitesPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromWhitesPerspectiveToolStripMenuItem_Click);
+            // 
+            // fromBlacksPerspectiveToolStripMenuItem
+            // 
+            this.fromBlacksPerspectiveToolStripMenuItem.Name = "fromBlacksPerspectiveToolStripMenuItem";
+            this.fromBlacksPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.fromBlacksPerspectiveToolStripMenuItem.Text = "From black\'s perspective";
+            this.fromBlacksPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromBlacksPerspectiveToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(228, 6);
             // 
             // showWhiteCoverageToolStripMenuItem
             // 
@@ -546,26 +581,18 @@ namespace ChessEngine
             this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
             // 
-            // toolStripMenuItem4
+            // portableGameNotationPGNToolStripMenuItem
             // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(228, 6);
+            this.portableGameNotationPGNToolStripMenuItem.Name = "portableGameNotationPGNToolStripMenuItem";
+            this.portableGameNotationPGNToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+            this.portableGameNotationPGNToolStripMenuItem.Text = "Portable Game Notation (PGN)...";
+            this.portableGameNotationPGNToolStripMenuItem.Click += new System.EventHandler(this.portableGameNotationPGNToolStripMenuItem_Click);
             // 
-            // fromWhitesPerspectiveToolStripMenuItem
+            // forsythEdwardsNotationFENToolStripMenuItem
             // 
-            this.fromWhitesPerspectiveToolStripMenuItem.Checked = true;
-            this.fromWhitesPerspectiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fromWhitesPerspectiveToolStripMenuItem.Name = "fromWhitesPerspectiveToolStripMenuItem";
-            this.fromWhitesPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.fromWhitesPerspectiveToolStripMenuItem.Text = "From white\'s perspective";
-            this.fromWhitesPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromWhitesPerspectiveToolStripMenuItem_Click);
-            // 
-            // fromBlacksPerspectiveToolStripMenuItem
-            // 
-            this.fromBlacksPerspectiveToolStripMenuItem.Name = "fromBlacksPerspectiveToolStripMenuItem";
-            this.fromBlacksPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.fromBlacksPerspectiveToolStripMenuItem.Text = "From black\'s perspective";
-            this.fromBlacksPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromBlacksPerspectiveToolStripMenuItem_Click);
+            this.forsythEdwardsNotationFENToolStripMenuItem.Name = "forsythEdwardsNotationFENToolStripMenuItem";
+            this.forsythEdwardsNotationFENToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+            this.forsythEdwardsNotationFENToolStripMenuItem.Text = "Forsyth-Edwards Notation (FEN)...";
             // 
             // MainWindow
             // 
@@ -653,6 +680,9 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripMenuItem fromWhitesPerspectiveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromBlacksPerspectiveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem openFromClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem portableGameNotationPGNToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem forsythEdwardsNotationFENToolStripMenuItem;
     }
 }
 

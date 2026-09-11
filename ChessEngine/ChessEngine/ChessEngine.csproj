@@ -59,6 +59,12 @@
     </Compile>
     <Compile Include="BoardData.cs" />
     <Compile Include="ChessRules.cs" />
+    <Compile Include="Dialogs\ImportPgnDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportPgnDialog.Designer.cs">
+      <DependentUpon>ImportPgnDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameFileFormat.cs" />
     <Compile Include="GameParser.cs" />
     <Compile Include="GameParserResult.cs" />
@@ -81,6 +87,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardControl.resx">
       <DependentUpon>BoardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportPgnDialog.resx">
+      <DependentUpon>ImportPgnDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
@@ -110,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\PasteHS.png" />
     <None Include="Resources\DeleteRed.png" />
     <None Include="Resources\saveHS.png" />
     <None Include="Resources\openHS.png" />
