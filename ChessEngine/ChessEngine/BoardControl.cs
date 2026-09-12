@@ -15,11 +15,9 @@ public partial class BoardControl : UserControl
     private readonly List<Point> _blackCoverage = [];
     private readonly List<Point> _selectedPieceCoverage = [];
     private readonly List<Point> _validMoves = [];
-
     private const int BoardLength = 8;
     private const int SpriteColumns = 6;
     private const int SpriteRows = 2;
-
     public DateTime GameDate { get; set; }
     public string WhitePlayerName { get; set; }
     public string BlackPlayerName { get; set; }
@@ -34,6 +32,7 @@ public partial class BoardControl : UserControl
     private BoardData _boardData = new();
     private bool _registerMoveMode;
     private bool _viewFromBlackPerspective;
+    private bool _archonView;
     private Point? _selectedSquare;
 
     public Piece? SelectedPiece { get; set; }
@@ -250,9 +249,11 @@ public partial class BoardControl : UserControl
                     ? lightSquareBrush
                     : darkSquareBrush;
 
+                var bottomLabel = _archonView ? (boardRow + 1).ToString() : rowNames[column].ToString();
+                var leftLabel = _archonView ? rowNames[column].ToString() : (boardRow + 1).ToString();
                 var label = displayRow == BoardLength - 1
-                    ? $"{rowNames[column]}{(displayColumn == 0 ? (boardRow + 1).ToString() : "")}"
-                    : displayColumn == 0 ? $"{boardRow + 1}" : "";
+                    ? bottomLabel + (displayColumn == 0 ? leftLabel : "")
+                    : displayColumn == 0 ? leftLabel : "";
 
                 if (label.Length > 0)
                     e.Graphics.DrawString(label, Font, squareBrush,
@@ -262,6 +263,20 @@ public partial class BoardControl : UserControl
         }
 
         e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, textHeight + 2, textHeight + 2);
+        if (_archonView)
+        {
+            var leftName = _viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName;
+            var rightName = _viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName;
+            e.Graphics.DrawString(leftName, Font,
+                _viewFromBlackPerspective ? Brushes.Black : Brushes.White,
+                boardLeft + 2, boardTop + boardSize - 2 * textHeight - 2);
+            e.Graphics.DrawString(rightName, Font,
+                _viewFromBlackPerspective ? Brushes.White : Brushes.Black,
+                boardLeft + boardSize - e.Graphics.MeasureString(rightName, Font).Width - 2,
+                boardTop + boardSize - 2 * textHeight - 2);
+            return;
+        }
+
         e.Graphics.DrawString(_viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName, Font,
             _viewFromBlackPerspective ? Brushes.White : Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
         e.Graphics.DrawString(_viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName, Font,
@@ -765,17 +780,27 @@ public partial class BoardControl : UserControl
 
     // State, selections and coverage use board coordinates (A1 = 0,0).
     // Only rendering and hit testing translate from the displayed grid.
-    private Point DisplayToBoardSquare(int column, int row) =>
-        _viewFromBlackPerspective
+    private Point DisplayToBoardSquare(int column, int row)
+    {
+        // A clockwise quarter turn puts White on the left; Black's perspective
+        // adds a half turn. Pieces stay upright because only squares are mapped.
+        if (_archonView)
+            return _viewFromBlackPerspective
+                ? new Point(BoardLength - 1 - row, BoardLength - 1 - column)
+                : new Point(row, column);
+
+        return _viewFromBlackPerspective
             ? new Point(BoardLength - 1 - column, row)
             : new Point(column, BoardLength - 1 - row);
+    }
 
-    public void SetPerspective(bool viewFromBlackPerspective)
+    public void SetPerspective(bool viewFromBlackPerspective, bool archonView)
     {
-        if (_viewFromBlackPerspective == viewFromBlackPerspective)
+        if (_viewFromBlackPerspective == viewFromBlackPerspective && _archonView == archonView)
             return;
 
         _viewFromBlackPerspective = viewFromBlackPerspective;
+        _archonView = archonView;
         Invalidate();
     }
 }

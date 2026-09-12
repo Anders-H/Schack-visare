@@ -32,6 +32,8 @@
             this.txtPgnSource = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtChessEngineFormat = new System.Windows.Forms.TextBox();
+            this.btnOk = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -68,11 +70,31 @@
             this.txtChessEngineFormat.Size = new System.Drawing.Size(808, 20);
             this.txtChessEngineFormat.TabIndex = 3;
             // 
+            // btnOk
+            // 
+            this.btnOk.Location = new System.Drawing.Point(652, 200);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(75, 23);
+            this.btnOk.TabIndex = 4;
+            this.btnOk.Text = "OK";
+            this.btnOk.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(732, 200);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // ImportPgnDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 365);
+            this.ClientSize = new System.Drawing.Size(816, 229);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtChessEngineFormat);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPgnSource);
@@ -95,5 +117,7 @@
         private System.Windows.Forms.TextBox txtPgnSource;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtChessEngineFormat;
+        private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

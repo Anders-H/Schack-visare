@@ -17,6 +17,7 @@ public partial class MainWindow : Form
     private readonly Timer _playbackTimer = new();
     private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
+    private bool _archonView;
     private MoveList Moves { get; set; }
     private string GameName { get; set; }
 
@@ -33,6 +34,7 @@ public partial class MainWindow : Form
         CurrentMove = -1;
         Filename = "";
         GameName = "";
+        _archonView = false;
         ResizeBoard();
         UpdateControls();
     }
@@ -467,7 +469,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         if (!CheckGame(out var errorMessage))
         {
-            if (MessageBox.Show(this, $@"The game is not in a valid state, and will not be able to load again. {errorMessage} Do you want to save it anyway?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            var m = $@"The game is not in a valid state, and will not be able to load again. {errorMessage} Do you want to save it anyway?";
+
+            if (MessageBox.Show(this, m, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return false;
         }
 
@@ -693,7 +697,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         fromBlacksPerspectiveToolStripMenuItem.Checked = false;
 
         if (fromWhite != !ViewFromBlacksPerspective)
-            boardControl1.SetPerspective(ViewFromBlacksPerspective);
+            boardControl1.SetPerspective(ViewFromBlacksPerspective, _archonView);
     }
 
     private void fromBlacksPerspectiveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -703,7 +707,14 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         fromBlacksPerspectiveToolStripMenuItem.Checked = true;
 
         if (fromBlack != ViewFromBlacksPerspective)
-            boardControl1.SetPerspective(ViewFromBlacksPerspective);
+            boardControl1.SetPerspective(ViewFromBlacksPerspective, _archonView);
+    }
+
+    private void archonViewToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        archonViewToolStripMenuItem.Checked = !archonViewToolStripMenuItem.Checked;
+        _archonView = archonViewToolStripMenuItem.Checked;
+        boardControl1.SetPerspective(ViewFromBlacksPerspective, _archonView);
     }
 
     private void portableGameNotationPGNToolStripMenuItem_Click(object sender, EventArgs e)
