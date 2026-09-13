@@ -47,17 +47,19 @@
             // 
             // txtPgnSource
             // 
+            this.txtPgnSource.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPgnSource.Location = new System.Drawing.Point(4, 20);
             this.txtPgnSource.Multiline = true;
             this.txtPgnSource.Name = "txtPgnSource";
-            this.txtPgnSource.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.txtPgnSource.Size = new System.Drawing.Size(808, 132);
+            this.txtPgnSource.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtPgnSource.Size = new System.Drawing.Size(880, 188);
             this.txtPgnSource.TabIndex = 1;
+            this.txtPgnSource.Validating += new System.ComponentModel.CancelEventHandler(this.txtPgnSource_Validating);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 156);
+            this.label2.Location = new System.Drawing.Point(4, 212);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(110, 13);
             this.label2.TabIndex = 2;
@@ -65,23 +67,26 @@
             // 
             // txtChessEngineFormat
             // 
-            this.txtChessEngineFormat.Location = new System.Drawing.Point(4, 172);
+            this.txtChessEngineFormat.Location = new System.Drawing.Point(4, 228);
             this.txtChessEngineFormat.Name = "txtChessEngineFormat";
-            this.txtChessEngineFormat.Size = new System.Drawing.Size(808, 20);
+            this.txtChessEngineFormat.Size = new System.Drawing.Size(880, 20);
             this.txtChessEngineFormat.TabIndex = 3;
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(652, 200);
+            this.btnOk.Enabled = false;
+            this.btnOk.Location = new System.Drawing.Point(728, 256);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 4;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(732, 200);
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(808, 256);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 5;
@@ -90,9 +95,11 @@
             // 
             // ImportPgnDialog
             // 
+            this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 229);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(888, 284);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtChessEngineFormat);

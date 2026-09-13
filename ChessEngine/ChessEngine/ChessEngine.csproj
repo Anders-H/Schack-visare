@@ -65,6 +65,7 @@
     <Compile Include="Dialogs\ImportPgnDialog.Designer.cs">
       <DependentUpon>ImportPgnDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExternalParsers\PgnParser.cs" />
     <Compile Include="GameFileFormat.cs" />
     <Compile Include="GameParser.cs" />
     <Compile Include="GameParserResult.cs" />

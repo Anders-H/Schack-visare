@@ -5,6 +5,7 @@ using System.IO;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
+using ChessEngine.Dialogs;
 using ChessEngine.Events;
 using ChessEngine.Moves;
 using ChessEngine.Pieces;
@@ -719,27 +720,14 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void portableGameNotationPGNToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using var dialog = new OpenFileDialog();
-        dialog.CheckFileExists = true;
-        dialog.CheckPathExists = true;
-        dialog.DefaultExt = "txt";
-        dialog.Filter = @"Chess game files (*.txt)|*.txt|All files (*.*)|*.*";
-        dialog.Multiselect = false;
-        dialog.RestoreDirectory = true;
-        dialog.Title = @"Open chess game";
-
-        if (!string.IsNullOrWhiteSpace(Filename))
-            dialog.FileName = Filename;
+        using var dialog = new ImportPgnDialog();
 
         if (dialog.ShowDialog(this) != DialogResult.OK)
             return;
 
         try
         {
-            var contents = File.ReadAllText(
-                dialog.FileName,
-                new UTF8Encoding(false, true));
-
+            var contents = dialog.Contents;
             var parser = new GameParser(contents);
             var result = parser.Parse();
 
@@ -752,7 +740,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                 boardControl1.WhitePlayerName = result.WhitePlayerName;
                 boardControl1.BlackPlayerName = result.BlackPlayerName;
                 Moves = result.Moves;
-                Filename = dialog.FileName;
+                Filename = "";
                 RenderMoveList();
                 GoToMove(-1);
                 var message = result.Message.Trim();
@@ -778,7 +766,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                     MessageBoxIcon.Error);
             }
 
-            lblStatus.Text = $@"Read {Path.GetFileName(dialog.FileName)} ({contents.Length} characters).";
+            lblStatus.Text = $@"Read PGN from clipboard ""{GameName}"" ({contents.Length} characters).";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
         {
