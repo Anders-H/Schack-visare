@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using ChessEngine.Moves;
@@ -22,6 +22,7 @@ public class BoardData
 
     private readonly Piece?[,] _board;
     private readonly List<Piece> _deadPieces;
+    private Move? _lastMove;
     public Piece? this[int row, int column] => _board[row, column];
 
     public BoardData()
@@ -68,15 +69,27 @@ public class BoardData
         if (piece.Value.PieceId != move.PieceId || piece.Value.Type != move.Piece || piece.Value.Color != move.Color)
             throw new InvalidOperationException($@"The piece at {start} does not match move {move.MoveNumber}.");
 
+        var promotes = piece.Value.Type == PieceType.Pawn && end.Y == (piece.Value.Color == PlayerColor.White ? 7 : 0);
+        if (move.Promotion.HasValue && (!promotes || !Move.IsPromotionPiece(move.Promotion.Value)))
+            throw new InvalidOperationException("Invalid promotion for this move.");
+
         if (piece.Value.Type == PieceType.King &&
             start.Y == end.Y &&
             Math.Abs(start.X - end.X) == 2)
         {
             ApplyCastlingMove(piece.Value, move);
+            _lastMove = move;
             return;
         }
 
         var capturedPiece = _board[end.Y, end.X];
+        var enPassant = piece.Value.Type == PieceType.Pawn && start.X != end.X && !capturedPiece.HasValue;
+        if (enPassant)
+        {
+            if (!CanEnPassant(piece.Value, start, end))
+                throw new InvalidOperationException("Invalid en passant capture.");
+            capturedPiece = _board[start.Y, end.X];
+        }
 
         if (capturedPiece.HasValue)
         {
@@ -86,9 +99,31 @@ public class BoardData
         }
 
         var updatedPiece = piece.Value;
+        if (promotes)
+            updatedPiece = new Piece(updatedPiece.PieceId, move.Promotion ?? PieceType.Queen, updatedPiece.Color)
+            {
+                MoveCount = updatedPiece.MoveCount,
+                DiedAtMove = updatedPiece.DiedAtMove
+            };
         updatedPiece.IncreaseMoveCount();
+        if (enPassant) _board[start.Y, end.X] = null;
         _board[start.Y, start.X] = null;
         _board[end.Y, end.X] = updatedPiece;
+        _lastMove = move;
+    }
+
+    public bool CanEnPassant(Piece piece, System.Drawing.Point start, System.Drawing.Point end)
+    {
+        var direction = piece.Color == PlayerColor.White ? 1 : -1;
+        if (piece.Type != PieceType.Pawn || start.Y != (piece.Color == PlayerColor.White ? 4 : 3) ||
+            end.Y != start.Y + direction || Math.Abs(end.X - start.X) != 1 ||
+            end.X < 0 || end.X > 7 || _board[end.Y, end.X].HasValue || _lastMove == null)
+            return false;
+        var captured = _board[start.Y, end.X];
+        return captured is { Type: PieceType.Pawn } && captured.Value.Color != piece.Color &&
+            _lastMove.PieceId == captured.Value.PieceId && _lastMove.Piece == PieceType.Pawn &&
+            _lastMove.EndPoint == new System.Drawing.Point(end.X, start.Y) &&
+            _lastMove.StartPoint == new System.Drawing.Point(end.X, start.Y + 2 * direction);
     }
 
     private void ApplyCastlingMove(Piece king, Move move)

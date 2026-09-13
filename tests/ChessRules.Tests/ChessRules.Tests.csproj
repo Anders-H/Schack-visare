@@ -3,10 +3,10 @@
   <ItemGroup>
     <Compile Include="../../ChessEngine/ChessEngine/ChessRules.cs" Link="ChessRules.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/BoardData.cs" Link="BoardData.cs" />
-    <Compile Include="../../ChessEngine/ChessEngine/Piece.cs" Link="Piece.cs" />
-    <Compile Include="../../ChessEngine/ChessEngine/PieceType.cs" Link="PieceType.cs" />
-    <Compile Include="../../ChessEngine/ChessEngine/PlayerColor.cs" Link="PlayerColor.cs" />
-    <Compile Include="../../ChessEngine/ChessEngine/Move.cs" Link="Move.cs" />
-    <Compile Include="../../ChessEngine/ChessEngine/MoveList.cs" Link="MoveList.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Pieces/Piece.cs" Link="Piece.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Pieces/PieceType.cs" Link="PieceType.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Pieces/PlayerColor.cs" Link="PlayerColor.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Moves/Move.cs" Link="Move.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Moves/MoveList.cs" Link="MoveList.cs" />
   </ItemGroup>
 </Project>

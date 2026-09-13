@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
@@ -290,7 +290,9 @@
 
     function buildMoveHistory() {
       let currentBoard = INITIAL_BOARD.map(row => [...row]);
+      moveHistory = [];
       moveHistory.push(currentBoard.map(row => [...row]));
+      let previous = null;
 
       for (let move of movesList) {
         const [fromStr, toStr] = move.split('-');
@@ -300,6 +302,16 @@
         const to = parseCoordinate(toStr);
 
         let piece = currentBoard[from.row][from.col];
+        const direction = piece === 'P' ? -1 : 1;
+        if ((piece === 'P' || piece === 'p') && from.row === (piece === 'P' ? 3 : 4) &&
+            to.row === from.row + direction && Math.abs(to.col - from.col) === 1 &&
+            !currentBoard[to.row][to.col] && previous &&
+            previous.piece === (piece === 'P' ? 'p' : 'P') &&
+            previous.to.row === from.row && previous.to.col === to.col &&
+            previous.from.col === to.col && previous.from.row === from.row + 2 * direction &&
+            currentBoard[from.row][to.col] === previous.piece) {
+          currentBoard[from.row][to.col] = '';
+        }
         
         currentBoard[from.row][from.col] = '';
         currentBoard[to.row][to.col] = piece;
@@ -318,8 +330,11 @@
         }
 
         // Bondepromovorering
-        if (piece === 'P' && to.row === 0) currentBoard[to.row][to.col] = 'Q';
-        if (piece === 'p' && to.row === 7) currentBoard[to.row][to.col] = 'q';
+        const promotion = /=([QRBN])$/i.exec(move.trim());
+        const promotedPiece = promotion ? promotion[1].toUpperCase() : 'Q';
+        if (piece === 'P' && to.row === 0) currentBoard[to.row][to.col] = promotedPiece;
+        if (piece === 'p' && to.row === 7) currentBoard[to.row][to.col] = promotedPiece.toLowerCase();
+        previous = { from, to, piece };
 
         moveHistory.push(currentBoard.map(row => [...row]));
       }

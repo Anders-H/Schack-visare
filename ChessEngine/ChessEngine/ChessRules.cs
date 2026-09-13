@@ -17,7 +17,7 @@ public class ChessRules
         _moves = moves ?? throw new ArgumentNullException(nameof(moves));
     }
 
-    public bool IsMoveLegal(Piece piece, Point startPoint, Point endPoint)
+    public bool IsMoveLegal(Piece piece, Point startPoint, Point endPoint, PieceType? promotion = null)
     {
         if (!Inside(startPoint) || !Inside(endPoint) || startPoint == endPoint || piece.Color != (_isWhitesTurn ? PlayerColor.White : PlayerColor.Black))
             return false;
@@ -51,6 +51,9 @@ public class ChessRules
             return false;
 
         piece = actual.Value;
+        if (promotion.HasValue && (!Move.IsPromotionPiece(promotion.Value) || piece.Type != PieceType.Pawn ||
+            endPoint.Y != (piece.Color == PlayerColor.White ? 7 : 0)))
+            return false;
         var target = board[endPoint.Y, endPoint.X];
 
         if (target.HasValue && (target.Value.Color == piece.Color || target.Value.Type == PieceType.King))
@@ -74,17 +77,19 @@ public class ChessRules
             var direction = piece.Color == PlayerColor.White ? 1 : -1;
             var homeRow = piece.Color == PlayerColor.White ? 1 : 6;
 
-            if (endPoint.Y == 0 || endPoint.Y == 7)
-                return false;
-
             if (dx == 0)
             {
                 if (target.HasValue || !(dy == direction || (dy == 2 * direction && startPoint.Y == homeRow && piece.MoveCount == 0 && !board[startPoint.Y + direction, startPoint.X].HasValue)))
                     return false;
             }
-            else if (Math.Abs(dx) != 1 || dy != direction || !target.HasValue)
+            else if (Math.Abs(dx) != 1 || dy != direction)
             {
                 return false;
+            }
+            else if (!target.HasValue)
+            {
+                if (!position.CanEnPassant(piece, startPoint, endPoint)) return false;
+                board[startPoint.Y, endPoint.X] = null;
             }
         }
         else if (!Attacks(board, piece, startPoint, endPoint))

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Drawing;
 using System.IO;
@@ -145,6 +145,30 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         }
 
         var moveIndex = Moves.Count;
+        PieceType? promotion = null;
+        if (movedPiece.Value.Type == PieceType.Pawn && e.EndPoint.Y == (movedPiece.Value.Color == PlayerColor.White ? 7 : 0))
+        {
+            using var dialog = new Form
+            {
+                Text = "Promote pawn", ClientSize = new Size(270, 110),
+                FormBorderStyle = FormBorderStyle.FixedDialog, StartPosition = FormStartPosition.CenterParent,
+                MinimizeBox = false, MaximizeBox = false
+            };
+            var choices = new ComboBox { Left = 15, Top = 15, Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
+            choices.Items.AddRange(new object[] { PieceType.Queen, PieceType.Rook, PieceType.Bishop, PieceType.Knight });
+            choices.SelectedIndex = 0;
+            var ok = new Button { Text = "OK", Left = 95, Top = 65, DialogResult = DialogResult.OK };
+            var cancel = new Button { Text = "Cancel", Left = 180, Top = 65, DialogResult = DialogResult.Cancel };
+            dialog.Controls.AddRange(new Control[] { choices, ok, cancel });
+            dialog.AcceptButton = ok;
+            dialog.CancelButton = cancel;
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+            {
+                cancelRegisterMoveToolStripMenuItem_Click(sender, EventArgs.Empty);
+                return;
+            }
+            promotion = (PieceType)choices.SelectedItem;
+        }
 
         Moves.Add(new Move(
             e.StartPoint,
@@ -152,7 +176,8 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             movedPiece.Value.Type,
             movedPiece.Value.Color,
             movedPiece.Value.PieceId,
-            moveIndex));
+            moveIndex,
+            promotion));
 
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();

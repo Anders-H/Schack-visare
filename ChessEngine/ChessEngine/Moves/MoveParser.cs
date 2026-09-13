@@ -24,12 +24,12 @@ public class MoveParser
     {
         var source = _source.Trim();
 
-        if (source.Length != 5 || source[2] != '-')
+        if ((source.Length != 5 && source.Length != 7) || source[2] != '-')
         {
             return new MoveParserResult(
                 false,
                 null,
-                @"Expected a move in the form E2-E4.");
+                @"Expected a move in the form E2-E4 or E7-E8=Q.");
         }
 
         if (!TryParseSquare(source.Substring(0, 2), out var startPoint))
@@ -52,7 +52,15 @@ public class MoveParser
             ? PlayerColor.White
             : PlayerColor.Black;
 
-        var move = new Move(startPoint, endPoint, color, _moveNumber);
+        PieceType? promotion = null;
+        if (source.Length == 7)
+        {
+            if (source[5] != '=' || endPoint.Y != (color == PlayerColor.White ? 7 : 0))
+                return new MoveParserResult(false, null, "Invalid promotion suffix or destination.");
+            try { promotion = Move.ParsePromotion(source[6]); }
+            catch (FormatException ex) { return new MoveParserResult(false, null, ex.Message); }
+        }
+        var move = new Move(startPoint, endPoint, color, _moveNumber, promotion);
         return new MoveParserResult(true, move, "");
     }
 

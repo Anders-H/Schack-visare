@@ -116,8 +116,14 @@ public class PgnParser
         FormatException Error(string reason) => new($"Move {moves.Count / 2 + 1}{(moves.Count % 2 == 0 ? "." : "...")} {token}: {reason}");
         var san = Regex.Replace(token, @"[+#?!]+$", "");
         
+        PieceType? promotion = null;
         if (san.Contains("="))
-            throw Error("promotion is not supported by ChessEngine.");
+        {
+            if (san.Length < 3 || san[san.Length - 2] != '=') throw Error("invalid promotion notation.");
+            try { promotion = Move.ParsePromotion(san[san.Length - 1]); }
+            catch (FormatException ex) { throw Error(ex.Message); }
+            san = san.Substring(0, san.Length - 2);
+        }
         
         var color = moves.Count % 2 == 0 ? PlayerColor.White : PlayerColor.Black;
         var rules = new ChessRules(color == PlayerColor.White, moves);
@@ -125,6 +131,7 @@ public class PgnParser
         
         if (castle == "O-O" || castle == "O-O-O")
         {
+            if (promotion.HasValue) throw Error("castling cannot promote.");
             var start = new Point(4, color == PlayerColor.White ? 0 : 7);
             var end = new Point(castle == "O-O" ? 6 : 2, start.Y);
             var king = board[start.Y, start.X];
@@ -156,13 +163,11 @@ public class PgnParser
         var square = match.Groups["end"].Value;
         var target = new Point(square[0] - 'a', square[1] - '1');
         
-        if (type == PieceType.Pawn && (target.Y == 0 || target.Y == 7))
-            throw Error("promotion is not supported by ChessEngine.");
+        var promotes = type == PieceType.Pawn && target.Y == (color == PlayerColor.White ? 7 : 0);
+        if (promotion.HasValue != promotes)
+            throw Error("promotion must specify Q, R, B or N on the pawn's last rank.");
         
-        if (capture && !board[target.Y, target.X].HasValue && type == PieceType.Pawn)
-            throw Error("capture on an empty square; en passant is not supported by ChessEngine.");
-        
-        if (capture != board[target.Y, target.X].HasValue)
+        if (capture != board[target.Y, target.X].HasValue && !(capture && type == PieceType.Pawn))
             throw Error("capture notation does not match the position.");
         
         Move? candidate = null;
@@ -178,13 +183,13 @@ public class PgnParser
                 
                 var start = new Point(x, y);
                 
-                if (!rules.IsMoveLegal(piece.Value, start, target))
+                if (!rules.IsMoveLegal(piece.Value, start, target, promotion))
                     continue;
                 
                 if (candidate != null)
                     throw Error("ambiguous move; specify the origin file or rank.");
                 
-                candidate = new Move(start, target, type, color, piece.Value.PieceId, moves.Count);
+                candidate = new Move(start, target, type, color, piece.Value.PieceId, moves.Count, promotion);
             }
         }
 

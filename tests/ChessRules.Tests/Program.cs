@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using ChessEngine;
+using ChessEngine.Moves;
 
 var checks = 0;
 Point Square(string s) => new(s[0] - 'a', s[1] - '1');
@@ -52,7 +53,13 @@ Check("Pinned piece", false, "e2", "f2", true, "e7e6", "a8e3");
 Check("Ignore check", false, "a2", "a3", true, "e2e4", "e7e6", "a8e2");
 Check("Capture checking rook", true, "e1", "e2", true, "e2e4", "e7e6", "a8e2");
 Check("King enters pawn attack", false, "e1", "e2", true, "e2e4", "d7d3");
-Check("Promotion unsupported", false, "a7", "b8", true, "a2a7");
-Check("En passant unsupported", false, "e5", "d6", true, "e2e5", "d7d5");
+Check("Promotion", true, "a7", "b8", true, "a2a7");
+Check("En passant", true, "e5", "d6", true, "e2e5", "d7d5");
 Console.WriteLine($"Passed {checks} checks.");
 
+
+Check("Expired en passant", false, "e5", "d6", true, "e2e5", "d7d5", "a2a3");
+Check("One-step pawn cannot be captured en passant", false, "e5", "d6", true, "e2e5", "d7d6", "d6d5");
+Check("En passant exposes king horizontally", false, "g5", "f6", true, "e1h5", "g2g5", "a8a5", "f7f5");
+Check("En passant captures checking pawn", true, "e5", "d6", true, "e1e4", "e2e5", "d7d5");
+Console.WriteLine($"Passed {checks} rule checks.");

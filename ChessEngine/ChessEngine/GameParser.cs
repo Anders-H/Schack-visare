@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Globalization;
 using System.Text;
@@ -42,7 +42,6 @@ public class GameParser
 
         if (parts.Length > 4)
         {
-            var errors = 0;
             var moveNumber = 0;
 
             for (var i = 4; i < parts.Length; i++)
@@ -62,13 +61,12 @@ public class GameParser
                 else
                 {
                     s.AppendLine($"Move {moveNumber + 1} could not be parsed: {parseResult.Message}");
-                    errors++;
+                    // Skipping a malformed move would corrupt turn order and special-move history.
+                    return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, moves, s.ToString().Trim());
                 }
 
                 moveNumber++;
 
-                if (errors >= 3)
-                    return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, moves, s.ToString().Trim());
             }
         }
 
@@ -107,7 +105,8 @@ public class GameParser
                 piece.Value.Type,
                 piece.Value.Color,
                 piece.Value.PieceId,
-                parsedMove.MoveNumber);
+                parsedMove.MoveNumber,
+                parsedMove.Promotion);
 
             try
             {
