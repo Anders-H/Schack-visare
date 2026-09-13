@@ -84,6 +84,7 @@ public class BoardData
 
         var capturedPiece = _board[end.Y, end.X];
         var enPassant = piece.Value.Type == PieceType.Pawn && start.X != end.X && !capturedPiece.HasValue;
+
         if (enPassant)
         {
             if (!CanEnPassant(piece.Value, start, end))
