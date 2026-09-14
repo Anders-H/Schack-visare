@@ -69,6 +69,7 @@
             // 
             this.txtChessEngineFormat.Location = new System.Drawing.Point(4, 228);
             this.txtChessEngineFormat.Name = "txtChessEngineFormat";
+            this.txtChessEngineFormat.ReadOnly = true;
             this.txtChessEngineFormat.Size = new System.Drawing.Size(880, 20);
             this.txtChessEngineFormat.TabIndex = 3;
             // 

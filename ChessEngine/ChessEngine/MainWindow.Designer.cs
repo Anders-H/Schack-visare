@@ -47,6 +47,7 @@ namespace ChessEngine
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromWhitesPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromBlacksPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.archonViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.showWhiteCoverageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +89,6 @@ namespace ChessEngine
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -166,6 +166,7 @@ namespace ChessEngine
             this.forsythEdwardsNotationFENToolStripMenuItem.Name = "forsythEdwardsNotationFENToolStripMenuItem";
             this.forsythEdwardsNotationFENToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
             this.forsythEdwardsNotationFENToolStripMenuItem.Text = "Forsyth-Edwards Notation (FEN)...";
+            this.forsythEdwardsNotationFENToolStripMenuItem.Click += new System.EventHandler(this.forsythEdwardsNotationFENToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -224,6 +225,11 @@ namespace ChessEngine
             this.fromBlacksPerspectiveToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.fromBlacksPerspectiveToolStripMenuItem.Text = "From black\'s perspective";
             this.fromBlacksPerspectiveToolStripMenuItem.Click += new System.EventHandler(this.fromBlacksPerspectiveToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(228, 6);
             // 
             // archonViewToolStripMenuItem
             // 
@@ -604,11 +610,6 @@ namespace ChessEngine
             this.boardControl1.TabIndex = 2;
             this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(228, 6);
             // 
             // MainWindow
             // 

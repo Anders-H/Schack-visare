@@ -804,6 +804,66 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
+    }
 
+    private void forsythEdwardsNotationFENToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        using var dialog = new ImportFenDialog();
+
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+            return;
+
+        try
+        {
+            var contents = dialog.Contents;
+            var parser = new GameParser(contents);
+            var result = parser.Parse();
+
+            if (result.Success)
+            {
+                _playbackTimer.Enabled = false;
+                _registerMoveMode = false;
+                GameName = result.GameName;
+                boardControl1.GameDate = result.GameDate;
+                boardControl1.WhitePlayerName = result.WhitePlayerName;
+                boardControl1.BlackPlayerName = result.BlackPlayerName;
+                Moves = result.Moves;
+                Filename = "";
+                RenderMoveList();
+                GoToMove(-1);
+                var message = result.Message.Trim();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                    MessageBox.Show(
+                        this,
+                        message,
+                        Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                if (listView1.Items.Count > 0)
+                    listView1.Items[0].EnsureVisible();
+            }
+            else
+            {
+                MessageBox.Show(
+                    this,
+                    result.Message,
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
+            lblStatus.Text = $@"Read FEN from clipboard ""{GameName}"" ({contents.Length} characters).";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
+        {
+            MessageBox.Show(
+                this,
+                $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 }

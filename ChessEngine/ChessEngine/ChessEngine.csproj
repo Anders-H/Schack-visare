@@ -59,6 +59,12 @@
     </Compile>
     <Compile Include="BoardData.cs" />
     <Compile Include="ChessRules.cs" />
+    <Compile Include="Dialogs\ImportFenDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportFenDialog.Designer.cs">
+      <DependentUpon>ImportFenDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ImportPgnDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,7 @@
     <Compile Include="Dialogs\PromotePawnDialog.Designer.cs">
       <DependentUpon>PromotePawnDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExternalParsers\FenParser.cs" />
     <Compile Include="ExternalParsers\PgnParser.cs" />
     <Compile Include="GameFileFormat.cs" />
     <Compile Include="GameParser.cs" />
@@ -94,6 +101,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardControl.resx">
       <DependentUpon>BoardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportFenDialog.resx">
+      <DependentUpon>ImportFenDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ImportPgnDialog.resx">
       <DependentUpon>ImportPgnDialog.cs</DependentUpon>

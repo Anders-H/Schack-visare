@@ -13,7 +13,10 @@ public class PgnParser
 {
     private readonly string _source;
 
-    public PgnParser(string source) { _source = source; }
+    public PgnParser(string source)
+    {
+        _source = source;
+    }
 
     public bool Parse(out string message, out string contents)
     {
