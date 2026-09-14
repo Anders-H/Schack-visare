@@ -89,6 +89,7 @@ public class BoardData
         {
             if (!CanEnPassant(piece.Value, start, end))
                 throw new InvalidOperationException("Invalid en passant capture.");
+
             capturedPiece = _board[start.Y, end.X];
         }
 
@@ -100,14 +101,21 @@ public class BoardData
         }
 
         var updatedPiece = piece.Value;
+        
         if (promotes)
+        {
             updatedPiece = new Piece(updatedPiece.PieceId, move.Promotion ?? PieceType.Queen, updatedPiece.Color)
             {
                 MoveCount = updatedPiece.MoveCount,
                 DiedAtMove = updatedPiece.DiedAtMove
             };
+        }
+
         updatedPiece.IncreaseMoveCount();
-        if (enPassant) _board[start.Y, end.X] = null;
+        
+        if (enPassant)
+            _board[start.Y, end.X] = null;
+        
         _board[start.Y, start.X] = null;
         _board[end.Y, end.X] = updatedPiece;
         _lastMove = move;

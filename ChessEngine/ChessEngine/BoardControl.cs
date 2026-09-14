@@ -262,25 +262,29 @@ public partial class BoardControl : UserControl
             }
         }
 
-        e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, textHeight + 2, textHeight + 2);
         if (_archonView)
         {
+            // Game date a bit closer to the upper left corner in archon view.
+            e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, 2, 2);
             var leftName = _viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName;
             var rightName = _viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName;
+
             e.Graphics.DrawString(leftName, Font,
                 _viewFromBlackPerspective ? Brushes.Black : Brushes.White,
                 boardLeft + 2, boardTop + boardSize - 2 * textHeight - 2);
+            
             e.Graphics.DrawString(rightName, Font,
                 _viewFromBlackPerspective ? Brushes.White : Brushes.Black,
                 boardLeft + boardSize - e.Graphics.MeasureString(rightName, Font).Width - 2,
                 boardTop + boardSize - 2 * textHeight - 2);
+            
             return;
         }
 
-        e.Graphics.DrawString(_viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName, Font,
-            _viewFromBlackPerspective ? Brushes.White : Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
-        e.Graphics.DrawString(_viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName, Font,
-            _viewFromBlackPerspective ? Brushes.Black : Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
+        // Game date on original place.
+        e.Graphics.DrawString($"{GameDate:yyyy-MM-dd}", Font, Brushes.Black, textHeight + 2, textHeight + 2);
+        e.Graphics.DrawString(_viewFromBlackPerspective ? WhitePlayerName : BlackPlayerName, Font, _viewFromBlackPerspective ? Brushes.White : Brushes.Black, textHeight + 2, textHeight + textHeight + 2);
+        e.Graphics.DrawString(_viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName, Font, _viewFromBlackPerspective ? Brushes.Black : Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
     }
 
     private static void DrawPiece(Graphics graphics, PieceType pieceType, PlayerColor color, RectangleF square)

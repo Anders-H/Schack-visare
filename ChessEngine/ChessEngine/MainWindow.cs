@@ -146,28 +146,19 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
         var moveIndex = Moves.Count;
         PieceType? promotion = null;
+
         if (movedPiece.Value.Type == PieceType.Pawn && e.EndPoint.Y == (movedPiece.Value.Color == PlayerColor.White ? 7 : 0))
         {
-            using var dialog = new Form
-            {
-                Text = "Promote pawn", ClientSize = new Size(270, 110),
-                FormBorderStyle = FormBorderStyle.FixedDialog, StartPosition = FormStartPosition.CenterParent,
-                MinimizeBox = false, MaximizeBox = false
-            };
-            var choices = new ComboBox { Left = 15, Top = 15, Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
-            choices.Items.AddRange(new object[] { PieceType.Queen, PieceType.Rook, PieceType.Bishop, PieceType.Knight });
-            choices.SelectedIndex = 0;
-            var ok = new Button { Text = "OK", Left = 95, Top = 65, DialogResult = DialogResult.OK };
-            var cancel = new Button { Text = "Cancel", Left = 180, Top = 65, DialogResult = DialogResult.Cancel };
-            dialog.Controls.AddRange(new Control[] { choices, ok, cancel });
-            dialog.AcceptButton = ok;
-            dialog.CancelButton = cancel;
+            using var dialog = new PromotePawnDialog();
+            dialog.IsWhitesTurn = movedPiece.Value.Color == PlayerColor.White;
+
             if (dialog.ShowDialog(this) != DialogResult.OK)
             {
                 cancelRegisterMoveToolStripMenuItem_Click(sender, EventArgs.Empty);
                 return;
             }
-            promotion = (PieceType)choices.SelectedItem;
+
+            promotion = dialog.SelectedPieceType;
         }
 
         Moves.Add(new Move(
@@ -182,7 +173,18 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();
         RenderMoveList();
-        GoToMove(moveIndex);
+
+        try
+        {
+            GoToMove(moveIndex);
+        }
+        catch (Exception exception)
+        {
+            listView1.Items.RemoveAt(listView1.Items.Count - 1);
+            Moves.RemoveAt(Moves.Count - 1);
+            lastToolStripMenuItem_Click(sender, e);
+            MessageBox.Show(this, exception.Message, @"This move cannot be stored", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private bool CheckMove(Piece piece, Point startPoint, Point endPoint, out string errorMessage)
