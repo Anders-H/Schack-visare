@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\rotate.png" />
     <None Include="Resources\PasteHS.png" />
     <None Include="Resources\DeleteRed.png" />
     <None Include="Resources\saveHS.png" />

@@ -904,4 +904,36 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                 MessageBoxIcon.Error);
         }
     }
+
+    private void btnRotateBoard_Click(object sender, EventArgs e)
+    {
+        var w = fromWhitesPerspectiveToolStripMenuItem.Checked;
+        var b = fromBlacksPerspectiveToolStripMenuItem.Checked;
+        var a = archonViewToolStripMenuItem.Checked;
+
+        if (w && !b && !a)
+        {
+            archonViewToolStripMenuItem_Click(sender, e);
+            return;
+        }
+
+        if (w && !b && a)
+        {
+            archonViewToolStripMenuItem_Click(sender, e);
+            fromBlacksPerspectiveToolStripMenuItem_Click(sender, e);
+            return;
+        }
+
+        if (!w && b && !a)
+        {
+            archonViewToolStripMenuItem_Click(sender, e);
+            return;
+        }
+
+        if (!w && b && a)
+        {
+            archonViewToolStripMenuItem_Click(sender, e);
+            fromWhitesPerspectiveToolStripMenuItem_Click(sender, e);
+        }
+    }
 }
