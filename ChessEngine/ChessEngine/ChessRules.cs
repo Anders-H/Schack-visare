@@ -22,7 +22,7 @@ public class ChessRules
         if (!Inside(startPoint) || !Inside(endPoint) || startPoint == endPoint || piece.Color != (_isWhitesTurn ? PlayerColor.White : PlayerColor.Black))
             return false;
 
-        var position = new BoardData();
+        var position = new BoardData(_moves.InitialPosition);
 
         foreach (var move in _moves)
         {

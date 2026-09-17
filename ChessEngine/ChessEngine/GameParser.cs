@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using ChessEngine.Moves;
+using ChessEngine.ExternalParsers;
 
 namespace ChessEngine;
 
@@ -40,18 +41,32 @@ public class GameParser
             gameDate = DateTime.Now;
         }
 
-        if (parts.Length > 4)
+        var firstMove = 4;
+        if (parts.Length > 4 && parts[4].Trim().StartsWith("FEN ", StringComparison.Ordinal))
+        {
+            try
+            {
+                moves.InitialPosition = new FenParser(parts[4].Trim().Substring(4)).ParsePosition();
+                firstMove = 5;
+            }
+            catch (FormatException ex)
+            {
+                return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, moves, ex.Message);
+            }
+        }
+
+        if (parts.Length > firstMove)
         {
             var moveNumber = 0;
 
-            for (var i = 4; i < parts.Length; i++)
+            for (var i = firstMove; i < parts.Length; i++)
             {
                 var moveSource = parts[i].Trim();
 
                 if (string.IsNullOrWhiteSpace(moveSource))
                     continue;
 
-                var moveParser = new MoveParser(moveSource, moveNumber);
+                var moveParser = new MoveParser(moveSource, moveNumber, moves.InitialPosition?.IsWhitesTurn ?? true);
                 var parseResult = moveParser.Parse();
 
                 if (parseResult.Success && parseResult.Move != null)
@@ -70,8 +85,8 @@ public class GameParser
             }
         }
 
-        var gameData = new BoardData();
-        var completedMoves = new MoveList();
+        var gameData = new BoardData(moves.InitialPosition);
+        var completedMoves = new MoveList { InitialPosition = moves.InitialPosition };
 
         foreach (var parsedMove in moves)
         {

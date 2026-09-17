@@ -3,6 +3,7 @@
   <ItemGroup>
     <Compile Include="../../ChessEngine/ChessEngine/ChessRules.cs" Link="ChessRules.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/BoardData.cs" Link="BoardData.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/GamePosition.cs" Link="GamePosition.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Pieces/Piece.cs" Link="Piece.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Pieces/PieceType.cs" Link="PieceType.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Pieces/PlayerColor.cs" Link="PlayerColor.cs" />

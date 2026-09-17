@@ -82,6 +82,7 @@
     <Compile Include="GameFileFormat.cs" />
     <Compile Include="GameParser.cs" />
     <Compile Include="GameParserResult.cs" />
+    <Compile Include="GamePosition.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -22,6 +22,9 @@ public static class GameFileFormat
         AppendField(result, whitePlayerName, "White player name");
         AppendField(result, blackPlayerName, "Black player name");
 
+        if (moves is MoveList { InitialPosition: { } position })
+            AppendField(result, "FEN " + position.Fen, "Starting position");
+
         foreach (var move in moves)
         {
             result.Append(move.ToString());

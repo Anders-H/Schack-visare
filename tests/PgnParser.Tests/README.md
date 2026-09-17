@@ -12,8 +12,8 @@ för att lösa SAN till ett entydigt lagligt drag, inklusive rockad.
 Schack- och mattsuffix verifieras inte separat. Resultatet lagras inte eftersom
 målformatet saknar ett sådant fält.
 
-En passant och promovering till Q/R/B/N stöds. FEN/SetUp avvisas eftersom
-uppspelningen kräver standardstartpositionen. Flera partier i samma indata avvisas.
+En passant och promovering till Q/R/B/N stöds. PGN-importen avvisar fortfarande
+FEN/SetUp; fristående FEN importeras via FenParser. Flera partier i samma indata avvisas.
 Metadata med semikolon eller radbrytningar avvisas av GameFileFormat.
 Vid fel returneras false, ett felmeddelande och tom contents.
 

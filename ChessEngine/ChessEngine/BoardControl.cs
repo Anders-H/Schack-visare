@@ -98,10 +98,15 @@ public partial class BoardControl : UserControl
     public void BeginMoveRegistration()
     {
         _registerMoveMode = true;
+        var hasSelectedPiece = TryGetSelectedPiece(out var point, out var piece);
         SelectedPiece = null;
         _selectedSquare = null;
         _validMoves.Clear();
         Cursor = Cursors.Cross;
+
+        if (hasSelectedPiece)
+            SelectMoveStart(point, piece);
+
         Invalidate();
     }
 

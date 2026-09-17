@@ -23,12 +23,16 @@ public class BoardData
     private readonly Piece?[,] _board;
     private readonly List<Piece> _deadPieces;
     private Move? _lastMove;
+    private readonly GamePosition? _initialPosition;
     public Piece? this[int row, int column] => _board[row, column];
 
-    public BoardData()
+    public BoardData(GamePosition? initialPosition = null)
     {
-        _board = new Piece?[8, 8];
+        _initialPosition = initialPosition;
+        _board = initialPosition?.CopyBoard() ?? new Piece?[8, 8];
         _deadPieces = [];
+        if (initialPosition != null)
+            return;
         InitializeBackRank(0, PlayerColor.White, 0);
         InitializePawnRank(1, PlayerColor.White, 8);
         InitializeBackRank(7, PlayerColor.Black, 16);
@@ -126,9 +130,13 @@ public class BoardData
         var direction = piece.Color == PlayerColor.White ? 1 : -1;
         if (piece.Type != PieceType.Pawn || start.Y != (piece.Color == PlayerColor.White ? 4 : 3) ||
             end.Y != start.Y + direction || Math.Abs(end.X - start.X) != 1 ||
-            end.X < 0 || end.X > 7 || _board[end.Y, end.X].HasValue || _lastMove == null)
+            end.X < 0 || end.X > 7 || _board[end.Y, end.X].HasValue)
             return false;
         var captured = _board[start.Y, end.X];
+        if (_lastMove == null)
+            return _initialPosition != null && _initialPosition.EnPassantTarget == end &&
+                _initialPosition.IsWhitesTurn == (piece.Color == PlayerColor.White) &&
+                captured is { Type: PieceType.Pawn } && captured.Value.Color != piece.Color;
         return captured is { Type: PieceType.Pawn } && captured.Value.Color != piece.Color &&
             _lastMove.PieceId == captured.Value.PieceId && _lastMove.Piece == PieceType.Pawn &&
             _lastMove.EndPoint == new System.Drawing.Point(end.X, start.Y) &&

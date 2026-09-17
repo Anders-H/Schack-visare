@@ -9,8 +9,9 @@ public class MoveParser
 {
     private readonly string _source;
     private readonly int _moveNumber;
+    private readonly bool _startsWithWhite;
 
-    public MoveParser(string source, int moveNumber)
+    public MoveParser(string source, int moveNumber, bool startsWithWhite = true)
     {
         _source = source ?? throw new ArgumentNullException(nameof(source));
 
@@ -18,6 +19,7 @@ public class MoveParser
             throw new ArgumentOutOfRangeException(nameof(moveNumber));
 
         _moveNumber = moveNumber;
+        _startsWithWhite = startsWithWhite;
     }
 
     public MoveParserResult Parse()
@@ -48,7 +50,7 @@ public class MoveParser
                 $@"Invalid end square '{source.Substring(3, 2)}'.");
         }
 
-        var color = _moveNumber % 2 == 0
+        var color = (_moveNumber % 2 == 0) == _startsWithWhite
             ? PlayerColor.White
             : PlayerColor.Black;
 

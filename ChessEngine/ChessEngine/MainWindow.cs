@@ -67,10 +67,7 @@ public partial class MainWindow : Form
     {
         if (_registerMoveMode)
         {
-            var turn = "white";
-
-            if (listView1.Items.Count > 0)
-                turn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1 ? "white" : "black";
+            var turn = Moves.IsWhitesTurn ? "white" : "black";
 
             lblStatus.Text = $@"Storing move {Moves.Count + 1}, {turn}.";
         }
@@ -84,8 +81,18 @@ public partial class MainWindow : Form
         }
     }
 
-    private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
-        MessageBox.Show(this, @"Chess Engine version 1.0 written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var version = Application.ProductVersion ?? "";
+
+        if (version.IndexOf('.') > -1)
+        {
+            var temp = version.Split('.');
+            version = $@"{temp[0]}.{temp[1]}";
+        }
+
+        MessageBox.Show(this, $@"Chess Engine version {version} written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
 
     private void MainWindow_Resize(object sender, EventArgs e) =>
         ResizeBoard();
@@ -190,10 +197,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     private bool CheckMove(Piece piece, Point startPoint, Point endPoint, out string errorMessage)
     {
         errorMessage = "";
-        var whiteTurn = true;
-
-        if (listView1.Items.Count > 0)
-            whiteTurn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1;
+        var whiteTurn = Moves.IsWhitesTurn;
 
         if (whiteTurn && piece.Color != PlayerColor.White)
         {
@@ -218,10 +222,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private bool MoveIsLegal(Piece piece, Point startPoint, Point endPoint)
     {
-        var whiteTurn = true;
-
-        if (listView1.Items.Count > 0)
-            whiteTurn = listView1.Items[listView1.Items.Count - 1].ImageIndex == 1;
+        var whiteTurn = Moves.IsWhitesTurn;
 
         var chessRules = new ChessRules(whiteTurn, Moves);
         return chessRules.IsMoveLegal(piece, startPoint, endPoint);
@@ -316,7 +317,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         var lastMoveIndex = Moves.Count - 1;
         var targetMoveIndex = Math.Max(-1, Math.Min(moveIndex, lastMoveIndex));
-        var position = new BoardData();
+        var position = new BoardData(Moves.InitialPosition);
 
         for (var index = 0; index <= targetMoveIndex; index++)
             position.ApplyMove(Moves[index]);
@@ -389,6 +390,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void openToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (MessageBox.Show(this, @"Are you sure you want to open a game? Any unsaved changes will be lost.", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
         using var dialog = new OpenFileDialog();
         dialog.CheckFileExists = true;
         dialog.CheckPathExists = true;
@@ -747,6 +751,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void portableGameNotationPGNToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (MessageBox.Show(this, @"Are you sure you want to import a game? Any unsaved changes will be lost.", @"Import PGN", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
         using var dialog = new ImportPgnDialog();
 
         if (dialog.ShowDialog(this) != DialogResult.OK)
@@ -808,6 +815,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void forsythEdwardsNotationFENToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (MessageBox.Show(this, @"Are you sure you want to import a game? Any unsaved changes will be lost.", @"Import FEN", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
         using var dialog = new ImportFenDialog();
 
         if (dialog.ShowDialog(this) != DialogResult.OK)

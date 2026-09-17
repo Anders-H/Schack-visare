@@ -23,3 +23,25 @@ Chess Engine är ett Windows-program som låter användaren skapa och redigera f
 En passant härleds från det omedelbart föregående draget och kräver inget
 extra fält. Promovering kan anges som `E7-E8=Q`, `E7-E8=R`, `E7-E8=B` eller `E7-E8=N`.
 Utan suffix blir en bonde som når sista raden automatiskt dam.
+
+## FEN-import i Chess Engine
+
+Importdialogen för FEN läser en ställning med alla sex FEN-fält: pjäser,
+spelare vid draget, rockadrättigheter, en passant-ruta och båda dragräknarna.
+Ställningen kan visas, spelas vidare från och sparas/öppnas i Windows-programmet.
+FEN innehåller ingen draghistorik eller spelarmetadata; importerade ställningar
+får därför namnet `Imported FEN position`, datum `0001-01-01` och spelarnamn `?`.
+
+Startställningen lagras som ett valfritt `FEN ...`-fält direkt efter spelarnamnen,
+före eventuella drag. Exempel med svart vid draget:
+
+`Imported FEN position;0001-01-01;?;?;FEN 4k3/8/8/8/8/8/8/4K3 b - - 17 42;E8-D7;`
+
+Äldre filer utan FEN-fält fortsätter att börja i standardställningen. FEN-fältet
+stöds av Chess Engine; webbvisaren har ännu inte stöd för detta tillägg.
+Dragräknarna bevaras för startställningen, men används inte för automatisk
+remibedömning. Parsern validerar format och grundläggande konsistens, inte att
+ställningen kan uppstå genom en fullständig följd av lagliga drag.
+
+Kör FEN-testerna med `dotnet run --project tests/FenParser.Tests`.
+Formatet följer [FEN-specifikationen, avsnitt 16.1](https://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1).
