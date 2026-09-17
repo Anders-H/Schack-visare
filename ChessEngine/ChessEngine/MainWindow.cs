@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text;
@@ -81,17 +82,44 @@ public partial class MainWindow : Form
         }
     }
 
-    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    private static string Version
     {
-        var version = Application.ProductVersion ?? "";
-
-        if (version.IndexOf('.') > -1)
+        get
         {
+            var version = Application.ProductVersion ?? "";
+
+            if (version.IndexOf('.') <= -1)
+                return version;
+
             var temp = version.Split('.');
             version = $@"{temp[0]}.{temp[1]}";
-        }
 
-        MessageBox.Show(this, $@"Chess Engine version {version} written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return version;
+        }
+    }
+
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
+        MessageBox.Show(this, $@"Chess Engine version {Version} written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+    private void reportABugToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (MessageBox.Show(this, $@"Send a mail to anders@winsoft.se with subject ""Chess Engine {Version} bug report"". Would you like to open your email client?", @"Report a bug", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        {
+            try
+            {
+                var subject = Uri.EscapeDataString($"Chess Engine {Version} bug report");
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = $"mailto:anders@winsoft.se?subject={subject}",
+                    UseShellExecute = true
+                });
+            }
+            catch
+            {
+                MessageBox.Show(this, @"Failed to open email client.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 
     private void MainWindow_Resize(object sender, EventArgs e) =>
@@ -101,8 +129,8 @@ public partial class MainWindow : Form
     {
         var boardSize = panel1.Height > panel1.Width ? panel1.Width : panel1.Height;
         boardSize -= 4;
-        var x = panel1.Width/2 - boardSize / 2;
-        var y = panel1.Height/2 - boardSize / 2;
+        var x = panel1.Width / 2 - boardSize / 2;
+        var y = panel1.Height / 2 - boardSize / 2;
         boardControl1.Bounds = new Rectangle(x, y, boardSize, boardSize);
     }
 

@@ -67,6 +67,7 @@ namespace ChessEngine
             this.lastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportABugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -89,7 +90,6 @@ namespace ChessEngine
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
-            this.reportABugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -384,6 +384,13 @@ namespace ChessEngine
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // reportABugToolStripMenuItem
+            // 
+            this.reportABugToolStripMenuItem.Name = "reportABugToolStripMenuItem";
+            this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reportABugToolStripMenuItem.Text = "Report a bug...";
+            this.reportABugToolStripMenuItem.Click += new System.EventHandler(this.reportABugToolStripMenuItem_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -612,12 +619,6 @@ namespace ChessEngine
             this.boardControl1.TabIndex = 2;
             this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
-            // 
-            // reportABugToolStripMenuItem
-            // 
-            this.reportABugToolStripMenuItem.Name = "reportABugToolStripMenuItem";
-            this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.reportABugToolStripMenuItem.Text = "Report a bug...";
             // 
             // MainWindow
             // 
