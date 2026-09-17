@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chess Engine User Manual</title>
+</head>
+<body>
+    <h1>Chess Engine User Manual</h1>
+    <p>Chess Engine is a Windows application for recording, saving and studying chess games. You can enter moves on the board, replay a game, inspect individual pieces, display controlled squares and import games or positions. You supply the moves for both players; the application does not provide a computer opponent, engine evaluations or best-move suggestions.</p>
+
+    <h2>The main window</h2>
+    <p>The main window contains the File, View, Move and Help menus, a toolbar, the chessboard, a move list, a piece information panel and a status bar. Resize the window to resize the board. Coordinates identify the squares regardless of the viewing direction. The game date and player names appear beside the board.</p>
+    <p>The move list displays moves in coordinate notation, with an icon identifying the player's colour. The move currently displayed on the board is shown in bold. Use the navigation commands to change the displayed position; the list is a record of the moves rather than a move editor.</p>
+    <p>The status bar shows your position in the game, automatic playback progress or the move and colour being recorded. It also reports file operations. A move in this display means one player's move, so a turn by White followed by a turn by Black counts as two moves. Move 0 is the starting position.</p>
+
+    <h2>Starting a new game</h2>
+    <p>Choose File &gt; New game or click New game on the toolbar. Confirm the prompt to clear the moves and return to the standard starting position, with White to move. This also stops playback and clears the current filename. Save any work you want to keep before confirming.</p>
+    <p>New game resets the position and moves but currently retains the existing game name, date and player names. There is no metadata editing dialog. To change these details, edit the first four fields of a saved game in a text editor and reopen it, or import a PGN containing the desired details.</p>
+
+    <h2>Opening a saved game</h2>
+    <p>Choose File &gt; Open... or click Open... on the toolbar. Confirm that unsaved changes may be discarded, then select a game file. The default filter is Chess game files (*.txt); All files (*.*) lets you select another extension. Open reads UTF-8 text in Chess Engine's own format. Use the import commands for PGN or FEN text.</p>
+    <p>A successfully opened game appears at its starting position, with its moves available for replay. Its filename appears in the window title. If the file cannot be read or its game data cannot be interpreted, an error message explains the problem. A malformed date in a native game file is replaced with the current date and reported in an informational message.</p>
+
+    <h2>Saving a game</h2>
+    <p>Choose File &gt; Save or click Save on the toolbar to write the complete game to its current file. If it has no filename, the Save as dialog opens. Choose File &gt; Save as... to select a different location or name. The suggested name for an unnamed game is game.txt, and the dialog asks before overwriting an existing file.</p>
+    <p>Saving writes the game name, date, player names, any imported starting position and all recorded moves as UTF-8 text. It saves the whole move list even when you are viewing an earlier position. Board orientation, coverage settings, the selected piece and the playback position are not part of the game file. Imported games and positions need to be saved explicitly.</p>
+    <p>The application can warn that a game's move colours are inconsistent and ask whether to save anyway. This check is not a complete legality check. A file saved after overriding a warning may fail to reopen. In the current version, the save check assumes White moves first, so it can also show this warning for a valid FEN-based game whose first recorded move is Black's. The file format and loader support that starting colour.</p>
+
+    <h2>Recording moves</h2>
+    <p>Choose Move &gt; Register move, click Register move on the toolbar or press Insert. Recording always appends to the end of the game: if you are viewing an earlier move, the application first displays the final position. The cursor changes to a crosshair, and the status bar identifies the next move and player.</p>
+    <p>Click the piece to move, then click its destination square. If you selected a piece before entering recording mode, that piece can already be selected as the starting piece. Clicking the starting square again clears the starting selection. Clicking another piece of the same colour changes the starting piece. Clicking an empty square before selecting a piece does nothing.</p>
+    <p>The application checks whose turn it is and whether the move is legal, including whether the king would be left in check. A warning offers the choice to store an invalid move anyway. Choosing No cancels recording. Choosing Yes attempts to add the move, but a move that cannot be applied is rejected with an error message. Recording mode ends after each completed move; use Register move again for the next one.</p>
+    <p>Choose Move &gt; Cancel register move or the matching toolbar button to leave recording mode without adding a move. This cancels the unfinished entry; it does not remove a previously recorded move.</p>
+
+    <h3>Castling</h3>
+    <p>Record castling by selecting the king and clicking its destination two squares towards the rook. For White, use E1 to G1 for kingside castling or E1 to C1 for queenside castling; for Black, use E8 to G8 or E8 to C8. The rook moves automatically. Move validation checks castling rights, the intervening squares and attacks on the king's route.</p>
+
+    <h3>En passant</h3>
+    <p>To capture en passant, select the capturing pawn and click the empty square diagonally ahead of it. The captured pawn is removed automatically. The opportunity must come from the immediately preceding double pawn move or from the en passant field of an imported starting position. The destination may not have a green move marker, even when the capture is legal.</p>
+
+    <h3>Pawn promotion</h3>
+    <p>When you move a pawn to the last rank, a promotion dialog opens. Choose Queen, Rook, Bishop or Knight and click OK. Queen is selected initially. Cancel abandons the move and exits recording mode. Promotion is stored with the move and reproduced during playback.</p>
+
+    <h2>Deleting and replacing moves</h2>
+    <p>Choose Move &gt; Delete last move to remove the final recorded move. The application first shows the final position and asks for confirmation. Confirming removes that move and leaves the board at the preceding position. Declining returns to the position you were viewing before the command.</p>
+    <p>Only the last move can be deleted directly. To replace an earlier move, delete the later moves and the move you want to replace, then record a new continuation. There is no variation tree or undo command for deleted moves. Save a separate copy first if you want to preserve the original line.</p>
+
+    <h2>Navigating and replaying a game</h2>
+    <p>The Move menu and toolbar both provide First, Previous, Play, Pause, Next and Last. First displays the position before any recorded move, including an imported FEN starting position. Previous goes back one move, Next goes forward one move and Last shows the position after the final move.</p>
+    <p>Play advances automatically by one move every 700 milliseconds. It starts from the displayed position; if you are already at the end, it restarts from the starting position. Playback stops after the final move. Pause stops playback at the current position, and Play resumes it. The playback speed is fixed.</p>
+    <p>Navigation and recording buttons are disabled when their actions are unavailable. During playback, pause before using the navigation buttons or recording a move. During move registration, finish or cancel the entry before navigating.</p>
+
+    <h3>Keyboard controls</h3>
+    <p>Press Home to show the starting position and End to show the final position. Left Arrow moves back one move and Right Arrow moves forward one move. These navigation keys stop automatic playback. Press Insert to start recording a move when that command is available. In import text boxes, use the normal Windows text editing keys, including Ctrl+V to paste.</p>
+
+    <h2>Inspecting a piece</h2>
+    <p>Outside recording mode, click a piece to select it. A red outline identifies the selection, and the information panel shows Piece ID, Piece type, Position and Move count. Click the same piece again to deselect it, or click another piece to inspect that piece. Clicking an empty square does not clear the selection.</p>
+    <p>Piece ID identifies the piece within the loaded game. Position is its current coordinate, and Move count reflects its stored move history at the displayed position. These details update when you navigate through the game. FEN does not include individual piece histories, so move counts for FEN positions are initialized partly to represent castling rights and must not be read as historical totals.</p>
+
+    <h2>Coverage and move markers</h2>
+    <p>Choose View &gt; Show white coverage to display white markers on squares controlled by White. Choose Show black coverage for black markers, or Show selected piece coverage for red markers showing the selected piece's coverage. Each option is an independent toggle, so you can combine them and choose it again to hide its markers. Coverage updates as the displayed position or selected piece changes.</p>
+    <p>Coverage describes attack patterns, including defended squares occupied by friendly pieces. Pawns cover their diagonal capture squares rather than their forward movement squares. Sliding pieces cover squares along their lines up to and including the first occupied square. Coverage does not take account of whether moving a pinned piece would expose its king.</p>
+    <p>Green markers show candidate destinations for a selected piece, including during move registration. They are a visual guide, not a complete list of legal moves: they do not fully check king safety, castling restrictions or en passant. The legality check performed when recording a move is separate. A marked destination can therefore be illegal, and a legal en passant destination can be unmarked.</p>
+
+    <h2>Changing the board view</h2>
+    <p>Choose View &gt; From white's perspective to put White at the bottom, or From black's perspective to put Black at the bottom. Coordinates, pieces and markers follow the chosen orientation, while the piece images remain upright. Changing the view does not alter the game or whose turn it is.</p>
+    <p>View &gt; Archon view turns the board sideways. Combined with White's perspective, it puts White on the left; combined with Black's perspective, it puts Black on the left. Choose Archon view again to return to the corresponding vertical view.</p>
+    <p>The Rotate board toolbar button cycles through four views: White at the bottom, White on the left, Black at the bottom and Black on the left, then back to White at the bottom.</p>
+
+    <h2>Importing a PGN game</h2>
+    <p>PGN, or Portable Game Notation, describes a game using metadata and algebraic moves. Copy the text of one game, then choose File &gt; Open from clipboard &gt; Portable Game Notation (PGN).... Confirm the replacement prompt and paste the text into PGN source. Despite the menu name, the dialog does not paste the clipboard automatically.</p>
+    <p>Press Tab or click the Chess Engine Format field to leave the source field and trigger validation. The read-only output field shows the converted game or an error message. After successful conversion, click OK to load the game. Cancel closes the dialog without importing it. The imported game opens at its starting position and has no filename until you save it.</p>
+    <p>The importer follows the main line from the standard starting position and converts standard algebraic notation (SAN) to coordinate moves. It supports captures, disambiguated piece moves, kingside and queenside castling, en passant and promotion to queen, rook, bishop or knight. Each SAN move must resolve to one legal move. Illegal, ambiguous or unsupported moves cause the import to fail.</p>
+    <p>Comments, alternative variations, numeric annotation glyphs and move assessment suffixes are ignored. Check and checkmate suffixes are accepted but are not independently verified. The game result is not stored in Chess Engine's format. If both a Result tag and a result at the end of the moves are present, they must agree.</p>
+    <p>Event and Site form the game name, separated by a hyphen when both are available. If neither is available, the name is Imported PGN game. Date is converted from yyyy.MM.dd to yyyy-MM-dd. White and Black supply the player names, with missing names replaced by ?. Unknown date components are replaced individually with year 0001, month 01 or day 01.</p>
+    <p>Import one game at a time. A PGN containing a FEN tag or a SetUp value other than 0 is not supported. Use the separate FEN importer for a custom starting position. Metadata containing semicolons or line breaks cannot be converted to the native format. PGN import does not preserve comments or variations, and the application has no PGN export command.</p>
+    <p>A short example to paste is: [Event "Practice"] [Site "Home"] [Date "2026.09.17"] [White "Alice"] [Black "Bob"] [Result "*"] 1. e4 e5 2. Nf3 Nc6 *</p>
+
+    <h2>Importing a FEN position</h2>
+    <p>FEN, or Forsyth-Edwards Notation, describes a single position. Choose File &gt; Open from clipboard &gt; Forsyth-Edwards Notation (FEN).... Confirm the replacement prompt and paste the position into FEN source. Press Tab or click the Chess Engine Format field to validate it. The output field shows the conversion or an error message. Click OK after successful validation, or Cancel to leave the current game in place.</p>
+    <p>The importer requires all six fields, separated by spaces: piece placement, active colour, castling rights, en passant target, halfmove clock and fullmove number. Piece placement lists ranks 8 through 1 separated by slashes, using uppercase letters for White, lowercase letters for Black and digits for empty squares. The piece letters are K, Q, R, B, N and P.</p>
+    <p>The active colour is w or b. Castling rights use the available letters from KQkq in that order, or a hyphen for none. The en passant field contains a lowercase square such as e3, or a hyphen. The halfmove clock must be a non-negative integer, and the fullmove number must be a positive integer.</p>
+    <p>The importer checks the format and basic consistency: eight ranks of eight squares, exactly one king of each colour, no pawns on the first or last rank, matching kings and rooks for castling rights and a consistent en passant target. It does not prove that the position can be reached through a legal game.</p>
+    <p>For example, 4k3/8/8/8/8/8/8/4K3 b - - 17 42 imports a position with a white king on E1, a black king on E8 and Black to move. The resulting game is named Imported FEN position, with date 0001-01-01 and ? for both player names, because FEN contains none of those details.</p>
+    <p>You can inspect the position, record a continuation for the active colour, replay that continuation and save it as a native game file. First returns to the imported position. The original FEN counters are preserved in the saved starting position; they are not used for automatic draw adjudication. The status bar counts the newly recorded moves, rather than starting at the FEN fullmove number. FEN supplies no earlier move history, and there is no command to export the currently displayed position as a new FEN.</p>
+
+    <h2>The native game file format</h2>
+    <p>A native game file is a line of semicolon-separated text. The fields are the game name, date in yyyy-MM-dd format, White's name, Black's name and then the moves in order. Saved files end each field, including the final move, with a semicolon. Names must not contain semicolons or line breaks.</p>
+    <p>Example: Practice;2026-09-17;Alice;Bob;E2-E4;E7-E5;G1-F3;B8-C6;</p>
+    <p>Moves use a starting square, a hyphen and a destination square. Captures use the same notation as other moves. Without a FEN field, the game starts in the standard position, White moves first and the colours alternate. Castling is written as the king's move, such as E1-G1 or E8-C8, and en passant requires no additional field.</p>
+    <p>Promotion adds =Q, =R, =B or =N, for example E7-E8=N. When a pawn reaches the last rank without a promotion suffix in a native file, it becomes a queen. The recording dialog lets you choose the promotion explicitly.</p>
+    <p>An optional field beginning with FEN and a space can appear immediately after Black's name and before the moves. It stores the six-field starting position and determines which colour moves first. Example: Imported FEN position;0001-01-01;?;?;FEN 4k3/8/8/8/8/8/8/4K3 b - - 17 42;E8-D7;</p>
+    <p>The separate Schack-visare web viewer can use the standard native game format, but it does not currently support the FEN starting-position extension. Files with that extension should be opened in Chess Engine.</p>
+
+    <h2>Messages and common problems</h2>
+    <p>If OK remains disabled in an import dialog after pasting, leave the source field to trigger validation and read the output field. Correct the source text and validate again. For PGN, check that you supplied only one game, used standard SAN and started from the standard position. For FEN, include all six fields and check the reported consistency error.</p>
+    <p>If a recorded move is rejected, check the active colour, the selected piece and whether the move exposes the king. Green markers alone do not establish legality. If the wrong move was stored, use Delete last move and enter its replacement.</p>
+    <p>If opening or saving fails, check the filename, folder access and text format, then use the error message to identify the problem. Saving does not automatically repair invalid moves or unsupported metadata. There is no autosave, so save your work explicitly before replacing a game or exiting.</p>
+
+    <h2>About and bug reports</h2>
+    <p>Choose Help &gt; About... to display the application version and credits. Chess Engine is written by Anders Hesselbom, and the application icon is credited to Vivek Kale.</p>
+    <p>Choose Help &gt; Report a bug... for the reporting address and suggested subject. The application asks whether to open your email client with a message addressed to anders@winsoft.se and the subject Chess Engine followed by the version and bug report. It does not send the message for you. If no email client opens, create the message manually. Include the steps needed to reproduce the problem, any error text and a relevant example game or position.</p>
+
+    <h2>Exiting Chess Engine</h2>
+    <p>Choose File &gt; Exit or close the window. Confirm the prompt to exit, or choose No to continue working. The confirmation does not save your game; use Save or Save as... before exiting if you want to keep your changes.</p>
+</body>
+</html>

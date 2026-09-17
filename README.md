@@ -18,11 +18,34 @@ Chess Engine är ett Windows-program som låter användaren skapa och redigera f
 
 [https://ahesselbom.se/chess/](https://ahesselbom.se/chess/)
 
+## Filformatet
+
+Ett parti lagras som en textrad med semikolonseparerade fält: partiets namn,
+datum i formatet `yyyy-MM-dd`, vit spelares namn och svart spelares namn,
+följt av dragen i spelordning. Varje drag anges med start- och slutruta,
+exempelvis `H2-H4`, och varje fält avslutas med semikolon, även det sista draget.
+Partiet börjar normalt i standardställningen med vit vid draget, och därefter
+växlar dragen mellan vit och svart. Namnfälten får inte innehålla semikolon
+eller radbrytningar. Chess Engine kan även ange en annan startställning med
+ett valfritt FEN-fält, se avsnittet om FEN-import nedan.
+
 ## Specialdrag i filformatet
 
 En passant härleds från det omedelbart föregående draget och kräver inget
 extra fält. Promovering kan anges som `E7-E8=Q`, `E7-E8=R`, `E7-E8=B` eller `E7-E8=N`.
 Utan suffix blir en bonde som når sista raden automatiskt dam.
+
+## PGN-import i Chess Engine
+
+Importdialogen för PGN (Portable Game Notation) konverterar ett parti från
+standardställningen till schack-visarens filformat. Partinamnet hämtas från
+`Event` och `Site`, datumet från `Date` och spelarnamnen från `White` och `Black`.
+Dragen i huvudvarianten tolkas från algebraisk notation (SAN), inklusive
+rockad, en passant och promovering, och kontrolleras så att de motsvarar
+entydiga, lagliga drag. Kommentarer, alternativa varianter och bedömningssymboler
+ignoreras, och partiets resultat sparas inte. Importen hanterar ett parti åt
+gången; PGN med en egen startställning via FEN/SetUp stöds inte. En fristående
+FEN-ställning kan i stället importeras enligt nästa avsnitt.
 
 ## FEN-import i Chess Engine
 
