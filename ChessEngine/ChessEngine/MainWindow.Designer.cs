@@ -58,12 +58,13 @@ namespace ChessEngine
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.listView1 = new System.Windows.Forms.ListView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.boardControl1 = new ChessEngine.BoardControl();
             this.btnNewGame = new System.Windows.Forms.ToolStripButton();
             this.btnOpen = new System.Windows.Forms.ToolStripButton();
             this.btnSave = new System.Windows.Forms.ToolStripButton();
@@ -91,7 +92,7 @@ namespace ChessEngine
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.boardControl1 = new ChessEngine.BoardControl();
+            this.openTheManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -252,6 +253,7 @@ namespace ChessEngine
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem,
+            this.openTheManualToolStripMenuItem,
             this.reportABugToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -260,14 +262,14 @@ namespace ChessEngine
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // reportABugToolStripMenuItem
             // 
             this.reportABugToolStripMenuItem.Name = "reportABugToolStripMenuItem";
-            this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.reportABugToolStripMenuItem.Text = "Report a bug...";
             this.reportABugToolStripMenuItem.Click += new System.EventHandler(this.reportABugToolStripMenuItem_Click);
             // 
@@ -323,6 +325,11 @@ namespace ChessEngine
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -376,10 +383,20 @@ namespace ChessEngine
             this.panel1.Size = new System.Drawing.Size(691, 679);
             this.panel1.TabIndex = 6;
             // 
-            // toolStripSeparator5
+            // boardControl1
             // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            this.boardControl1.BlackPlayerName = "Black";
+            this.boardControl1.GameDate = new System.DateTime(2026, 8, 30, 15, 21, 22, 123);
+            this.boardControl1.Location = new System.Drawing.Point(-136, 8);
+            this.boardControl1.Name = "boardControl1";
+            this.boardControl1.SelectedPiece = null;
+            this.boardControl1.ShowBlackCoverage = false;
+            this.boardControl1.ShowSelectedPieceCoverage = false;
+            this.boardControl1.ShowWhiteCoverage = false;
+            this.boardControl1.Size = new System.Drawing.Size(591, 413);
+            this.boardControl1.TabIndex = 2;
+            this.boardControl1.WhitePlayerName = "White";
+            this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
             // 
             // btnNewGame
             // 
@@ -624,20 +641,14 @@ namespace ChessEngine
             this.lastToolStripMenuItem.Text = "Last";
             this.lastToolStripMenuItem.Click += new System.EventHandler(this.lastToolStripMenuItem_Click);
             // 
-            // boardControl1
+            // openTheManualToolStripMenuItem
             // 
-            this.boardControl1.BlackPlayerName = "Black";
-            this.boardControl1.GameDate = new System.DateTime(2026, 8, 30, 15, 21, 22, 123);
-            this.boardControl1.Location = new System.Drawing.Point(-136, 8);
-            this.boardControl1.Name = "boardControl1";
-            this.boardControl1.SelectedPiece = null;
-            this.boardControl1.ShowBlackCoverage = false;
-            this.boardControl1.ShowSelectedPieceCoverage = false;
-            this.boardControl1.ShowWhiteCoverage = false;
-            this.boardControl1.Size = new System.Drawing.Size(591, 413);
-            this.boardControl1.TabIndex = 2;
-            this.boardControl1.WhitePlayerName = "White";
-            this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
+            this.openTheManualToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.Help;
+            this.openTheManualToolStripMenuItem.Name = "openTheManualToolStripMenuItem";
+            this.openTheManualToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.openTheManualToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.openTheManualToolStripMenuItem.Text = "Open the manual...";
+            this.openTheManualToolStripMenuItem.Click += new System.EventHandler(this.openTheManualToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -733,6 +744,7 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripMenuItem reportABugToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton btnRotateBoard;
+        private System.Windows.Forms.ToolStripMenuItem openTheManualToolStripMenuItem;
     }
 }
 

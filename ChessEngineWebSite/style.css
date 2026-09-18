@@ -196,6 +196,30 @@ p {
     margin-bottom: 20px
 }
 
+.manual {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 64px 0;
+    overflow-wrap: anywhere
+}
+
+.manual h2 {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line)
+}
+
+.manual h3 {
+    margin-top: 32px
+}
+
+.manual-back {
+    margin: 48px 0 0;
+    padding-top: 24px;
+    border-top: 3px double var(--gold);
+    color: var(--wine)
+}
+
 .hero {
     display: grid;
     grid-template-columns: 1.3fr 1fr;

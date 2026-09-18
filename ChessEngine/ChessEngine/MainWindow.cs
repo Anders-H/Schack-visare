@@ -936,4 +936,10 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             fromWhitesPerspectiveToolStripMenuItem_Click(sender, e);
         }
     }
+
+    private void openTheManualToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (MessageBox.Show(this, @"Open the manual at https://ahesselbom.se/chess/manual.html?", @"Open the manual", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            Process.Start("https://ahesselbom.se/chess/manual.html");
+    }
 }
