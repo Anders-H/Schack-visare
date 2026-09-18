@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using ChessEngine.Dialogs;
 using ChessEngine.Events;
+using ChessEngine.MainWindowControllers;
 using ChessEngine.Moves;
 using ChessEngine.Pieces;
 
@@ -20,8 +21,8 @@ public partial class MainWindow : Form
     private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
     private bool _archonView;
-    private MoveList Moves { get; set; }
     private string GameName { get; set; }
+    public MoveList Moves { get; set; }
 
     public MainWindow()
     {
@@ -496,92 +497,14 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     private void btnOpen_Click(object sender, EventArgs e) =>
         openToolStripMenuItem_Click(sender, e);
 
-    private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(Filename))
-        {
-            saveAsToolStripMenuItem_Click(sender, e);
-            return;
-        }
-
-        SaveGame(Filename);
-    }
+    private void saveToolStripMenuItem_Click(object sender, EventArgs e) =>
+        new GameFileController(this).UserSave(Filename, GameName, boardControl1, lblStatus);
 
     private void btnSave_Click(object sender, EventArgs e) =>
         saveToolStripMenuItem_Click(sender, e);
 
-    private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        using var dialog = new SaveFileDialog();
-        dialog.AddExtension = true;
-        dialog.DefaultExt = "txt";
-        dialog.FileName = string.IsNullOrWhiteSpace(Filename) ? "game.txt" : Path.GetFileName(Filename);
-        dialog.Filter = @"Chess game files (*.txt)|*.txt|All files (*.*)|*.*";
-        dialog.OverwritePrompt = true;
-        dialog.RestoreDirectory = true;
-        dialog.Title = @"Save chess game";
-
-        if (dialog.ShowDialog(this) == DialogResult.OK)
-            SaveGame(dialog.FileName);
-    }
-
-    private bool SaveGame(string filename)
-    {
-        if (!CheckGame(out var errorMessage))
-        {
-            var m = $@"The game is not in a valid state, and will not be able to load again. {errorMessage} Do you want to save it anyway?";
-
-            if (MessageBox.Show(this, m, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return false;
-        }
-
-        try
-        {
-            var contents = GameFileFormat.Serialize(
-                GameName,
-                boardControl1.GameDate,
-                boardControl1.WhitePlayerName,
-                boardControl1.BlackPlayerName,
-                Moves);
-
-            File.WriteAllText(filename, contents, new UTF8Encoding(false));
-            Filename = filename;
-            lblStatus.Text = $@"Saved {Path.GetFileName(filename)}.";
-            return true;
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException or FormatException)
-        {
-            MessageBox.Show(
-                this,
-                $@"The game could not be saved.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
-            return false;
-        }
-
-    }
-
-    private bool CheckGame(out string errorMessage)
-    {
-        for (var index = 0; index < Moves.Count; index++)
-        {
-            var expectedColor = index % 2 == 0
-                ? PlayerColor.White
-                : PlayerColor.Black;
-            var move = Moves[index];
-
-            if (move.Color == expectedColor)
-                continue;
-
-            errorMessage = $@"Move {index + 1} ({move}) is registered for {move.Color}, but {expectedColor} must make this move.";
-            return false;
-        }
-
-        errorMessage = "";
-        return true;
-    }
+    private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) =>
+        new GameFileController(this).UserSaveAs(Filename, GameName, boardControl1, lblStatus);
 
     private void exitToolStripMenuItem_Click(object sender, EventArgs e) =>
         Close();
