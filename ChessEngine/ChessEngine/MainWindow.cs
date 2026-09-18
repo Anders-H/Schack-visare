@@ -99,8 +99,28 @@ public partial class MainWindow : Form
         }
     }
 
-    private void aboutToolStripMenuItem_Click(object sender, EventArgs e) =>
-        MessageBox.Show(this, $@"Chess Engine version {Version} written by Anders Hesselbom. Application icon created by Vivek Kale.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var response = MessageBox.Show(this, $@"Chess Engine version {Version} written by Anders Hesselbom. Application icon created by Vivek Kale.
+
+Open version history?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        if (response != DialogResult.Yes)
+            return;
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = $"https://ahesselbom.se/chess/versionhistory.html",
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            MessageBox.Show(this, @"Failed to open version history.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+    }
 
     private void reportABugToolStripMenuItem_Click(object sender, EventArgs e)
     {
