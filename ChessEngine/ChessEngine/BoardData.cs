@@ -25,6 +25,7 @@ public class BoardData
     private Move? _lastMove;
     private readonly GamePosition? _initialPosition;
     public Piece? this[int row, int column] => _board[row, column];
+    public IReadOnlyList<Piece> DeadPieces => _deadPieces.AsReadOnly();
 
     public BoardData(GamePosition? initialPosition = null)
     {

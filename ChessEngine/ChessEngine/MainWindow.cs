@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
@@ -16,17 +17,19 @@ namespace ChessEngine;
 
 public partial class MainWindow : Form
 {
-    private const int PlaybackIntervalMilliseconds = 700;
+    private const int PlaybackIntervalMilliseconds = 300;
     private readonly Timer _playbackTimer = new();
     private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
     private bool _archonView;
     private string GameName { get; set; }
+    private readonly List<Piece> _graveyard;
     public MoveList Moves { get; set; }
 
     public MainWindow()
     {
         InitializeComponent();
+        _graveyard = [];
         _boldMoveListFont = new Font(listView1.Font, listView1.Font.Style | FontStyle.Bold);
         _playbackTimer.Interval = PlaybackIntervalMilliseconds;
         _playbackTimer.Tick += PlaybackTimer_Tick;
@@ -372,6 +375,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             position.ApplyMove(Moves[index]);
 
         boardControl1.SetPosition(position);
+        // Rebuild from the displayed position, including when rewinding or loading a game.
+        _graveyard.Clear();
+        _graveyard.AddRange(position.DeadPieces);
         CurrentMove = targetMoveIndex;
         UpdateControls();
         UpdateSelectedPieceProperties();
@@ -561,7 +567,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         {
             var item = new ListViewItem(move.ToString())
             {
-                ImageIndex = move.Color == PlayerColor.White ? 0 : 1
+                ImageIndex = move.Color == PlayerColor.White ? 1 : 2
             };
 
             listView1.Items.Add(item);
@@ -600,6 +606,32 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
         if (boardControl1.TryGetSelectedPiece(out var point, out var piece))
             UpdatePieceProperties(point, piece);
+        else
+            ViewGraveyard();
+    }
+
+    private void ViewGraveyard()
+    {
+        if (lvProperties.Items.Count > 0)
+            lvProperties.Items.Clear();
+
+        var item = lvProperties.Items.Add("Graveyard:");
+        item.Font = new Font(lvProperties.Font, FontStyle.Bold);
+        item.ImageIndex = 0;
+        lvProperties.Items.Add("");
+
+        if (_graveyard.Count > 0)
+        {
+            foreach (var piece in _graveyard)
+            {
+                var pieceItem = lvProperties.Items.Add(piece.Type.ToString());
+                pieceItem.ImageIndex = piece.Color == PlayerColor.White ? 1 : 2;
+            }
+        }
+        else
+        {
+            lvProperties.Items.Add("Empty");
+        }
     }
 
     private void UpdatePieceProperties(Point point, Piece piece)
@@ -607,16 +639,16 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         var file = (char)('A' + point.X);
         var rank = point.Y + 1;
 
-        lvProperties.Items.Add("Piece ID:");
+        lvProperties.Items.Add("Piece ID:", 0);
         lvProperties.Items.Add(piece.PieceId.ToString());
         lvProperties.Items.Add("");
-        lvProperties.Items.Add("Piece type:");
+        lvProperties.Items.Add("Piece type:", 0);
         lvProperties.Items.Add(piece.Type.ToString());
         lvProperties.Items.Add("");
-        lvProperties.Items.Add("Position:");
+        lvProperties.Items.Add("Position:", 0);
         lvProperties.Items.Add($"{file}{rank}");
         lvProperties.Items.Add("");
-        lvProperties.Items.Add("Move count:");
+        lvProperties.Items.Add("Move count:", 0);
         lvProperties.Items.Add(piece.MoveCount.ToString());
     }
 
@@ -884,5 +916,10 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         if (MessageBox.Show(this, @"Open the manual at https://ahesselbom.se/chess/manual.html?", @"Open the manual", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             Process.Start("https://ahesselbom.se/chess/manual.html");
+    }
+
+    private void MainWindow_Load(object sender, EventArgs e)
+    {
+        ViewGraveyard();
     }
 }
