@@ -8,6 +8,7 @@
     <Compile Include="../../ChessEngine/ChessEngine/Pieces/PieceType.cs" Link="PieceType.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Pieces/PlayerColor.cs" Link="PlayerColor.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Moves/Move.cs" Link="Move.cs" />
+    <Compile Include="../../ChessEngine/ChessEngine/Moves/EndingType.cs" Link="EndingType.cs" />
     <Compile Include="../../ChessEngine/ChessEngine/Moves/MoveList.cs" Link="MoveList.cs" />
   </ItemGroup>
 </Project>

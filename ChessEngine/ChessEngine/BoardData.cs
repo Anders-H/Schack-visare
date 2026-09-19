@@ -64,6 +64,9 @@ public class BoardData
 
     public void ApplyMove(Move move)
     {
+        if (move.GameEnd != EndingType.MoveIsNotGameEnd)
+            return;
+
         var start = move.StartPoint;
         var end = move.EndPoint;
         var piece = _board[start.Y, start.X];

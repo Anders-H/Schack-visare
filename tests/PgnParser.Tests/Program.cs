@@ -26,7 +26,7 @@ Check("Opening and castling", Header + "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O
 Check("Comments and nested variations", Header + "1.e4{hello}(1.d4 (1.c4) d5) e5$1 2.Nf3!? ; comment\n2...Nc6 *",
     "E2-E4;E7-E5;G1-F3;B8-C6;");
 Check("Capture", Header + "1.e4 d5 2.exd5 Qxd5 *", "E2-E4;D7-D5;E4-D5;D8-D5;");
-Check("Mate suffix", Header + "1.f3 e5 2.g4 Qh4# 0-1", "F2-F3;E7-E5;G2-G4;D8-H4;");
+Check("Mate suffix", Header + "1.f3 e5 2.g4 Qh4# 0-1", "F2-F3;E7-E5;G2-G4;D8-H4;END=BLACK;");
 Check("File disambiguation", Header + "1.Nf3 Nf6 2.d3 d6 3.Nbd2 *", "G1-F3;G8-F6;D2-D3;D7-D6;B1-D2;");
 Check("Ambiguous", Header + "1.Nf3 Nf6 2.d3 d6 3.Nd2 *", error: "ambiguous");
 Check("Illegal", Header + "1.e5 *", error: "no legal");
@@ -99,3 +99,55 @@ foreach (var malformed in new[] { "E7-E8=K", "E7-E8=P", "E7-E8=", "E2-E4=Q", "E7
     count++;
 }
 Console.WriteLine($"Passed {count} PGN and special-move checks.");
+
+foreach (var (result, marker, ending) in new[]
+{
+    ("1-0", "WHITE", ChessEngine.Moves.EndingType.WhiteWins),
+    ("0-1", "BLACK", ChessEngine.Moves.EndingType.BlackWins),
+    ("1/2-1/2", "DRAW", ChessEngine.Moves.EndingType.Draw)
+})
+{
+    Check("Result tag " + marker, Header + "[Result \"" + result + "\"] 1.e4 " + result, "E2-E4;END=" + marker + ";");
+    Check("Result tag without movetext result " + marker, Header + "[Result \"" + result + "\"] 1.e4", "E2-E4;END=" + marker + ";");
+    Check("Result without moves " + marker, Header + "[Result \"" + result + "\"] " + result, "END=" + marker + ";");
+    foreach (var prefix in new[] { "", "E2-E4;", "E2-E4;E7-E5;", "FEN 4k3/8/8/8/8/8/8/4K3 b - - 17 42;E8-D7;" })
+    {
+        var data = "Ending;2026-09-13;W;B;" + prefix + "END=" + marker + ";";
+        var parsed = new GameParser(data).Parse();
+        if (!parsed.Success || parsed.Moves[parsed.Moves.Count - 1].GameEnd != ending ||
+            parsed.Moves[parsed.Moves.Count - 1].MoveNumber != parsed.Moves.Count - 1)
+            throw new Exception("Ending parsing: " + data);
+        if (GameFileFormat.Serialize(parsed.GameName, parsed.GameDate, parsed.WhitePlayerName, parsed.BlackPlayerName, parsed.Moves) != data)
+            throw new Exception("Ending serialization: " + data);
+        var board = new BoardData(parsed.Moves.InitialPosition);
+        foreach (var move in parsed.Moves) board.ApplyMove(move);
+        var before = new BoardData(parsed.Moves.InitialPosition);
+        for (var i = 0; i < parsed.Moves.Count - 1; i++) before.ApplyMove(parsed.Moves[i]);
+        for (var y = 0; y < 8; y++)
+            for (var x = 0; x < 8; x++)
+                if (!Equals(board[y, x], before[y, x])) throw new Exception("Ending changed board");
+        if (!new GameParser(data.TrimEnd(';') + " ; ; ").Parse().Success)
+            throw new Exception("Ending with empty trailing fields");
+        count++;
+    }
+}
+Check("Unknown result", Header + "[Result \"*\"] 1.e4 *", "E2-E4;");
+Check("Invalid result tag", Header + "[Result \"invalid\"] 1.e4", error: "Result");
+foreach (var suffix in new[] { "END=", "END=UNKNOWN", "END=WHITE;E7-E5;", "END=DRAW;END=BLACK;" })
+{
+    if (new GameParser("Invalid;2026-09-13;W;B;E2-E4;" + suffix).Parse().Success)
+        throw new Exception("Accepted invalid ending: " + suffix);
+    count++;
+}
+var invalidMoves = new ChessEngine.Moves.MoveList
+{
+    new ChessEngine.Moves.Move(ChessEngine.Moves.RegisterEndingType.Draw, 0),
+    new ChessEngine.Moves.Move(ChessEngine.Moves.RegisterEndingType.WhiteWins, 1)
+};
+try
+{
+    GameFileFormat.Serialize("Invalid", DateTime.Today, "W", "B", invalidMoves);
+    throw new Exception("Serialized a non-final ending");
+}
+catch (FormatException) { count++; }
+Console.WriteLine($"Passed {count} PGN, special-move and ending checks.");

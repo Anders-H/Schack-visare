@@ -26,6 +26,20 @@ public class MoveParser
     {
         var source = _source.Trim();
 
+        if (source.StartsWith("END=", StringComparison.Ordinal))
+        {
+            RegisterEndingType? ending = source switch
+            {
+                "END=WHITE" => RegisterEndingType.WhiteWins,
+                "END=BLACK" => RegisterEndingType.BlackWins,
+                "END=DRAW" => RegisterEndingType.Draw,
+                _ => null
+            };
+            return ending.HasValue
+                ? new MoveParserResult(true, new Move(ending.Value, _moveNumber), "")
+                : new MoveParserResult(false, null, "Expected END=WHITE, END=BLACK or END=DRAW.");
+        }
+
         if ((source.Length != 5 && source.Length != 7) || source[2] != '-')
         {
             return new MoveParserResult(

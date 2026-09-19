@@ -4,6 +4,7 @@ using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using ChessEngine.Pieces;
+using ChessEngine.Moves;
 
 namespace ChessEngine.MainWindowControllers;
 
@@ -84,6 +85,14 @@ public class GameFileController
                 ? PlayerColor.White
                 : PlayerColor.Black;
             var move = _owner.Moves[index];
+
+            if (move.GameEnd != EndingType.MoveIsNotGameEnd)
+            {
+                if (index == _owner.Moves.Count - 1)
+                    continue;
+                errorMessage = "The game ending must be the last move.";
+                return false;
+            }
 
             if (move.Color == expectedColor)
                 continue;

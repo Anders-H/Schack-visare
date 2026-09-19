@@ -81,6 +81,18 @@ public class PgnParser
             
             if (result != null && tags.TryGetValue("Result", out var declaredResult) && declaredResult != result)
                 throw new FormatException("The Result tag does not match the movetext result.");
+
+            var gameResult = tags.TryGetValue("Result", out var resultTag) ? resultTag : result;
+            RegisterEndingType? ending = gameResult switch
+            {
+                "1-0" => RegisterEndingType.WhiteWins,
+                "0-1" => RegisterEndingType.BlackWins,
+                "1/2-1/2" => RegisterEndingType.Draw,
+                "*" or null => null,
+                _ => throw new FormatException("Invalid PGN Result tag.")
+            };
+            if (ending.HasValue)
+                moves.Add(new Move(ending.Value, moves.Count));
             
             string Tag(string name) => tags.TryGetValue(name, out var value) ? value : "?";
             // The destination requires a complete date; report any substituted components.

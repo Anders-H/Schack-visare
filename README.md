@@ -35,6 +35,11 @@ En passant härleds från det omedelbart föregående draget och kräver inget
 extra fält. Promovering kan anges som `E7-E8=Q`, `E7-E8=R`, `E7-E8=B` eller `E7-E8=N`.
 Utan suffix blir en bonde som når sista raden automatiskt dam.
 
+Ett avslutat parti kan ha en sista post med `END=WHITE` (vit vann),
+`END=BLACK` (svart vann) eller `END=DRAW` (remi), exempelvis
+`Parti;2026-09-19;Vit;Svart;E2-E4;END=WHITE;`. Slutposten flyttar ingen pjäs
+och måste ligga sist. Filer utan slutpost fungerar som tidigare.
+
 ## PGN-import i Chess Engine
 
 Importdialogen för PGN (Portable Game Notation) konverterar ett parti från
@@ -43,7 +48,9 @@ standardställningen till schack-visarens filformat. Partinamnet hämtas från
 Dragen i huvudvarianten tolkas från algebraisk notation (SAN), inklusive
 rockad, en passant och promovering, och kontrolleras så att de motsvarar
 entydiga, lagliga drag. Kommentarer, alternativa varianter och bedömningssymboler
-ignoreras, och partiets resultat sparas inte. Importen hanterar ett parti åt
+ignoreras. Resultatet från `Result` sparas som slutpost: `1-0` blir `END=WHITE`,
+`0-1` blir `END=BLACK` och `1/2-1/2` blir `END=DRAW`. Om taggen saknas används
+resultatet i dragtexten. `*` ger ingen slutpost. Importen hanterar ett parti åt
 gången; PGN med en egen startställning via FEN/SetUp stöds inte. En fristående
 FEN-ställning kan i stället importeras enligt nästa avsnitt.
 

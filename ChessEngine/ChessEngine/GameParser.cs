@@ -66,6 +66,9 @@ public class GameParser
                 if (string.IsNullOrWhiteSpace(moveSource))
                     continue;
 
+                if (moves.Count > 0 && moves[moves.Count - 1].GameEnd != EndingType.MoveIsNotGameEnd)
+                    return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, moves, "The game ending must be the last move.");
+
                 var moveParser = new MoveParser(moveSource, moveNumber, moves.InitialPosition?.IsWhitesTurn ?? true);
                 var parseResult = moveParser.Parse();
 
@@ -90,6 +93,12 @@ public class GameParser
 
         foreach (var parsedMove in moves)
         {
+            if (parsedMove.GameEnd != EndingType.MoveIsNotGameEnd)
+            {
+                completedMoves.Add(parsedMove);
+                continue;
+            }
+
             var start = parsedMove.StartPoint;
             var end = parsedMove.EndPoint;
             var piece = gameData[start.Y, start.X];

@@ -90,8 +90,13 @@ public class Move
         return $@"{file}{rank}";
     }
 
-    public override string ToString() =>
-        $@"{FormatSquare(StartPoint)}-{FormatSquare(EndPoint)}" + (Promotion.HasValue ? "=" + PromotionSymbol(Promotion.Value) : "");
+    public override string ToString() => GameEnd switch
+    {
+        EndingType.WhiteWins => "END=WHITE",
+        EndingType.BlackWins => "END=BLACK",
+        EndingType.Draw => "END=DRAW",
+        _ => $@"{FormatSquare(StartPoint)}-{FormatSquare(EndPoint)}" + (Promotion.HasValue ? "=" + PromotionSymbol(Promotion.Value) : "")
+    };
 
     public static bool IsPromotionPiece(PieceType type) =>
         type is PieceType.Queen or PieceType.Rook or PieceType.Bishop or PieceType.Knight;

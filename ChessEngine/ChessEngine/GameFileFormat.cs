@@ -25,8 +25,11 @@ public static class GameFileFormat
         if (moves is MoveList { InitialPosition: { } position })
             AppendField(result, "FEN " + position.Fen, "Starting position");
 
-        foreach (var move in moves)
+        for (var index = 0; index < moves.Count; index++)
         {
+            var move = moves[index];
+            if (move.GameEnd != EndingType.MoveIsNotGameEnd && index != moves.Count - 1)
+                throw new FormatException("The game ending must be the last move.");
             result.Append(move.ToString());
             result.Append(';');
         }
