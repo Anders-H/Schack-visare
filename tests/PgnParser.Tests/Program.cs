@@ -114,7 +114,7 @@ foreach (var (result, marker, ending) in new[]
     {
         var data = "Ending;2026-09-13;W;B;" + prefix + "END=" + marker + ";";
         var parsed = new GameParser(data).Parse();
-        if (!parsed.Success || parsed.Moves[parsed.Moves.Count - 1].GameEnd != ending ||
+        if (!parsed.Success || !parsed.Moves.IsGameEnded || parsed.Moves[parsed.Moves.Count - 1].GameEnd != ending ||
             parsed.Moves[parsed.Moves.Count - 1].MoveNumber != parsed.Moves.Count - 1)
             throw new Exception("Ending parsing: " + data);
         if (GameFileFormat.Serialize(parsed.GameName, parsed.GameDate, parsed.WhitePlayerName, parsed.BlackPlayerName, parsed.Moves) != data)
@@ -128,6 +128,9 @@ foreach (var (result, marker, ending) in new[]
                 if (!Equals(board[y, x], before[y, x])) throw new Exception("Ending changed board");
         if (!new GameParser(data.TrimEnd(';') + " ; ; ").Parse().Success)
             throw new Exception("Ending with empty trailing fields");
+        parsed.Moves.RemoveAt(parsed.Moves.Count - 1);
+        if (parsed.Moves.IsGameEnded)
+            throw new Exception("Deleting the ending did not reopen the game");
         count++;
     }
 }

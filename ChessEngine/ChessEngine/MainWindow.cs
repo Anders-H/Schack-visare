@@ -160,6 +160,9 @@ Open version history?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
     private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (Moves.IsGameEnded)
+            return;
+
         StopPlayback();
 
         if (CurrentMove != Moves.Count - 1)
@@ -181,7 +184,7 @@ Open version history?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
     private void boardControl1_MoveSelected(object sender, MoveSelectedEventArgs e)
     {
-        if (!_registerMoveMode)
+        if (!_registerMoveMode || Moves.IsGameEnded)
             return;
 
         var movedPiece = boardControl1.GetPieceAt(e.StartPoint.X, e.StartPoint.Y);
@@ -399,8 +402,11 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         lastToolStripMenuItem.Enabled = canMoveForward;
         btnLast.Enabled = canMoveForward;
 
-        registerMoveToolStripMenuItem.Enabled = !_registerMoveMode && !isPlaying;
-        btnRegistrera.Enabled = !_registerMoveMode && !isPlaying;
+        var canRegister = !_registerMoveMode && !isPlaying && !Moves.IsGameEnded;
+        registerMoveToolStripMenuItem.Enabled = canRegister;
+        btnRegistrera.Enabled = canRegister;
+        registerGameEndingToolStripMenuItem.Enabled = canRegister;
+        deleteLastMoveToolStripMenuItem.Enabled = Moves.Count > 0;
         cancelRegisterMoveToolStripMenuItem.Enabled = _registerMoveMode;
         btnAvbrytRegistrering.Enabled = _registerMoveMode;
 
@@ -688,7 +694,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void moveToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
     {
-        deleteLastMoveToolStripMenuItem.Enabled = Moves.Count > 0;
+        UpdateControls();
     }
 
     private void deleteLastMoveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -712,9 +718,11 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             return;
         }
 
-        previousToolStripMenuItem_Click(sender, e);
+        _registerMoveMode = false;
+        boardControl1.CancelMoveRegistration();
         Moves.RemoveAt(Moves.Count - 1);
-        listView1.Items.RemoveAt(listView1.Items.Count - 1);
+        RenderMoveList();
+        GoToMove(Moves.Count - 1);
     }
 
     private void fromWhitesPerspectiveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -917,7 +925,10 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void registerGameEndingToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using var dialog = new RegisterGameEndDialog();
+        if (Moves.IsGameEnded || _registerMoveMode || _playbackTimer.Enabled)
+            return;
+
+        using var dialog = new RegisterGameEndDialog { MoveNumber = Moves.Count };
         
         if (dialog.ShowDialog(this) != DialogResult.OK)
             return;
