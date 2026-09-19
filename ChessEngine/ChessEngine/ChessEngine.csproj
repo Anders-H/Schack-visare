@@ -77,6 +77,12 @@
     <Compile Include="Dialogs\PromotePawnDialog.Designer.cs">
       <DependentUpon>PromotePawnDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\RegisterGameEndDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\RegisterGameEndDialog.Designer.cs">
+      <DependentUpon>RegisterGameEndDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExternalParsers\FenParser.cs" />
     <Compile Include="ExternalParsers\PgnParser.cs" />
     <Compile Include="GameFileFormat.cs" />
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\PromotePawnDialog.resx">
       <DependentUpon>PromotePawnDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\RegisterGameEndDialog.resx">
+      <DependentUpon>RegisterGameEndDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

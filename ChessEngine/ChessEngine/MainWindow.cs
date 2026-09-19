@@ -914,4 +914,21 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         ViewGraveyard();
     }
+
+    private void registerGameEndingToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        using var dialog = new RegisterGameEndDialog();
+        
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+            return;
+
+        var move = dialog.ChessMove;
+
+        if (move == null)
+            throw new SystemException("Things are not good.");
+
+        Moves.Add(move);
+        RenderMoveList();
+        lastToolStripMenuItem_Click(sender, e);
+    }
 }

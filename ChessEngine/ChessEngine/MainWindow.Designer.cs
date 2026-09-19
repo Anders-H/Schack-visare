@@ -56,6 +56,7 @@ namespace ChessEngine
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.registerMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelRegisterMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.registerGameEndingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteLastMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -93,7 +94,6 @@ namespace ChessEngine
             this.lvProperties = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.boardControl1 = new ChessEngine.BoardControl();
-            this.registerGameEndingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -306,6 +306,13 @@ namespace ChessEngine
             this.cancelRegisterMoveToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.cancelRegisterMoveToolStripMenuItem.Text = "Cancel register move";
             this.cancelRegisterMoveToolStripMenuItem.Click += new System.EventHandler(this.cancelRegisterMoveToolStripMenuItem_Click);
+            // 
+            // registerGameEndingToolStripMenuItem
+            // 
+            this.registerGameEndingToolStripMenuItem.Name = "registerGameEndingToolStripMenuItem";
+            this.registerGameEndingToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.registerGameEndingToolStripMenuItem.Text = "Register game ending";
+            this.registerGameEndingToolStripMenuItem.Click += new System.EventHandler(this.registerGameEndingToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -652,12 +659,6 @@ namespace ChessEngine
             this.boardControl1.TabIndex = 2;
             this.boardControl1.WhitePlayerName = "White";
             this.boardControl1.PieceSelected += new System.EventHandler<ChessEngine.Events.PieceSelectedEventArgs>(this.boardControl1_PieceSelected);
-            // 
-            // registerGameEndingToolStripMenuItem
-            // 
-            this.registerGameEndingToolStripMenuItem.Name = "registerGameEndingToolStripMenuItem";
-            this.registerGameEndingToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.registerGameEndingToolStripMenuItem.Text = "Register game ending";
             // 
             // MainWindow
             // 
