@@ -220,15 +220,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             promotion = dialog.SelectedPieceType;
         }
 
-        Moves.Add(new Move(
-            e.StartPoint,
-            e.EndPoint,
-            movedPiece.Value.Type,
-            movedPiece.Value.Color,
-            movedPiece.Value.PieceId,
-            moveIndex,
-            promotion));
-
+        Moves.Add(new Move(e.StartPoint, e.EndPoint, movedPiece.Value, moveIndex, promotion));
         _registerMoveMode = false;
         boardControl1.CancelMoveRegistration();
         RenderMoveList();

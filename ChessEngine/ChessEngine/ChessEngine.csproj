@@ -90,6 +90,7 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWindowControllers\GameFileController.cs" />
+    <Compile Include="Moves\EndingType.cs" />
     <Compile Include="Moves\Move.cs" />
     <Compile Include="Moves\MoveList.cs" />
     <Compile Include="Moves\MoveParser.cs" />

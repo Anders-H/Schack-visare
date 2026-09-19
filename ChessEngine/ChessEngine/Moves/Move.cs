@@ -6,7 +6,7 @@ namespace ChessEngine.Moves;
 public class Move
 {
     private const int BoardLength = 8;
-
+    public EndingType GameEnd { get; }
     public Point StartPoint { get; }
     public Point EndPoint { get; }
     public PieceType? Piece { get; }
@@ -17,6 +17,7 @@ public class Move
 
     public Move(Point startPoint, Point endPoint, PlayerColor color, int moveNumber, PieceType? promotion = null)
     {
+        GameEnd = EndingType.MoveIsNotGameEnd;
         StartPoint = startPoint;
         EndPoint = endPoint;
         Piece = null;
@@ -28,6 +29,7 @@ public class Move
 
     public Move(Point startPoint, Point endPoint, PieceType piece, PlayerColor color, int pieceId, int moveNumber, PieceType? promotion = null)
     {
+        GameEnd = EndingType.MoveIsNotGameEnd;
         StartPoint = startPoint;
         EndPoint = endPoint;
         Piece = piece;
@@ -35,6 +37,44 @@ public class Move
         PieceId = pieceId;
         MoveNumber = moveNumber;
         Promotion = promotion;
+    }
+
+    public Move(Point startPoint, Point endPoint, Piece piece, int moveNumber, PieceType? promotion = null)
+    {
+        GameEnd = EndingType.MoveIsNotGameEnd;
+        StartPoint = startPoint;
+        EndPoint = endPoint;
+        Piece = piece.Type;
+        Color = piece.Color;
+        PieceId = piece.PieceId;
+        MoveNumber = moveNumber;
+        Promotion = promotion;
+    }
+
+    public Move(RegisterEndingType endingType, int moveNumber)
+    {
+        switch (endingType)
+        {
+            case RegisterEndingType.WhiteWins:
+                GameEnd = EndingType.WhiteWins;
+                Color = PlayerColor.White;
+                break;
+            case RegisterEndingType.BlackWins:
+                GameEnd = EndingType.BlackWins;
+                Color = PlayerColor.Black;
+                break;
+            case RegisterEndingType.Draw:
+                GameEnd = EndingType.Draw;
+                Color = PlayerColor.White;
+                break;
+        }
+
+        StartPoint = new Point(-1, -1);
+        EndPoint = new Point(-1, -1);
+        Piece = null;
+        PieceId = null;
+        MoveNumber = moveNumber;
+        Promotion = null;
     }
 
     public static string FormatSquare(Point square)

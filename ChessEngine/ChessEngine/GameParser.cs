@@ -114,14 +114,7 @@ public class GameParser
                 return new GameParserResult(false, gameName, gameDate, whitePlayerName, blackPlayerName, completedMoves, s.ToString().Trim());
             }
 
-            var completedMove = new Move(
-                start,
-                end,
-                piece.Value.Type,
-                piece.Value.Color,
-                piece.Value.PieceId,
-                parsedMove.MoveNumber,
-                parsedMove.Promotion);
+            var completedMove = new Move(start, end, piece.Value, parsedMove.MoveNumber, parsedMove.Promotion);
 
             try
             {
