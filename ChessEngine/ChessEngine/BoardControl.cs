@@ -59,6 +59,9 @@ public partial class BoardControl : UserControl
             true);
     }
 
+    public BoardData GetCurrentBoardData() =>
+        _boardData;
+
     public Piece? GetPieceAt(int x, int y) =>
         _boardData[y, x];
 

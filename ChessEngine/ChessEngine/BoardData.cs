@@ -27,6 +27,18 @@ public class BoardData
     public Piece? this[int row, int column] => _board[row, column];
     public IReadOnlyList<Piece> DeadPieces => _deadPieces.AsReadOnly();
 
+    private BoardData(BoardData source)
+    {
+        _board = (Piece?[,])source._board.Clone();
+        _deadPieces = new List<Piece>(source._deadPieces);
+        _lastMove = source._lastMove;
+        _initialPosition = source._initialPosition;
+    }
+
+    internal BoardData Copy() => new BoardData(this);
+
+    internal Piece?[,] CopyBoard() => (Piece?[,])_board.Clone();
+
     public BoardData(GamePosition? initialPosition = null)
     {
         _initialPosition = initialPosition;

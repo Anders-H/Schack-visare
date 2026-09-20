@@ -404,6 +404,8 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         var canRegister = !_registerMoveMode && !isPlaying && !Moves.IsGameEnded;
         registerMoveToolStripMenuItem.Enabled = canRegister;
         btnRegistrera.Enabled = canRegister;
+        registerComputerMoveToolStripMenuItem.Enabled = canRegister;
+        btnRegisterComputerMove.Enabled = canRegister;
         registerGameEndingToolStripMenuItem.Enabled = canRegister;
         deleteLastMoveToolStripMenuItem.Enabled = Moves.Count > 0;
         cancelRegisterMoveToolStripMenuItem.Enabled = _registerMoveMode;
@@ -996,7 +998,13 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void registerComputerMoveToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        var legalMoves = new ChessBrain(boardControl1.GetCurrentBoardData(), Moves).GetLegalMoves();
 
+        if (legalMoves.Count <= 0)
+        {
+            MessageBox.Show(this, @"No legal moves available now.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
     }
 
     private void btnRegisterComputerMove_Click(object sender, EventArgs e) =>

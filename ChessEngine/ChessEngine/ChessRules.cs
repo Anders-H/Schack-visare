@@ -39,11 +39,16 @@ public class ChessRules
             }
         }
 
-        var board = new Piece?[8, 8];
+        return IsMoveLegal(position, piece, startPoint, endPoint, promotion);
+    }
 
-        for (var row = 0; row < 8; row++)
-            for (var column = 0; column < 8; column++)
-                board[row, column] = position[row, column];
+    // Search can validate a position without replaying the game for every candidate.
+    internal bool IsMoveLegal(BoardData position, Piece piece, Point startPoint, Point endPoint, PieceType? promotion = null)
+    {
+        if (!Inside(startPoint) || !Inside(endPoint) || startPoint == endPoint || piece.Color != (_isWhitesTurn ? PlayerColor.White : PlayerColor.Black))
+            return false;
+
+        var board = position.CopyBoard();
 
         var actual = board[startPoint.Y, startPoint.X];
 
@@ -130,7 +135,7 @@ public class ChessRules
         return KingIsSafe(crossing, king.Color);
     }
 
-    private static bool KingIsSafe(Piece?[,] board, PlayerColor color)
+    internal static bool KingIsSafe(Piece?[,] board, PlayerColor color)
     {
         Point? king = null;
         for (var y = 0; y < 8; y++)
@@ -154,7 +159,7 @@ public class ChessRules
         return true;
     }
 
-    private static bool Attacks(Piece?[,] board, Piece piece, Point start, Point end)
+    internal static bool Attacks(Piece?[,] board, Piece piece, Point start, Point end)
     {
         var dx = end.X - start.X;
         var dy = end.Y - start.Y;

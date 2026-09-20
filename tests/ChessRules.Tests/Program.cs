@@ -63,3 +63,4 @@ Check("One-step pawn cannot be captured en passant", false, "e5", "d6", true, "e
 Check("En passant exposes king horizontally", false, "g5", "f6", true, "e1h5", "g2g5", "a8a5", "f7f5");
 Check("En passant captures checking pawn", true, "e5", "d6", true, "e1e4", "e2e5", "d7d5");
 Console.WriteLine($"Passed {checks} rule checks.");
+BrainTests.Run();

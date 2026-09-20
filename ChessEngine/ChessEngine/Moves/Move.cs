@@ -15,6 +15,12 @@ public class Move
     public int MoveNumber { get; }
     public PieceType? Promotion { get; }
 
+    /// <summary>
+    /// ChessBrain's evaluation for the moving player; higher is better, a pawn is worth 100.
+    /// Analysis metadata only: this is not part of the saved move.
+    /// </summary>
+    public int Score { get; internal set; }
+
     public Move(Point startPoint, Point endPoint, PlayerColor color, int moveNumber, PieceType? promotion = null)
     {
         GameEnd = EndingType.MoveIsNotGameEnd;
