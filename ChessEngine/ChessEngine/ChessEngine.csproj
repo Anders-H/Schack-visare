@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\computer16.png" />
     <None Include="Resources\PropertiesHS.png" />
     <None Include="Resources\Help.png" />
     <None Include="Resources\rotate.png" />

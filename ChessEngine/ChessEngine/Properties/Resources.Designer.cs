@@ -83,6 +83,16 @@ namespace ChessEngine.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap computer16 {
+            get {
+                object obj = ResourceManager.GetObject("computer16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DataContainer_MoveFirstHS {
             get {
                 object obj = ResourceManager.GetObject("DataContainer_MoveFirstHS", resourceCulture);

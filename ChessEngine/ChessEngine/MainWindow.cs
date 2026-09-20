@@ -993,4 +993,12 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         GameName = x.GameTitle;
         boardControl1.Invalidate();
     }
+
+    private void registerComputerMoveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void btnRegisterComputerMove_Click(object sender, EventArgs e) =>
+        registerComputerMoveToolStripMenuItem_Click(sender, e);
 }
