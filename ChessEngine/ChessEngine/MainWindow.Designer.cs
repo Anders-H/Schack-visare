@@ -44,6 +44,8 @@ namespace ChessEngine
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gamePropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromWhitesPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromBlacksPerspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,6 +74,7 @@ namespace ChessEngine
             this.reportABugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblGameTitle = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnNewGame = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -104,6 +107,7 @@ namespace ChessEngine
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.moveToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -199,6 +203,22 @@ namespace ChessEngine
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gamePropertiesToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Text = "&Edit";
+            // 
+            // gamePropertiesToolStripMenuItem
+            // 
+            this.gamePropertiesToolStripMenuItem.Image = global::ChessEngine.Properties.Resources.PropertiesHS;
+            this.gamePropertiesToolStripMenuItem.Name = "gamePropertiesToolStripMenuItem";
+            this.gamePropertiesToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.gamePropertiesToolStripMenuItem.Text = "Game properties...";
+            this.gamePropertiesToolStripMenuItem.Click += new System.EventHandler(this.gamePropertiesToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -416,18 +436,33 @@ namespace ChessEngine
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 728);
+            this.lblStatus,
+            this.lblGameTitle});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 726);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(867, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(867, 24);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // lblStatus
             // 
+            this.lblStatus.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblStatus.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(19, 17);
+            this.lblStatus.Size = new System.Drawing.Size(23, 19);
             this.lblStatus.Text = "    ";
+            // 
+            // lblGameTitle
+            // 
+            this.lblGameTitle.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblGameTitle.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
+            this.lblGameTitle.Name = "lblGameTitle";
+            this.lblGameTitle.Size = new System.Drawing.Size(23, 19);
+            this.lblGameTitle.Text = "    ";
             // 
             // toolStrip1
             // 
@@ -605,7 +640,7 @@ namespace ChessEngine
             this.listView1.Location = new System.Drawing.Point(0, 49);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(88, 679);
+            this.listView1.Size = new System.Drawing.Size(88, 677);
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -629,7 +664,7 @@ namespace ChessEngine
             this.lvProperties.Location = new System.Drawing.Point(779, 49);
             this.lvProperties.MultiSelect = false;
             this.lvProperties.Name = "lvProperties";
-            this.lvProperties.Size = new System.Drawing.Size(88, 679);
+            this.lvProperties.Size = new System.Drawing.Size(88, 677);
             this.lvProperties.SmallImageList = this.imageList1;
             this.lvProperties.TabIndex = 5;
             this.lvProperties.UseCompatibleStateImageBehavior = false;
@@ -642,7 +677,7 @@ namespace ChessEngine
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(88, 49);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(691, 679);
+            this.panel1.Size = new System.Drawing.Size(691, 677);
             this.panel1.TabIndex = 6;
             // 
             // boardControl1
@@ -757,6 +792,9 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripButton btnRotateBoard;
         private System.Windows.Forms.ToolStripMenuItem openTheManualToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem registerGameEndingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gamePropertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel lblGameTitle;
     }
 }
 

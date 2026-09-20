@@ -22,7 +22,6 @@ public partial class MainWindow : Form
     private readonly Font _boldMoveListFont;
     private bool _registerMoveMode;
     private bool _archonView;
-    private string GameName { get; set; }
     private readonly List<Piece> _graveyard;
     public MoveList Moves { get; set; }
 
@@ -436,6 +435,35 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         RenderMoveList();
         GoToMove(-1);
         Filename = "";
+        GameName = "";
+    }
+
+    private string? GameName
+    {
+        get => (field ?? "").Trim();
+        set
+        {
+            field = (value ?? "").Trim();
+
+            if (!string.IsNullOrWhiteSpace(field))
+            {
+                lblGameTitle.Text = field;
+                return;
+            }
+
+            var w = boardControl1.WhitePlayerName;
+
+            if (string.IsNullOrWhiteSpace(w))
+                w = "White";
+
+            var b = boardControl1.BlackPlayerName;
+
+            if (string.IsNullOrWhiteSpace(b))
+                b = "Black";
+
+            var result = $"{w} vs {b} {DateTime.Now:yyyy-MM-dd}";
+            lblGameTitle.Text = result;
+        }
     }
 
     private void btnNewGame_Click(object sender, EventArgs e) =>
@@ -567,6 +595,9 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             {
                 ImageIndex = move.Color == PlayerColor.White ? 1 : 2
             };
+
+            if (move.GameEnd == EndingType.Draw)
+                item.ImageIndex = 0;
 
             listView1.Items.Add(item);
         }
@@ -921,6 +952,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     private void MainWindow_Load(object sender, EventArgs e)
     {
         ViewGraveyard();
+        GameName = "";
     }
 
     private void registerGameEndingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -941,5 +973,24 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         Moves.Add(move);
         RenderMoveList();
         lastToolStripMenuItem_Click(sender, e);
+    }
+
+    private void gamePropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        using var x = new GamePropertiesDialog();
+        x.GameTitle = (GameName ?? "").Trim();
+        x.GameDate = boardControl1.GameDate;
+        x.WhitePlayerName = boardControl1.WhitePlayerName;
+        x.BlackPlayerName = boardControl1.BlackPlayerName;
+        x.Moves = Moves;
+
+        if (x.ShowDialog(this) != DialogResult.OK)
+            return;
+
+        boardControl1.GameDate = x.GameDate;
+        boardControl1.WhitePlayerName = x.WhitePlayerName;
+        boardControl1.BlackPlayerName = x.BlackPlayerName;
+        GameName = x.GameTitle;
+        boardControl1.Invalidate();
     }
 }

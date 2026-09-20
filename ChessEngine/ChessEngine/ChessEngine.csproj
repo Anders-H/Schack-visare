@@ -59,6 +59,12 @@
     </Compile>
     <Compile Include="BoardData.cs" />
     <Compile Include="ChessRules.cs" />
+    <Compile Include="Dialogs\GamePropertiesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GamePropertiesDialog.Designer.cs">
+      <DependentUpon>GamePropertiesDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ImportFenDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,7 @@
     <Compile Include="Dialogs\RegisterGameEndDialog.Designer.cs">
       <DependentUpon>RegisterGameEndDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ExternalParsers\FenParser.cs" />
     <Compile Include="ExternalParsers\PgnParser.cs" />
     <Compile Include="GameFileFormat.cs" />
@@ -110,6 +117,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardControl.resx">
       <DependentUpon>BoardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GamePropertiesDialog.resx">
+      <DependentUpon>GamePropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ImportFenDialog.resx">
       <DependentUpon>ImportFenDialog.cs</DependentUpon>
@@ -151,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\PropertiesHS.png" />
     <None Include="Resources\Help.png" />
     <None Include="Resources\rotate.png" />
     <None Include="Resources\PasteHS.png" />
