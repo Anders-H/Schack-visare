@@ -23,6 +23,7 @@ public partial class MainWindow : Form
     private bool _registerMoveMode;
     private bool _archonView;
     private readonly List<Piece> _graveyard;
+    private ComputerPlayerSkill _computerLevelSkill;
     public MoveList Moves { get; set; }
 
     public MainWindow()
@@ -40,6 +41,7 @@ public partial class MainWindow : Form
         Filename = "";
         GameName = "";
         _archonView = false;
+        _computerLevelSkill = ComputerPlayerSkill.Challenging;
         ResizeBoard();
         UpdateControls();
     }
@@ -1005,8 +1007,40 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             MessageBox.Show(this, @"No legal moves available now.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
+
+
     }
 
     private void btnRegisterComputerMove_Click(object sender, EventArgs e) =>
         registerComputerMoveToolStripMenuItem_Click(sender, e);
+
+    private void impossibleToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        _computerLevelSkill = ComputerPlayerSkill.Impossible;
+        impossibleToolStripMenuItem.Checked = true;
+        brutalToolStripMenuItem.Checked = false;
+        challengingToolStripMenuItem.Checked = false;
+        moderateToolStripMenuItem.Checked = false;
+        casualToolStripMenuItem.Checked = false;
+    }
+
+    private void brutalToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void challengingToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void moderateToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void casualToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
 }

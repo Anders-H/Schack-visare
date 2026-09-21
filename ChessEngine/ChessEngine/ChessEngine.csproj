@@ -60,6 +60,7 @@
     <Compile Include="BoardData.cs" />
     <Compile Include="ChessBrain.cs" />
     <Compile Include="ChessRules.cs" />
+    <Compile Include="ComputerPlayerSkill.cs" />
     <Compile Include="Dialogs\GamePropertiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
