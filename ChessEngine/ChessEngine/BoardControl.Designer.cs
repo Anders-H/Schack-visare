@@ -1,6 +1,6 @@
 ﻿namespace ChessEngine
 {
-    partial class BoardControl
+    sealed partial class BoardControl
     {
         /// <summary> 
         /// Required designer variable.

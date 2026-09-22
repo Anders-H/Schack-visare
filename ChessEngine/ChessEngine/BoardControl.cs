@@ -11,7 +11,7 @@ using ChessEngine.Pieces;
 
 namespace ChessEngine;
 
-public partial class BoardControl : UserControl
+public sealed partial class BoardControl : UserControl
 {
     private readonly List<Point> _whiteCoverage = [];
     private readonly List<Point> _blackCoverage = [];
@@ -793,11 +793,7 @@ public partial class BoardControl : UserControl
         AddCastlingMove(origin, king, rookColumn: 7, kingDestinationColumn: 6);
     }
 
-    private void AddCastlingMove(
-        Point origin,
-        Piece king,
-        int rookColumn,
-        int kingDestinationColumn)
+    private void AddCastlingMove(Point origin, Piece king, int rookColumn, int kingDestinationColumn)
     {
         var rook = _boardData[origin.Y, rookColumn];
 
@@ -857,25 +853,20 @@ public partial class BoardControl : UserControl
                 AddCoveragePoint(coverage, origin.X - 1, origin.Y + direction);
                 AddCoveragePoint(coverage, origin.X + 1, origin.Y + direction);
                 break;
-
             case PieceType.Knight:
                 foreach (var offset in KnightOffsets)
                     AddCoveragePoint(coverage, origin.X + offset.X, origin.Y + offset.Y);
                 break;
-
             case PieceType.Bishop:
                 AddSlidingCoverage(origin, DiagonalDirections, coverage);
                 break;
-
             case PieceType.Rook:
                 AddSlidingCoverage(origin, OrthogonalDirections, coverage);
                 break;
-
             case PieceType.Queen:
                 AddSlidingCoverage(origin, OrthogonalDirections, coverage);
                 AddSlidingCoverage(origin, DiagonalDirections, coverage);
                 break;
-
             case PieceType.King:
                 for (var deltaY = -1; deltaY <= 1; deltaY++)
                 {
@@ -889,10 +880,7 @@ public partial class BoardControl : UserControl
         }
     }
 
-    private void AddSlidingCoverage(
-        Point origin,
-        IEnumerable<Point> directions,
-        List<Point> coverage)
+    private void AddSlidingCoverage(Point origin, IEnumerable<Point> directions, List<Point> coverage)
     {
         foreach (var direction in directions)
         {
@@ -924,7 +912,7 @@ public partial class BoardControl : UserControl
     }
 
     private static bool IsBoardPoint(int column, int row) =>
-        column >= 0 && column < BoardLength && row >= 0 && row < BoardLength;
+        column is >= 0 and < BoardLength && row is >= 0 and < BoardLength;
 
     // State, selections and coverage use board coordinates (A1 = 0,0).
     // Only rendering and hit testing translate from the displayed grid.
@@ -933,9 +921,11 @@ public partial class BoardControl : UserControl
         // A clockwise quarter turn puts White on the left; Black's perspective
         // adds a half turn. Pieces stay upright because only squares are mapped.
         if (_archonView)
+        {
             return _viewFromBlackPerspective
                 ? new Point(BoardLength - 1 - row, BoardLength - 1 - column)
                 : new Point(row, column);
+        }
 
         return _viewFromBlackPerspective
             ? new Point(BoardLength - 1 - column, row)
