@@ -72,6 +72,3 @@ stöds av Chess Engine; webbvisaren har ännu inte stöd för detta tillägg.
 Dragräknarna bevaras för startställningen, men används inte för automatisk
 remibedömning. Parsern validerar format och grundläggande konsistens, inte att
 ställningen kan uppstå genom en fullständig följd av lagliga drag.
-
-Kör FEN-testerna med `dotnet run --project tests/FenParser.Tests`.
-Formatet följer [FEN-specifikationen, avsnitt 16.1](https://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1).

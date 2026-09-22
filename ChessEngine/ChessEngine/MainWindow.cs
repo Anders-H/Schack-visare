@@ -55,6 +55,7 @@ public partial class MainWindow : Form
         private set
         {
             field = value;
+            boardControl1.SetSelectedMove(value >= 0 && value < Moves.Count ? Moves[value] : null);
             UpdateStatus();
         }
     }
@@ -495,10 +496,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
         try
         {
-            var contents = File.ReadAllText(
-                dialog.FileName,
-                new UTF8Encoding(false, true));
-
+            var contents = File.ReadAllText(dialog.FileName, new UTF8Encoding(false, true));
             var parser = new GameParser(contents);
             var result = parser.Parse();
 
@@ -529,24 +527,14 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             }
             else
             {
-                MessageBox.Show(
-                    this,
-                    result.Message,
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(this, result.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             lblStatus.Text = $@"Read {Path.GetFileName(dialog.FileName)} ({contents.Length} characters).";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
         {
-            MessageBox.Show(
-                this,
-                $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            MessageBox.Show(this, $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -671,7 +659,6 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         var file = (char)('A' + point.X);
         var rank = point.Y + 1;
-
         lvProperties.Items.Add("Piece ID:", 0);
         lvProperties.Items.Add(piece.PieceId.ToString());
         lvProperties.Items.Add("");
@@ -818,36 +805,21 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                 var message = result.Message.Trim();
 
                 if (!string.IsNullOrWhiteSpace(message))
-                    MessageBox.Show(
-                        this,
-                        message,
-                        Text,
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageBox.Show(this, message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 if (listView1.Items.Count > 0)
                     listView1.Items[0].EnsureVisible();
             }
             else
             {
-                MessageBox.Show(
-                    this,
-                    result.Message,
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(this, result.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             lblStatus.Text = $@"Read PGN from clipboard ""{GameName}"" ({contents.Length} characters).";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
         {
-            MessageBox.Show(
-                this,
-                $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            MessageBox.Show(this, $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -882,36 +854,21 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
                 var message = result.Message.Trim();
 
                 if (!string.IsNullOrWhiteSpace(message))
-                    MessageBox.Show(
-                        this,
-                        message,
-                        Text,
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageBox.Show(this, message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 if (listView1.Items.Count > 0)
                     listView1.Items[0].EnsureVisible();
             }
             else
             {
-                MessageBox.Show(
-                    this,
-                    result.Message,
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(this, result.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             lblStatus.Text = $@"Read FEN from clipboard ""{GameName}"" ({contents.Length} characters).";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException or ArgumentException or NotSupportedException)
         {
-            MessageBox.Show(
-                this,
-                $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            MessageBox.Show(this, $@"The game could not be opened.{Environment.NewLine}{Environment.NewLine}{ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using ChessEngine.Events;
+using ChessEngine.Moves;
 using ChessEngine.Pieces;
 
 namespace ChessEngine;
@@ -34,6 +35,7 @@ public partial class BoardControl : UserControl
     private bool _viewFromBlackPerspective;
     private bool _archonView;
     private Point? _selectedSquare;
+    private Move? _selectedMove;
 
     public Piece? SelectedPiece { get; set; }
     public event EventHandler<MoveSelectedEventArgs>? MoveSelected;
@@ -98,6 +100,12 @@ public partial class BoardControl : UserControl
         Invalidate();
     }
 
+    public void SetSelectedMove(Move? move)
+    {
+        _selectedMove = move?.GameEnd == EndingType.MoveIsNotGameEnd ? move : null;
+        Invalidate();
+    }
+
     public void BeginMoveRegistration()
     {
         _registerMoveMode = true;
@@ -147,6 +155,8 @@ public partial class BoardControl : UserControl
         using var redMarkerPen = new Pen(Color.FromArgb(220, 100, 0, 0), 1f);
         using var greenMarkerPen = new Pen(Color.FromArgb(220, 10, 100, 35), 1f);
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        PointF? moveStart = null;
+        PointF? moveEnd = null;
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
@@ -164,6 +174,16 @@ public partial class BoardControl : UserControl
                 var squareBrush = (boardRow + column) % 2 == 0
                     ? darkSquareBrush
                     : lightSquareBrush;
+
+                // Use the same mapping as the pieces in every board perspective.
+                if (_selectedMove != null)
+                {
+                    var center = new PointF(square.Left + squareSize / 2f, square.Top + squareSize / 2f);
+                    if (boardPoint == _selectedMove.StartPoint)
+                        moveStart = center;
+                    if (boardPoint == _selectedMove.EndPoint)
+                        moveEnd = center;
+                }
 
                 e.Graphics.FillRectangle(squareBrush, square);
 
@@ -241,6 +261,16 @@ public partial class BoardControl : UserControl
                         greenMarkerPen);
                 }
             }
+        }
+
+        if (moveStart.HasValue && moveEnd.HasValue)
+        {
+            using var movePen = new Pen(Color.FromArgb(190, 30, 100, 220), Math.Max(2f, squareSize * 0.06f))
+            {
+                StartCap = LineCap.Round,
+                EndCap = LineCap.Round
+            };
+            e.Graphics.DrawLine(movePen, moveStart.Value, moveEnd.Value);
         }
 
         const string rowNames = "ABCDEFGH";
