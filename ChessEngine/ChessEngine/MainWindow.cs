@@ -1008,7 +1008,52 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             return;
         }
 
+        var moveIndex = Moves.Count;
+        Move? move;
 
+        if (legalMoves.Count == 2)
+        {
+            move = legalMoves[0];
+        }
+        else
+        {
+            switch (_computerLevelSkill)
+            {
+                case ComputerPlayerSkill.Impossible:
+                    move = ComputerChessMovePicker.GetImpossibleMove(legalMoves);
+                    break;
+                case ComputerPlayerSkill.Brutal:
+                    move = ComputerChessMovePicker.GetBrutalMove(legalMoves);
+                    break;
+                case ComputerPlayerSkill.Challenging:
+                    move = ComputerChessMovePicker.GetChallengingMove(legalMoves);
+                    break;
+                case ComputerPlayerSkill.Moderate:
+                    move = ComputerChessMovePicker.GetModerateMove(legalMoves);
+                    break;
+                case ComputerPlayerSkill.Casual:
+                    move = ComputerChessMovePicker.GetCasualMove(legalMoves);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        var piece = move.Piece!.Value;
+        Moves.Add(new Move(move.StartPoint, move.EndPoint, piece, move.Color, move.PieceId!.Value, moveIndex, move.Promotion));
+        RenderMoveList();
+
+        try
+        {
+            GoToMove(moveIndex);
+        }
+        catch (Exception exception)
+        {
+            listView1.Items.RemoveAt(listView1.Items.Count - 1);
+            Moves.RemoveAt(Moves.Count - 1);
+            lastToolStripMenuItem_Click(sender, e);
+            MessageBox.Show(this, exception.Message, @"This move cannot be stored", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void btnRegisterComputerMove_Click(object sender, EventArgs e) =>
@@ -1026,21 +1071,41 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void brutalToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        _computerLevelSkill = ComputerPlayerSkill.Brutal;
+        impossibleToolStripMenuItem.Checked = false;
+        brutalToolStripMenuItem.Checked = true;
+        challengingToolStripMenuItem.Checked = false;
+        moderateToolStripMenuItem.Checked = false;
+        casualToolStripMenuItem.Checked = false;
     }
 
     private void challengingToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        _computerLevelSkill = ComputerPlayerSkill.Challenging;
+        impossibleToolStripMenuItem.Checked = false;
+        brutalToolStripMenuItem.Checked = false;
+        challengingToolStripMenuItem.Checked = true;
+        moderateToolStripMenuItem.Checked = false;
+        casualToolStripMenuItem.Checked = false;
     }
 
     private void moderateToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        _computerLevelSkill = ComputerPlayerSkill.Moderate;
+        impossibleToolStripMenuItem.Checked = false;
+        brutalToolStripMenuItem.Checked = false;
+        challengingToolStripMenuItem.Checked = false;
+        moderateToolStripMenuItem.Checked = true;
+        casualToolStripMenuItem.Checked = false;
     }
 
     private void casualToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+        _computerLevelSkill = ComputerPlayerSkill.Casual;
+        impossibleToolStripMenuItem.Checked = false;
+        brutalToolStripMenuItem.Checked = false;
+        challengingToolStripMenuItem.Checked = false;
+        moderateToolStripMenuItem.Checked = false;
+        casualToolStripMenuItem.Checked = true;
     }
 }
