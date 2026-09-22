@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
@@ -34,6 +35,8 @@ public partial class MainWindow : Form
         _playbackTimer.Interval = PlaybackIntervalMilliseconds;
         _playbackTimer.Tick += PlaybackTimer_Tick;
         boardControl1.MoveSelected += boardControl1_MoveSelected;
+        boardControl1.MoveDragStarted += boardControl1_MoveDragStarted;
+        boardControl1.MoveDragCancelled += cancelRegisterMoveToolStripMenuItem_Click;
         boardControl1.Paint += boardControl1_Paint;
         _registerMoveMode = false;
         Moves = [];
@@ -158,6 +161,15 @@ Open version history?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         var x = panel1.Width / 2 - boardSize / 2;
         var y = panel1.Height / 2 - boardSize / 2;
         boardControl1.Bounds = new Rectangle(x, y, boardSize, boardSize);
+    }
+
+    private void boardControl1_MoveDragStarted(object sender, CancelEventArgs e)
+    {
+        if (Moves.IsGameEnded || _playbackTimer.Enabled)
+            return;
+
+        registerMoveToolStripMenuItem_Click(sender, EventArgs.Empty);
+        e.Cancel = false;
     }
 
     private void registerMoveToolStripMenuItem_Click(object sender, EventArgs e)

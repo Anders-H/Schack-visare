@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -36,10 +37,17 @@ public partial class BoardControl : UserControl
     private bool _archonView;
     private Point? _selectedSquare;
     private Move? _selectedMove;
+    private Point? _mouseDownSquare;
+    private Point _mouseDownLocation;
+    private Point? _dragStart;
+    private Piece? _dragPiece;
+    private bool _suppressClick;
 
     public Piece? SelectedPiece { get; set; }
     public event EventHandler<MoveSelectedEventArgs>? MoveSelected;
     public event EventHandler<PieceSelectedEventArgs>? PieceSelected;
+    public event EventHandler<CancelEventArgs>? MoveDragStarted;
+    public event EventHandler? MoveDragCancelled;
 
     public bool ShowWhiteCoverage { get; set; }
     public bool ShowBlackCoverage { get; set; }
@@ -52,13 +60,8 @@ public partial class BoardControl : UserControl
         WhitePlayerName = "White";
         BlackPlayerName = "Black";
         InitializeComponent();
-
-        SetStyle(
-            ControlStyles.AllPaintingInWmPaint |
-            ControlStyles.OptimizedDoubleBuffer |
-            ControlStyles.UserPaint |
-            ControlStyles.ResizeRedraw,
-            true);
+        AllowDrop = true;
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
     }
 
     public BoardData GetCurrentBoardData() =>
@@ -265,11 +268,9 @@ public partial class BoardControl : UserControl
 
         if (moveStart.HasValue && moveEnd.HasValue)
         {
-            using var movePen = new Pen(Color.FromArgb(190, 30, 100, 220), Math.Max(2f, squareSize * 0.06f))
-            {
-                StartCap = LineCap.Round,
-                EndCap = LineCap.Round
-            };
+            using var movePen = new Pen(Color.FromArgb(190, 30, 100, 220), Math.Max(2f, squareSize * 0.06f));
+            movePen.StartCap = LineCap.Round;
+            movePen.EndCap = LineCap.Round;
             e.Graphics.DrawLine(movePen, moveStart.Value, moveEnd.Value);
         }
 
@@ -283,20 +284,17 @@ public partial class BoardControl : UserControl
                 var boardPoint = DisplayToBoardSquare(displayColumn, displayRow);
                 var column = boardPoint.X;
                 var boardRow = boardPoint.Y;
-                var squareBrush = (boardRow + column) % 2 == 0
-                    ? lightSquareBrush
-                    : darkSquareBrush;
-
+                var squareBrush = (boardRow + column) % 2 == 0 ? lightSquareBrush : darkSquareBrush;
                 var bottomLabel = _archonView ? (boardRow + 1).ToString() : rowNames[column].ToString();
                 var leftLabel = _archonView ? rowNames[column].ToString() : (boardRow + 1).ToString();
-                var label = displayRow == BoardLength - 1
-                    ? bottomLabel + (displayColumn == 0 ? leftLabel : "")
-                    : displayColumn == 0 ? leftLabel : "";
+                var label = displayRow == BoardLength - 1 ? bottomLabel + (displayColumn == 0 ? leftLabel : "") : displayColumn == 0 ? leftLabel : "";
 
                 if (label.Length > 0)
+                {
                     e.Graphics.DrawString(label, Font, squareBrush,
                         boardLeft + squareSize * displayColumn + 1,
                         boardTop + squareSize * displayRow + squareSize - textHeight);
+                }
             }
         }
 
@@ -330,19 +328,9 @@ public partial class BoardControl : UserControl
         var spriteWidth = PieceSprites.Width / SpriteColumns - 2;
         var spriteHeight = PieceSprites.Height / SpriteRows - 2;
         var typeIndex = (int)pieceType;
-
-        var spriteColumn = color == PlayerColor.White
-            ? typeIndex
-            : SpriteColumns - 1 - typeIndex;
-
+        var spriteColumn = color == PlayerColor.White ? typeIndex : SpriteColumns - 1 - typeIndex;
         var spriteRow = color == PlayerColor.White ? 0 : 1;
-
-        var source = new Rectangle(
-            spriteColumn * spriteWidth,
-            spriteRow * spriteHeight,
-            spriteWidth,
-            spriteHeight);
-
+        var source = new Rectangle(spriteColumn * spriteWidth, spriteRow * spriteHeight, spriteWidth, spriteHeight);
         const float pieceScale = 0.94f;
         var maximumWidth = square.Width * pieceScale;
         var maximumHeight = square.Height * pieceScale;
@@ -361,23 +349,150 @@ public partial class BoardControl : UserControl
         graphics.DrawImage(PieceSprites, destination, source, GraphicsUnit.Pixel);
     }
 
-    private static void DrawCoverageMarker(
-        Graphics graphics,
-        float x,
-        float y,
-        float diameter,
-        Brush brush,
-        Pen outlinePen)
+    private static void DrawCoverageMarker(Graphics graphics, float x, float y, float diameter, Brush brush, Pen outlinePen)
     {
         graphics.FillEllipse(brush, x, y, diameter, diameter);
         graphics.DrawEllipse(outlinePen, x, y, diameter, diameter);
+    }
+
+    protected override void OnMouseDown(MouseEventArgs e)
+    {
+        base.OnMouseDown(e);
+        _suppressClick = false;
+        _mouseDownSquare = null;
+        if (e.Button == MouseButtons.Left && TryGetBoardSquare(e.Location, out var square) &&
+            GetPieceAt(square.X, square.Y).HasValue)
+        {
+            _mouseDownSquare = square;
+            _mouseDownLocation = e.Location;
+        }
+    }
+
+    protected override void OnMouseUp(MouseEventArgs e)
+    {
+        _mouseDownSquare = null;
+        base.OnMouseUp(e);
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        base.OnMouseMove(e);
+        if (e.Button != MouseButtons.Left || !_mouseDownSquare.HasValue)
+            return;
+
+        var dragSize = SystemInformation.DragSize;
+        var clickArea = new Rectangle(
+            _mouseDownLocation.X - dragSize.Width / 2,
+            _mouseDownLocation.Y - dragSize.Height / 2,
+            dragSize.Width, dragSize.Height);
+        if (clickArea.Contains(e.Location))
+            return;
+
+        var start = _mouseDownSquare.Value;
+        _mouseDownSquare = null;
+        _suppressClick = true;
+        if (!BeginPieceDrag(start))
+            return;
+
+        try
+        {
+            var data = new DataObject();
+            data.SetData(typeof(BoardControl), this);
+            DoDragDrop(data, DragDropEffects.Move);
+        }
+        finally
+        {
+            // Escape and dropping outside the board also cancel registration.
+            if (_dragStart.HasValue)
+                CancelPieceDrag();
+        }
+    }
+
+    private bool BeginPieceDrag(Point start)
+    {
+        var piece = GetPieceAt(start.X, start.Y);
+        if (!piece.HasValue)
+            return false;
+
+        var args = new CancelEventArgs(true);
+        MoveDragStarted?.Invoke(this, args);
+        if (args.Cancel || !_registerMoveMode)
+            return false;
+
+        // Starting registration can navigate to the last move. Never drag a
+        // different piece if the position changed underneath the mouse.
+        var currentPiece = GetPieceAt(start.X, start.Y);
+        if (!currentPiece.HasValue || currentPiece.Value.PieceId != piece.Value.PieceId)
+        {
+            MoveDragCancelled?.Invoke(this, EventArgs.Empty);
+            return false;
+        }
+
+        _dragStart = start;
+        _dragPiece = currentPiece;
+        SelectMoveStart(start, currentPiece.Value);
+        Invalidate();
+        return true;
+    }
+
+    private bool IsOwnPieceDrag(DragEventArgs e) =>
+        _registerMoveMode && _dragStart.HasValue && _dragPiece.HasValue &&
+        ReferenceEquals(e.Data?.GetData(typeof(BoardControl)), this);
+
+    protected override void OnDragEnter(DragEventArgs e)
+    {
+        base.OnDragEnter(e);
+        UpdateDragEffect(e);
+    }
+
+    protected override void OnDragOver(DragEventArgs e)
+    {
+        base.OnDragOver(e);
+        UpdateDragEffect(e);
+    }
+
+    private void UpdateDragEffect(DragEventArgs e)
+    {
+        e.Effect = IsOwnPieceDrag(e) &&
+            TryGetBoardSquare(PointToClient(new Point(e.X, e.Y)), out _)
+            ? e.AllowedEffect & DragDropEffects.Move : DragDropEffects.None;
+    }
+
+    protected override void OnDragDrop(DragEventArgs e)
+    {
+        base.OnDragDrop(e);
+        if (!IsOwnPieceDrag(e))
+            return;
+
+        if (!TryGetBoardSquare(PointToClient(new Point(e.X, e.Y)), out var end) || end == _dragStart)
+        {
+            CancelPieceDrag();
+            return;
+        }
+
+        var start = _dragStart!.Value;
+        var piece = _dragPiece!.Value;
+        _dragStart = null;
+        _dragPiece = null;
+        _selectedSquare = null;
+        _validMoves.Clear();
+        Invalidate();
+        e.Effect = DragDropEffects.Move;
+        MoveSelected?.Invoke(this, new MoveSelectedEventArgs(start, end, piece));
+    }
+
+    private void CancelPieceDrag()
+    {
+        _dragStart = null;
+        _dragPiece = null;
+        MoveDragCancelled?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void OnMouseClick(MouseEventArgs e)
     {
         base.OnMouseClick(e);
 
-        if (e.Button != MouseButtons.Left || !TryGetBoardSquare(e.Location, out var clickedSquare))
+        if (_suppressClick || e.Button != MouseButtons.Left || !TryGetBoardSquare(e.Location, out var clickedSquare))
             return;
 
         if (!_registerMoveMode)
@@ -476,11 +591,7 @@ public partial class BoardControl : UserControl
         var boardLeft = (ClientSize.Width - boardSize) / 2f;
         var boardTop = (ClientSize.Height - boardSize) / 2f;
 
-        if (boardSize <= 0 ||
-            location.X < boardLeft ||
-            location.X >= boardLeft + boardSize ||
-            location.Y < boardTop ||
-            location.Y >= boardTop + boardSize)
+        if (boardSize <= 0 || location.X < boardLeft || location.X >= boardLeft + boardSize || location.Y < boardTop || location.Y >= boardTop + boardSize)
         {
             boardSquare = Point.Empty;
             return false;
@@ -540,10 +651,7 @@ public partial class BoardControl : UserControl
                 if (!piece.HasValue || piece.Value.PieceId != SelectedPiece.Value.PieceId)
                     continue;
 
-                CalculatePieceCoverage(
-                    new Point(column, row),
-                    piece.Value,
-                    _selectedPieceCoverage);
+                CalculatePieceCoverage(new Point(column, row), piece.Value, _selectedPieceCoverage);
                 return;
             }
         }
@@ -563,9 +671,7 @@ public partial class BoardControl : UserControl
                 if (!piece.HasValue || piece.Value.PieceId != SelectedPiece.Value.PieceId)
                     continue;
 
-                CalculatePieceValidMoves(
-                    new Point(column, row),
-                    piece.Value);
+                CalculatePieceValidMoves(new Point(column, row), piece.Value);
                 return;
             }
         }
