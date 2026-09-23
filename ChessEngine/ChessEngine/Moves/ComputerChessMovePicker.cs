@@ -13,30 +13,75 @@ public static class ComputerChessMovePicker
         Rnd = new Random();
     }
 
-    public static Move GetImpossibleMove(List<Move> legalMoves)
+    public static Move GetImpossibleMove(int moveIndex, List<Move> legalMoves)
     {
         switch (legalMoves.Count)
         {
             case 2:
             case 3:
             case 4:
-                return legalMoves.First();
+            {
+                if (moveIndex >= 3)
+                    return legalMoves.First();
+
+                var x = Rnd.Next(0, legalMoves.Count);
+                return legalMoves[x];
+
+            }
             default:
-                var x = Rnd.Next(0, 10);
-                switch (x)
+            {
+                switch (moveIndex)
                 {
-                    case 7:
-                    case 8:
-                        return legalMoves[1];
-                    case 9:
-                        return legalMoves[2];
+                    case 0:
+                    {
+                        var max = 12;
+
+                        if (legalMoves.Count < max)
+                            max = legalMoves.Count;
+
+                        var x = Rnd.Next(0, max);
+                        return legalMoves[x];
+                    }
+                    case 1:
+                    {
+                        var max = 5;
+
+                        if (legalMoves.Count < max)
+                            max = legalMoves.Count;
+
+                        var x = Rnd.Next(0, max);
+                        return legalMoves[x];
+                    }
+                    case 2:
+                    {
+                        var max = 3;
+
+                        if (legalMoves.Count < max)
+                            max = legalMoves.Count;
+
+                        var x = Rnd.Next(0, max);
+                        return legalMoves[x];
+                    }
                     default:
-                        return legalMoves[0];
+                    {
+                        var x = Rnd.Next(0, 10);
+                        switch (x)
+                        {
+                            case 7:
+                            case 8:
+                                return legalMoves[1];
+                            case 9:
+                                return legalMoves[2];
+                            default:
+                                return legalMoves[0];
+                        }
+                    }
                 }
+            }
         }
     }
 
-    public static Move GetBrutalMove(List<Move> legalMoves)
+    public static Move GetBrutalMove(int moveIndex, List<Move> legalMoves)
     {
         switch (legalMoves.Count)
         {
@@ -53,7 +98,7 @@ public static class ComputerChessMovePicker
         }
     }
 
-    public static Move GetChallengingMove(List<Move> legalMoves)
+    public static Move GetChallengingMove(int moveIndex, List<Move> legalMoves)
     {
         switch (legalMoves.Count)
         {

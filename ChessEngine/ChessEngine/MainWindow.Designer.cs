@@ -251,14 +251,14 @@ namespace ChessEngine
             // impossibleToolStripMenuItem
             // 
             this.impossibleToolStripMenuItem.Name = "impossibleToolStripMenuItem";
-            this.impossibleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.impossibleToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.impossibleToolStripMenuItem.Text = "Impossible";
             this.impossibleToolStripMenuItem.Click += new System.EventHandler(this.impossibleToolStripMenuItem_Click);
             // 
             // brutalToolStripMenuItem
             // 
             this.brutalToolStripMenuItem.Name = "brutalToolStripMenuItem";
-            this.brutalToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.brutalToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.brutalToolStripMenuItem.Text = "Brutal";
             this.brutalToolStripMenuItem.Click += new System.EventHandler(this.brutalToolStripMenuItem_Click);
             // 
@@ -267,21 +267,21 @@ namespace ChessEngine
             this.challengingToolStripMenuItem.Checked = true;
             this.challengingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.challengingToolStripMenuItem.Name = "challengingToolStripMenuItem";
-            this.challengingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.challengingToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.challengingToolStripMenuItem.Text = "Challenging";
             this.challengingToolStripMenuItem.Click += new System.EventHandler(this.challengingToolStripMenuItem_Click);
             // 
             // moderateToolStripMenuItem
             // 
             this.moderateToolStripMenuItem.Name = "moderateToolStripMenuItem";
-            this.moderateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.moderateToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.moderateToolStripMenuItem.Text = "Moderate";
             this.moderateToolStripMenuItem.Click += new System.EventHandler(this.moderateToolStripMenuItem_Click);
             // 
             // casualToolStripMenuItem
             // 
             this.casualToolStripMenuItem.Name = "casualToolStripMenuItem";
-            this.casualToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.casualToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.casualToolStripMenuItem.Text = "Casual";
             this.casualToolStripMenuItem.Click += new System.EventHandler(this.casualToolStripMenuItem_Click);
             // 
@@ -718,6 +718,7 @@ namespace ChessEngine
             // 
             // listView1
             // 
+            this.listView1.BackColor = System.Drawing.Color.DarkGreen;
             this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -731,6 +732,7 @@ namespace ChessEngine
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
             this.listView1.Enter += new System.EventHandler(this.listView1_Enter);
+            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
             // imageList1
             // 
@@ -742,6 +744,7 @@ namespace ChessEngine
             // 
             // lvProperties
             // 
+            this.lvProperties.BackColor = System.Drawing.Color.DarkGreen;
             this.lvProperties.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lvProperties.Dock = System.Windows.Forms.DockStyle.Right;
             this.lvProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -767,8 +770,9 @@ namespace ChessEngine
             // 
             // boardControl1
             // 
+            this.boardControl1.AllowDrop = true;
             this.boardControl1.BlackPlayerName = "Black";
-            this.boardControl1.GameDate = new System.DateTime(2026, 8, 30, 15, 21, 22, 123);
+            this.boardControl1.GameDate = new System.DateTime(2026, 9, 23, 14, 22, 23, 236);
             this.boardControl1.Location = new System.Drawing.Point(-136, 8);
             this.boardControl1.Name = "boardControl1";
             this.boardControl1.SelectedPiece = null;

@@ -391,10 +391,13 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         UpdateControls();
         UpdateSelectedPieceProperties();
 
-        if (targetMoveIndex < 0)
+
+        if (targetMoveIndex == -1 && listView1.Items.Count > 0)
+            SelectInMoveList(0);
+        else if (targetMoveIndex < 0)
             SelectNoneInMoveList();
         else
-            SelectInMoveList(targetMoveIndex);
+            SelectInMoveList(targetMoveIndex + 1);
 
         boardControl1.CalculateCoverage();
         boardControl1.Invalidate();
@@ -581,10 +584,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         listView1.BeginUpdate();
 
-        if (CurrentMove < 0)
-            SelectNoneInMoveList();
-        else
-            SelectInMoveList(CurrentMove);
+        SelectInMoveList(CurrentMove + 1);
 
         listView1.EndUpdate();
     }
@@ -593,9 +593,16 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
     {
         listView1.Items.Clear();
 
+        if (Moves.Count > 0)
+            listView1.Items.Add("", "START", 0);
+
+        var moveNumber = 0;
+
         foreach (var move in Moves)
         {
-            var item = new ListViewItem(move.ToString())
+            moveNumber++;
+
+            var item = new ListViewItem($"{moveNumber}. {move}")
             {
                 ImageIndex = move.Color == PlayerColor.White ? 1 : 2
             };
@@ -606,7 +613,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             listView1.Items.Add(item);
         }
 
-        SelectInMoveList(Moves.Count - 1);
+        SelectInMoveList(Moves.Count);
     }
 
     private void SelectNoneInMoveList()
@@ -980,7 +987,7 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         var moveIndex = Moves.Count;
         Move? move;
 
-        if (legalMoves.Count == 2)
+        if (legalMoves.Count == 1)
         {
             move = legalMoves[0];
         }
@@ -989,13 +996,13 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
             switch (_computerLevelSkill)
             {
                 case ComputerPlayerSkill.Impossible:
-                    move = ComputerChessMovePicker.GetImpossibleMove(legalMoves);
+                    move = ComputerChessMovePicker.GetImpossibleMove(Moves.Count, legalMoves);
                     break;
                 case ComputerPlayerSkill.Brutal:
-                    move = ComputerChessMovePicker.GetBrutalMove(legalMoves);
+                    move = ComputerChessMovePicker.GetBrutalMove(Moves.Count, legalMoves);
                     break;
                 case ComputerPlayerSkill.Challenging:
-                    move = ComputerChessMovePicker.GetChallengingMove(legalMoves);
+                    move = ComputerChessMovePicker.GetChallengingMove(Moves.Count, legalMoves);
                     break;
                 case ComputerPlayerSkill.Moderate:
                     move = ComputerChessMovePicker.GetModerateMove(legalMoves);
@@ -1076,5 +1083,15 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         challengingToolStripMenuItem.Checked = false;
         moderateToolStripMenuItem.Checked = false;
         casualToolStripMenuItem.Checked = true;
+    }
+
+    private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+    {
+        var item = listView1.GetItemAt(e.X, e.Y);
+
+        if (item == null)
+            return;
+
+        var index = listView1.Items.IndexOf(item);
     }
 }
