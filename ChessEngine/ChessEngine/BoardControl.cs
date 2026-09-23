@@ -21,11 +21,13 @@ public sealed partial class BoardControl : UserControl
     private const int BoardLength = 8;
     private const int SpriteColumns = 6;
     private const int SpriteRows = 2;
+    private const float ShadowOpacity = 0.2f;
     public DateTime GameDate { get; set; }
     public string WhitePlayerName { get; set; }
     public string BlackPlayerName { get; set; }
 
     private static readonly Bitmap PieceSprites = Properties.Resources.pieces;
+    private static readonly Bitmap PieceShadow = Properties.Resources.Shadow;
     private static readonly Color LightSquareColor = Color.FromArgb(240, 217, 181);
     private static readonly Color DarkSquareColor = Color.FromArgb(181, 136, 99);
     private static readonly Point[] OrthogonalDirections = [new(0, 1), new(1, 0), new(0, -1), new(-1, 0)];
@@ -161,6 +163,8 @@ public sealed partial class BoardControl : UserControl
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
         PointF? moveStart = null;
         PointF? moveEnd = null;
+        using var shadowAttributes = new ImageAttributes();
+        shadowAttributes.SetColorMatrix(new ColorMatrix { Matrix33 = ShadowOpacity });
 
         for (var displayRow = 0; displayRow < BoardLength; displayRow++)
         {
@@ -199,13 +203,24 @@ public sealed partial class BoardControl : UserControl
                 var piece = _boardData[boardRow, column];
 
                 if (piece.HasValue)
+                {
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    
+                    PointF[] shadowPoints =
+                    [
+                        new(square.Left, square.Top),
+                        new(square.Right, square.Top),
+                        new(square.Left, square.Bottom)
+                    ];
+
+                    e.Graphics.DrawImage(PieceShadow, shadowPoints, new RectangleF(0, 0, PieceShadow.Width, PieceShadow.Height), GraphicsUnit.Pixel, shadowAttributes);
                     DrawPiece(e.Graphics, piece.Value.Type, piece.Value.Color, square);
+                }
                 else if (_selectedMove != null && boardPoint == _selectedMove.StartPoint)
                 {
                     // Loaded moves may omit the piece type; recover it from the destination.
-                    var movedPieceType = _selectedMove.Piece ??
-                        (_selectedMove.Promotion.HasValue ? PieceType.Pawn :
-                            GetPieceAt(_selectedMove.EndPoint.X, _selectedMove.EndPoint.Y)?.Type);
+                    var movedPieceType = _selectedMove.Piece ?? (_selectedMove.Promotion.HasValue ? PieceType.Pawn : GetPieceAt(_selectedMove.EndPoint.X, _selectedMove.EndPoint.Y)?.Type);
 
                     if (movedPieceType.HasValue)
                         DrawPiece(e.Graphics, movedPieceType.Value, _selectedMove.Color, square, 0.25f);
