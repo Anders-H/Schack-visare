@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using ChessEngine.Events;
 using ChessEngine.Moves;
@@ -199,6 +200,16 @@ public sealed partial class BoardControl : UserControl
 
                 if (piece.HasValue)
                     DrawPiece(e.Graphics, piece.Value.Type, piece.Value.Color, square);
+                else if (_selectedMove != null && boardPoint == _selectedMove.StartPoint)
+                {
+                    // Loaded moves may omit the piece type; recover it from the destination.
+                    var movedPieceType = _selectedMove.Piece ??
+                        (_selectedMove.Promotion.HasValue ? PieceType.Pawn :
+                            GetPieceAt(_selectedMove.EndPoint.X, _selectedMove.EndPoint.Y)?.Type);
+
+                    if (movedPieceType.HasValue)
+                        DrawPiece(e.Graphics, movedPieceType.Value, _selectedMove.Color, square, 0.25f);
+                }
 
                 if (!_registerMoveMode && SelectedPiece.HasValue && piece.HasValue && piece.Value.PieceId == SelectedPiece.Value.PieceId)
                 {
@@ -323,7 +334,7 @@ public sealed partial class BoardControl : UserControl
         e.Graphics.DrawString(_viewFromBlackPerspective ? BlackPlayerName : WhitePlayerName, Font, _viewFromBlackPerspective ? Brushes.Black : Brushes.White, textHeight + 2, Height - (textHeight + textHeight + 2));
     }
 
-    private static void DrawPiece(Graphics graphics, PieceType pieceType, PlayerColor color, RectangleF square)
+    private static void DrawPiece(Graphics graphics, PieceType pieceType, PlayerColor color, RectangleF square, float opacity = 1f)
     {
         var spriteWidth = PieceSprites.Width / SpriteColumns - 2;
         var spriteHeight = PieceSprites.Height / SpriteRows - 2;
@@ -346,7 +357,21 @@ public sealed partial class BoardControl : UserControl
 
         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-        graphics.DrawImage(PieceSprites, destination, source, GraphicsUnit.Pixel);
+        if (opacity >= 1f)
+        {
+            graphics.DrawImage(PieceSprites, destination, source, GraphicsUnit.Pixel);
+            return;
+        }
+
+        using var attributes = new ImageAttributes();
+        attributes.SetColorMatrix(new ColorMatrix { Matrix33 = opacity });
+        PointF[] destinationPoints =
+        [
+            new(destination.Left, destination.Top),
+            new(destination.Right, destination.Top),
+            new(destination.Left, destination.Bottom)
+        ];
+        graphics.DrawImage(PieceSprites, destinationPoints, source, GraphicsUnit.Pixel, attributes);
     }
 
     private static void DrawCoverageMarker(Graphics graphics, float x, float y, float diameter, Brush brush, Pen outlinePen)
