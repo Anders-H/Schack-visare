@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     color-scheme: light;
     --ink: #30271f;
     --wine: #652b2c;
@@ -378,7 +378,8 @@ p {
 }
 
 .screenshot {
-    min-height: 275px;
+    min-width: 0;
+    align-self: start;
     margin: 0;
     border: 1px solid var(--gold);
     padding: 16px;
@@ -386,38 +387,20 @@ p {
     box-shadow: 6px 6px 0 #b29b7030
 }
 
-.screenshot-inner {
-    min-height: 236px;
-    border: 1px dashed #a28a5d;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-    background: repeating-linear-gradient(135deg,transparent 0 9px,#ad915711 9px 10px)
+.screenshot a {
+    display: block
 }
 
-.screenshot .symbol {
-    font-size: 46px;
-    color: var(--gold);
-    line-height: 1.3
-}
-
-.screenshot strong {
-    font-weight: normal;
-    font-size: 22px
-}
-
-.screenshot p {
-    font-size: 14px;
-    max-width: 275px;
-    margin: 10px 0 0
+.screenshot img {
+    display: block;
+    width: 100%;
+    height: auto
 }
 
 .screenshot figcaption {
     font-size: 12px;
-    letter-spacing: .09em;
+    letter-spacing: normal;
+    word-spacing: normal;
     text-transform: uppercase;
     margin-top: 12px
 }
@@ -709,13 +692,6 @@ footer {
         gap: 8px
     }
 
-    .screenshot {
-        min-height: 230px
-    }
-
-    .screenshot-inner {
-        min-height: 200px
-    }
 }
 
 @media(prefers-reduced-motion:reduce) {
