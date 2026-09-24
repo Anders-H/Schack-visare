@@ -1094,4 +1094,14 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
         var index = listView1.Items.IndexOf(item);
     }
+
+    private void fileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+    {
+        configureBoardToolStripMenuItem.Enabled = Moves.Count <= 0;
+    }
+
+    private void configureBoardToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
 }

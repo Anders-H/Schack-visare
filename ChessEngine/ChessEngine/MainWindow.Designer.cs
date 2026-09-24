@@ -35,6 +35,7 @@ namespace ChessEngine
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configureBoardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,6 +131,7 @@ namespace ChessEngine
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newGameToolStripMenuItem,
+            this.configureBoardToolStripMenuItem,
             this.toolStripSeparator2,
             this.openToolStripMenuItem,
             this.openFromClipboardToolStripMenuItem,
@@ -140,6 +142,7 @@ namespace ChessEngine
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
+            this.fileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpening);
             // 
             // newGameToolStripMenuItem
             // 
@@ -148,6 +151,13 @@ namespace ChessEngine
             this.newGameToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.newGameToolStripMenuItem.Text = "&New game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
+            // 
+            // configureBoardToolStripMenuItem
+            // 
+            this.configureBoardToolStripMenuItem.Name = "configureBoardToolStripMenuItem";
+            this.configureBoardToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.configureBoardToolStripMenuItem.Text = "Configure board...";
+            this.configureBoardToolStripMenuItem.Click += new System.EventHandler(this.configureBoardToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -893,6 +903,7 @@ namespace ChessEngine
         private System.Windows.Forms.ToolStripMenuItem challengingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moderateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem casualToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configureBoardToolStripMenuItem;
     }
 }
 

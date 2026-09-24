@@ -61,6 +61,16 @@
     <Compile Include="ChessBrain.cs" />
     <Compile Include="ChessRules.cs" />
     <Compile Include="ComputerPlayerSkill.cs" />
+    <Compile Include="Dialogs\ConfigureBoardDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ConfigureBoardDialog.Designer.cs">
+      <DependentUpon>ConfigureBoardDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DialogControls\PieceAtSquare.cs" />
+    <Compile Include="Dialogs\DialogControls\PieceSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Dialogs\GamePropertiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +130,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardControl.resx">
       <DependentUpon>BoardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ConfigureBoardDialog.resx">
+      <DependentUpon>ConfigureBoardDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GamePropertiesDialog.resx">
       <DependentUpon>GamePropertiesDialog.cs</DependentUpon>
