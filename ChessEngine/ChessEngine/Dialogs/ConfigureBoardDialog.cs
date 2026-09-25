@@ -28,7 +28,15 @@ public partial class ConfigureBoardDialog : Form
 
     public void SetBoardData(PieceAtSquare[,] boardData)
     {
-        
+        for (var y = 0; y < 8; y++)
+        {
+            for (var x = 0; x < 8; x++)
+            {
+                var c = GetComboBox(x, y);
+                // Board data is [rank - 1, file]; the dialog always shows a8 at top left.
+                c.SelectedItem = boardData[7 - y, x];
+            }
+        }
     }
 
     private PieceSelector GetComboBox(int x, int y)
