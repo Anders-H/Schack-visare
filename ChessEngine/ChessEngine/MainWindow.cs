@@ -1102,6 +1102,12 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void configureBoardToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        using var x = new ConfigureBoardDialog();
+        x.SetBoardData(boardControl1.GetBasicBoardData());
+
+        if (x.ShowDialog(this) != DialogResult.OK)
+            return;
+
 
     }
 }

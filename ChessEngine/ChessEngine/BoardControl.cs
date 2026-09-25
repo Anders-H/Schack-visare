@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using ChessEngine.Dialogs.DialogControls;
 using ChessEngine.Events;
 using ChessEngine.Moves;
 using ChessEngine.Pieces;
@@ -69,6 +70,72 @@ public sealed partial class BoardControl : UserControl
 
     public BoardData GetCurrentBoardData() =>
         _boardData;
+
+    public PieceAtSquare[,] GetBasicBoardData()
+    {
+        var boardData = new PieceAtSquare[BoardLength, BoardLength];
+
+        for (var row = 0; row < BoardLength; row++)
+        {
+            for (var column = 0; column < BoardLength; column++)
+            {
+                boardData[row, column] = GetBasicBoardDataAt(row, column);
+            }
+        }
+
+        return boardData;
+    }
+
+    private PieceAtSquare GetBasicBoardDataAt(int row, int col)
+    {
+        if (!_boardData[row, col].HasValue)
+            return PieceAtSquare.None;
+
+        var pieceType = _boardData[row, col]!.Value.Type;
+        var color = _boardData[row, col]!.Value.Color;
+
+        switch (color)
+        {
+            case PlayerColor.White:
+                switch (pieceType)
+                {
+                    case PieceType.Pawn:
+                        return PieceAtSquare.WhitePawn;
+                    case PieceType.Rook:
+                        return PieceAtSquare.WhiteRook;
+                    case PieceType.Knight:
+                        return PieceAtSquare.WhiteKnight;
+                    case PieceType.Bishop:
+                        return PieceAtSquare.WhiteBishop;
+                    case PieceType.Queen:
+                        return PieceAtSquare.WhiteQueen;
+                    case PieceType.King:
+                        return PieceAtSquare.WhiteKing;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            case PlayerColor.Black:
+                switch (pieceType)
+                {
+                    case PieceType.Pawn:
+                        return PieceAtSquare.BlackPawn;
+                    case PieceType.Rook:
+                        return PieceAtSquare.BlackRook;
+                    case PieceType.Knight:
+                        return PieceAtSquare.BlackKnight;
+                    case PieceType.Bishop:
+                        return PieceAtSquare.BlackBishop;
+                    case PieceType.Queen:
+                        return PieceAtSquare.BlackQueen;
+                    case PieceType.King:
+                        return PieceAtSquare.BlackKing;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 
     public Piece? GetPieceAt(int x, int y) =>
         _boardData[y, x];
