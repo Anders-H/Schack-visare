@@ -35,9 +35,30 @@ public class BoardData
         _initialPosition = source._initialPosition;
     }
 
-    internal BoardData Copy() => new BoardData(this);
+    internal BoardData Copy() =>
+        new(this);
 
-    internal Piece?[,] CopyBoard() => (Piece?[,])_board.Clone();
+    internal Piece?[,] CopyBoard() =>
+        (Piece?[,])_board.Clone();
+
+    public void ResetAllPieces()
+    {
+        for (var y = 0; y < 8; y++)
+        {
+            for (var x = 0; x < 8; x++)
+            {
+                var piece = _board[y, x];
+
+                if (!piece.HasValue)
+                    continue;
+
+                var updatedPiece = piece.Value;
+                updatedPiece.MoveCount = 0;
+                updatedPiece.DiedAtMove = -1;
+                _board[y, x] = updatedPiece;
+            }
+        }
+    }
 
     public BoardData(GamePosition? initialPosition = null)
     {

@@ -106,6 +106,7 @@ namespace ChessEngine.Dialogs
             this.btnClear.TabIndex = 0;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnStandard
             // 
@@ -124,6 +125,7 @@ namespace ChessEngine.Dialogs
             this.btnOk.TabIndex = 66;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // btnCancel
             // 

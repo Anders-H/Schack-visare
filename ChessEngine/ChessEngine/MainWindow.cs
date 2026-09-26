@@ -1102,12 +1102,21 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void configureBoardToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (Moves.Count > 0)
+            return;
+
         using var x = new ConfigureBoardDialog();
         x.SetBoardData(boardControl1.GetBasicBoardData());
 
         if (x.ShowDialog(this) != DialogResult.OK)
             return;
 
-
+        _playbackTimer.Stop();
+        _registerMoveMode = false;
+        boardControl1.CancelMoveRegistration();
+        boardControl1.SelectedPiece = null;
+        Moves = new MoveList { InitialPosition = x.InitialPosition };
+        RenderMoveList();
+        GoToMove(-1);
     }
 }

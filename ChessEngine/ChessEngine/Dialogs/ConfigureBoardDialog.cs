@@ -1,15 +1,131 @@
 ﻿#nullable enable
 using System;
+using System.Text;
 using ChessEngine.Dialogs.DialogControls;
+using ChessEngine.ExternalParsers;
+using ChessEngine.Pieces;
 using System.Windows.Forms;
 
 namespace ChessEngine.Dialogs;
 
 public partial class ConfigureBoardDialog : Form
 {
+    public GamePosition? InitialPosition { get; private set; }
+
     public ConfigureBoardDialog()
     {
         InitializeComponent();
+    }
+
+    private GamePosition GetInitialPosition()
+        => new FenParser(GetPositionFen()).ParsePosition();
+
+    private string GetPositionFen()
+    {
+        // FEN uses the same a8-to-h1 order as the dialog. Reuse the importer
+        // so validation, piece IDs and saved positions follow the same rules.
+        const string symbols = " PRNBQKprnbqk";
+        var fen = new StringBuilder();
+        
+        for (var y = 0; y < 8; y++)
+        {
+            if (y > 0)
+                fen.Append('/');
+
+            var empty = 0;
+            
+            for (var x = 0; x < 8; x++)
+            {
+                var piece = (PieceAtSquare)GetComboBox(x, y).SelectedItem;
+                
+                if (piece == PieceAtSquare.None)
+                {
+                    empty++;
+                    continue;
+                }
+                
+                if (empty > 0)
+                    fen.Append(empty);
+                
+                empty = 0;
+                fen.Append(symbols[(int)piece]);
+            }
+
+            if (empty > 0)
+                fen.Append(empty);
+        }
+
+        fen.Append(" w ").Append(GetCastlingRights()).Append(" - 0 1");
+        return fen.ToString();
+    }
+
+    private string GetCastlingRights()
+    {
+        // A configured starting position treats kings and rooks on their home
+        // squares as unmoved. Occupied/attacked paths are checked when playing.
+        var rights = new StringBuilder();
+        if (Equals(GetComboBox(4, 7).SelectedItem, PieceAtSquare.WhiteKing))
+        {
+            if (Equals(GetComboBox(7, 7).SelectedItem, PieceAtSquare.WhiteRook)) rights.Append('K');
+            if (Equals(GetComboBox(0, 7).SelectedItem, PieceAtSquare.WhiteRook)) rights.Append('Q');
+        }
+        if (Equals(GetComboBox(4, 0).SelectedItem, PieceAtSquare.BlackKing))
+        {
+            if (Equals(GetComboBox(7, 0).SelectedItem, PieceAtSquare.BlackRook)) rights.Append('k');
+            if (Equals(GetComboBox(0, 0).SelectedItem, PieceAtSquare.BlackRook)) rights.Append('q');
+        }
+        return rights.Length == 0 ? "-" : rights.ToString();
+    }
+
+    private GamePosition GetInitialPositionForced()
+    {
+        var board = new Piece?[8, 8];
+        var id = 0;
+
+        for (var y = 0; y < 8; y++)
+        {
+            for (var x = 0; x < 8; x++)
+            {
+                var selected = (PieceAtSquare)GetComboBox(x, y).SelectedItem;
+
+                if (selected == PieceAtSquare.None)
+                    continue;
+
+                var type = selected switch
+                {
+                    PieceAtSquare.WhitePawn or PieceAtSquare.BlackPawn => PieceType.Pawn,
+                    PieceAtSquare.WhiteRook or PieceAtSquare.BlackRook => PieceType.Rook,
+                    PieceAtSquare.WhiteKnight or PieceAtSquare.BlackKnight => PieceType.Knight,
+                    PieceAtSquare.WhiteBishop or PieceAtSquare.BlackBishop => PieceType.Bishop,
+                    PieceAtSquare.WhiteQueen or PieceAtSquare.BlackQueen => PieceType.Queen,
+                    PieceAtSquare.WhiteKing or PieceAtSquare.BlackKing => PieceType.King,
+                    _ => throw new ArgumentOutOfRangeException(nameof(selected))
+                };
+
+                var color = selected <= PieceAtSquare.WhiteKing ? PlayerColor.White : PlayerColor.Black;
+
+                board[7 - y, x] = new Piece(id++, type, color)
+                {
+                    MoveCount = type is PieceType.King or PieceType.Rook ? 1 : 0
+                };
+            }
+        }
+
+        foreach (var right in GetCastlingRights())
+        {
+            if (right == '-') continue;
+            var row = char.IsUpper(right) ? 0 : 7;
+            var column = char.ToUpperInvariant(right) == 'K' ? 7 : 0;
+            var king = board[row, 4]!.Value;
+            var rook = board[row, column]!.Value;
+            king.MoveCount = rook.MoveCount = 0;
+            board[row, 4] = king;
+            board[row, column] = rook;
+        }
+
+        // Construct directly, without validating or parsing FEN. The text is
+        // retained only because the existing save format uses GamePosition.Fen.
+        return new GamePosition(board, GetPositionFen(), true, null, 0, 1);
     }
 
     private void ConfigureBoardDialog_Load(object sender, EventArgs e)
@@ -19,9 +135,7 @@ public partial class ConfigureBoardDialog : Form
             for (var x = 0; x < 8; x++)
             {
                 var c = GetComboBox(x, y);
-                c.BackColor = (x + y) % 2 == 0
-                    ? System.Drawing.Color.FromArgb(255, 240, 217)
-                    : System.Drawing.Color.FromArgb(181, 136, 99);
+                c.BackColor = (x + y) % 2 == 0 ? System.Drawing.Color.FromArgb(255, 240, 217) : System.Drawing.Color.FromArgb(181, 136, 99);
             }
         }
     }
@@ -149,6 +263,36 @@ public partial class ConfigureBoardDialog : Form
                 };
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void btnOk_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            InitialPosition = GetInitialPosition();
+        }
+        catch (FormatException ex)
+        {
+            if (MessageBox.Show(this, $@"{ex.Message}
+Do you want to continue?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            InitialPosition = GetInitialPositionForced();
+        }
+
+        DialogResult = DialogResult.OK;
+    }
+
+    private void btnClear_Click(object sender, EventArgs e)
+    {
+        for (var y = 0; y < 8; y++)
+        {
+            for (var x = 0; x < 8; x++)
+            {
+                var c = GetComboBox(x, y);
+                c.SelectedIndex = 0;
+            }
         }
     }
 }

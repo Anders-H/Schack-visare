@@ -4,7 +4,6 @@ using ChessEngine.Pieces;
 
 namespace ChessEngine;
 
-// An immutable starting position; replay always creates a fresh board from it.
 public sealed class GamePosition
 {
     private readonly Piece?[,] _board;

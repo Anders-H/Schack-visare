@@ -86,6 +86,9 @@ public sealed partial class BoardControl : UserControl
         return boardData;
     }
 
+    public void ResetAllPieces() =>
+        _boardData.ResetAllPieces();
+
     private PieceAtSquare GetBasicBoardDataAt(int row, int col)
     {
         if (!_boardData[row, col].HasValue)

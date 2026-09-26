@@ -56,9 +56,10 @@ public class ChessRules
             return false;
 
         piece = actual.Value;
-        if (promotion.HasValue && (!Move.IsPromotionPiece(promotion.Value) || piece.Type != PieceType.Pawn ||
-            endPoint.Y != (piece.Color == PlayerColor.White ? 7 : 0)))
+
+        if (promotion.HasValue && (!Move.IsPromotionPiece(promotion.Value) || piece.Type != PieceType.Pawn || endPoint.Y != (piece.Color == PlayerColor.White ? 7 : 0)))
             return false;
+
         var target = board[endPoint.Y, endPoint.X];
 
         if (target.HasValue && (target.Value.Color == piece.Color || target.Value.Type == PieceType.King))
@@ -121,10 +122,12 @@ public class ChessRules
             return false;
 
         var step = Math.Sign(end.X - start.X);
-        
+
         for (var x = start.X + step; x != rookColumn; x += step)
+        {
             if (board[homeRow, x].HasValue)
                 return false;
+        }
 
         if (!KingIsSafe(board, king.Color))
             return false;
