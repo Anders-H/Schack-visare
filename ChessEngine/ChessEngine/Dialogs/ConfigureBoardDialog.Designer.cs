@@ -116,6 +116,7 @@ namespace ChessEngine.Dialogs
             this.btnStandard.TabIndex = 1;
             this.btnStandard.Text = "Standard";
             this.btnStandard.UseVisualStyleBackColor = true;
+            this.btnStandard.Click += new System.EventHandler(this.btnStandard_Click);
             // 
             // btnOk
             // 

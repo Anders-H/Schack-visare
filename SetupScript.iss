@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WinSoft Chess Engine"
-#define MyAppVersion "0.2"
+#define MyAppVersion "0.3"
 #define MyAppPublisher "Anders Hesselbom"
 #define MyAppURL "https://ahesselbom.se/chess/"
 #define MyAppExeName "ChessEngine.exe"

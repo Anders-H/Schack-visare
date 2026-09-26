@@ -295,4 +295,35 @@ Do you want to continue?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning
             }
         }
     }
+
+    private void btnStandard_Click(object sender, EventArgs e)
+    {
+        PieceAtSquare[] whiteBackRank =
+        [
+            PieceAtSquare.WhiteRook, PieceAtSquare.WhiteKnight,
+            PieceAtSquare.WhiteBishop, PieceAtSquare.WhiteQueen,
+            PieceAtSquare.WhiteKing, PieceAtSquare.WhiteBishop,
+            PieceAtSquare.WhiteKnight, PieceAtSquare.WhiteRook
+        ];
+        
+        PieceAtSquare[] blackBackRank =
+        [
+            PieceAtSquare.BlackRook, PieceAtSquare.BlackKnight,
+            PieceAtSquare.BlackBishop, PieceAtSquare.BlackQueen,
+            PieceAtSquare.BlackKing, PieceAtSquare.BlackBishop,
+            PieceAtSquare.BlackKnight, PieceAtSquare.BlackRook
+        ];
+        
+        var board = new PieceAtSquare[8, 8];
+
+        for (var x = 0; x < 8; x++)
+        {
+            board[0, x] = whiteBackRank[x];
+            board[1, x] = PieceAtSquare.WhitePawn;
+            board[6, x] = PieceAtSquare.BlackPawn;
+            board[7, x] = blackBackRank[x];
+        }
+
+        SetBoardData(board);
+    }
 }
