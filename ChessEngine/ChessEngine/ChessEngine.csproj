@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\film.png" />
     <None Include="Resources\computer16.png" />
     <None Include="Resources\PropertiesHS.png" />
     <None Include="Resources\Help.png" />

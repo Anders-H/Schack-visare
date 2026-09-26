@@ -925,8 +925,15 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
 
     private void openTheManualToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show(this, @"Open the manual at https://ahesselbom.se/chess/manual.html?", @"Open the manual", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            Process.Start("https://ahesselbom.se/chess/manual.html");
+        try
+        {
+            if (MessageBox.Show(this, @"Open the manual at https://ahesselbom.se/chess/manual.html?", @"Open the manual", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                Process.Start("https://ahesselbom.se/chess/manual.html");
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void MainWindow_Load(object sender, EventArgs e)
@@ -1118,5 +1125,17 @@ Are you sure you want to save this move?", Text, MessageBoxButtons.YesNo, Messag
         Moves = new MoveList { InitialPosition = x.InitialPosition };
         RenderMoveList();
         GoToMove(-1);
+    }
+
+    private void castelingToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start("https://www.youtube.com/watch?v=e5H9HLl5Bdk");
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }
